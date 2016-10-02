@@ -1,0 +1,5 @@
+venv/
+bin/
+build/
+.so
+.a
