@@ -1,0 +1,8 @@
+package psjjjj;
+
+message SimulationResultProto {
+    required bool success = 1;
+    optional string file_name = 2;
+    optional string error_message = 3;
+}
+
