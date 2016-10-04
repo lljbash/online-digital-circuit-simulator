@@ -12,9 +12,10 @@ class Engine {
     public:
         Engine() = default;
         
-        virtual std::string hello() const = 0;
+        virtual std::string getVHDLParsingResult() const = 0;
+        virtual std::string getSimulationResult(std::string vhdl_source_code) const = 0;
         
-        static EnginePtr generateEngine();
+        static EnginePtr createEngine();
          
         Engine(const Engine &) = delete;
         void operator=(const Engine &) = delete;

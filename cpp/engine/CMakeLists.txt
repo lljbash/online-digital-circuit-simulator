@@ -2,6 +2,7 @@ file(GLOB_RECURSE SRCS "*.cc")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/public)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${PROTOBUF_INCLUDE_DIRECTORY})
 
 add_library(psjjjj_engine STATIC ${SRCS})
 target_link_libraries(psjjjj_engine pthread psjjjj_protobuf)
