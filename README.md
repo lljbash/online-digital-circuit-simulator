@@ -1,8 +1,8 @@
-#PRJ7 PSJJJJ
+cpp Server
+==========
 
-##cpp Server
-
-###Requirement
+Requirement
+-----------
 ```
 g++-5
 cmake 2.8.12.2
@@ -11,7 +11,8 @@ gflags
 gtest
 ```
 
-###Compilation
+Compilation
+-----------
 in directory prj7\_psjjjj/cpp/
 ```
 $ mkdir build
@@ -20,9 +21,10 @@ $ cmake ..
 $ make -j
 ```
 
-###Usage
-in directory prj7\_psjjjj/cpp/
+Usage
+-----
+in directory prj7\_psjjjj/cpp/bin
 ```
-./psjjjj_server [-port=<port>]
+$ ./psjjjj_server [-port=<port>]
 ```
 
