@@ -37,7 +37,6 @@ import ycm_core
 flags = [
 '-Wall',
 '-Wextra',
-'-Werror',
 '-Wno-c++98-compat',
 '-Wno-long-long',
 '-Wno-variadic-macros',
@@ -69,6 +68,8 @@ flags = [
 '../llvm/include',
 '-isystem',
 '../llvm/tools/clang/include',
+'-I',
+'./build/proto',
 '-I',
 './engine/public',
 '-I',
