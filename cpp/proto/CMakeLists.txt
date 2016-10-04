@@ -15,5 +15,6 @@ foreach(FIL ${PROTOS})
 endforeach()
  
 add_library(psjjjj_protobuf STATIC ${PROTO_SRCS})
+target_link_libraries(psjjjj_protobuf protobuf)
 set(PROTOBUF_INCLUDE_DIRECTORY ${CMAKE_SOURCE_DIR}/build/proto PARENT_SCOPE)
 

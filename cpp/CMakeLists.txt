@@ -6,7 +6,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(CMAKE_CXX_COMPILER g++-5)
-list(APPEND CMAKE_CXX_FLAGS "-std=c++14 -pthread -Wall -Wextra -Wno-unused-param")
+list(APPEND CMAKE_CXX_FLAGS "-std=c++14 -pthread -Wall -Wextra -Wno-unused-parameter -Wno-unused-result")
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
     add_definitions(-DPSJJJJ_ENABLE_DEBUG)

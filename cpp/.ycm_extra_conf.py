@@ -69,6 +69,8 @@ flags = [
 '-isystem',
 '../llvm/tools/clang/include',
 '-I',
+'/usr/include',
+'-I',
 './build/proto',
 '-I',
 './engine/public',
