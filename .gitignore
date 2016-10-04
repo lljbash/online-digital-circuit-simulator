@@ -5,3 +5,4 @@ build/
 *.a
 *.pyc
 py2proto/
+*~

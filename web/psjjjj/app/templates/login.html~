@@ -1,4 +1,0 @@
-{%extends "base.html"%}
-{%blockcontent%}
-    <h1>Log in</h1>
-{%endblock%}
