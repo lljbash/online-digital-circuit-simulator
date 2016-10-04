@@ -1,0 +1,8 @@
+package psjjjj;
+
+message VHDLParsingResultProto {
+    required bool success = 1;
+    optional string vhdl_code = 2;
+    optional string error_message = 3;
+}
+
