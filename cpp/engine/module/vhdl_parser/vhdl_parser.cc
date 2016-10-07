@@ -5,9 +5,9 @@ using namespace psjjjj;
 using namespace std;
 
 VHDLParsingResultProto VHDLParser::parse() {
-    PSJJJJ_SHOW("parsing...");
+    PSJJJJ_SHOW("parsing...\n");
     usleep(5000000);
-    PSJJJJ_SHOW("parsing done!");
+    PSJJJJ_SHOW("parsing done!\n");
     
     VHDLParsingResultProto vprp;
     vprp.set_success(true);
