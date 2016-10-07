@@ -9,7 +9,7 @@ foreach(FIL ${PROTOS})
     list(APPEND PROTO_SRCS "${CMAKE_SOURCE_DIR}/build/proto/${FIL_WE}.pb.cc")
     
     execute_process(
-        COMMAND protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR} --cpp_out=${CMAKE_SOURCE_DIR}/build/proto ${FIL}
+        COMMAND protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR} --cpp_out=${CMAKE_SOURCE_DIR}/build/proto --python_out=${CMAKE_SOURCE_DIR}/../web/psjjjj/app/py2proto ${FIL}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endforeach()

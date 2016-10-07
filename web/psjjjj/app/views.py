@@ -2,7 +2,7 @@ from app import app
 from flask import render_template, redirect, flash
 from .forms import VHDLForm
 from client import MyClient
-from request_pb2 import RequestProto
+from py2proto.request_pb2 import RequestProto
 
 @app.route('/')
 @app.route('/index')

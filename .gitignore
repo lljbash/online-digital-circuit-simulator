@@ -4,5 +4,5 @@ build/
 *.so
 *.a
 *.pyc
-py2proto/
+*_pb2.py
 *~
