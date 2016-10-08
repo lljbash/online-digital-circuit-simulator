@@ -34,7 +34,7 @@ def addVHDL():
         flash('from server : ')
         flash('success : ' + str(reply.success))
         flash('file_name : ' + reply.file_name)
-        return redirect(url_for('submitted'))
+        return redirect(url_for('submitted', filename = reply.file_name))
     return render_template('addVHDL.html', form=form)
 
 @app.route('/studio/graph', methods=['GET', 'POST'])
@@ -54,9 +54,9 @@ def addGraph():
         return redirect('submitted')
     return render_template('addGraph.html', form=form)
 
-@app.route('/submitted', methods=['GET', 'POST'])
-def submitted():
-    return render_template('submitted.html')
+@app.route('/submitted/<filename>', methods=['GET', 'POST'])
+def submitted(filename):
+    return render_template('submitted.html', url = url_for('download', filename = filename))
 
 @app.route('/download/<filename>')
 def download(filename):
