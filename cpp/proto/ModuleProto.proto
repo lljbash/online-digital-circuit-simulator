@@ -1,0 +1,19 @@
+message SimpleModuleProto {
+    required string name = 1; //74LS...
+    message Pin{
+        required int32 index = 1;
+        required double pos_X = 2; //relative coordinate to pin0
+        required double pos_Y = 3;
+    }
+    repeated Pin pins = 3;
+    message Gate{
+        required string type = 1; //and, or, not, xor...
+        repeated int32 pins_in = 2;//several in
+        required int32 pin_out = 3;//single out
+    }
+    repeated Gate gates = 4;
+}
+
+message AllModulesProto{
+    repeated  SimpleModuleProto modules = 1;
+}
