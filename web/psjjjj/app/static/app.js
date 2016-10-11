@@ -19,7 +19,7 @@ angular.module('app', ['flowchart'])
     var model = {
       nodes: [
         {
-          name: "ngFlowchart",
+          name: "激励",
           id: 2,
           x: 400,
           y: 100,
@@ -37,7 +37,7 @@ angular.module('app', ['flowchart'])
           ]
         },
         {
-          name: "Implemented with AngularJS",
+          name: "门电路",
           id: 3,
           x: 400,
           y: 300,
@@ -49,31 +49,19 @@ angular.module('app', ['flowchart'])
             },
             {
               type: flowchartConstants.topConnectorType,
-              id: 2
-            },
-            {
-              type: flowchartConstants.topConnectorType,
               id: 3
             },
             {
               type: flowchartConstants.bottomConnectorType,
-              id: 4
-            },
-            {
-              type: flowchartConstants.bottomConnectorType,
               id: 5
-            },
-            {
-              type: flowchartConstants.bottomConnectorType,
-              id: 12
             }
           ]
         },
         {
-          name: "Easy Integration",
+          name: "元件2",
           id: 4,
-          x: 200,
-          y: 600,
+          x: 250,
+          y: 500,
           color: '#000',
           borderColor: '#000',
           connectors: [
@@ -92,10 +80,10 @@ angular.module('app', ['flowchart'])
           ]
         },
         {
-          name: "Customizable templates",
+          name: "元件2",
           id: 5,
-          x: 600,
-          y: 600,
+          x: 550,
+          y: 500,
           color: '#000',
           borderColor: '#000',
           connectors: [
