@@ -1,30 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>AngularJS-FlowChart</title>
+{% extends "base.html" %}
+{% block content %}
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='flowchart.css') }}" type="text/css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='onedatastyle.css') }}" type="text/css">
-</head>
-<body ng-app="app" ng-controller="AppCtrl" ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
+<div ng-app="app" ng-controller="AppCtrl" ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
+
 <div style="width: 100%; height: 1000px;">
   <div class="button-overlay">
-    <button ng-click="addNewNode()" title="Add a new node to then chart">Add Node</button>
+    <button ng-click="addNewNode()" title="Add a new node to then chart">增加元件</button>
     <button ng-click="deleteSelected()"
             ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0"
             title="Delete selected nodes and connections">
-      Delete Selected
+      删除元件/线路
     </button>
     <button ng-click="activateWorkflow()">
-      Activate Workflow
+      开始仿真
     </button>
   </div>
   <fc-canvas model="model" selected-objects="flowchartselected" edge-style="curved" callbacks="callbacks"
              automatic-resize="true"></fc-canvas>
 </div>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='flowchart.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='onedatastyle.css') }}" type="text/css">
 <script src="{{ url_for('static', filename='vendor.js') }}"></script>
 <script src="{{ url_for('static', filename='ngFlowchart.js') }}"></script>
 <!-- App code. -->
 <script src="{{ url_for('static', filename='app.js') }}" type="text/javascript"></script>
-</body>
-</html>
+
+</div>
+
+{% endblock %}
