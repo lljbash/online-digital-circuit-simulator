@@ -18,11 +18,14 @@ class MyClient:
             sys.exit()
         self.s.connect((remote_ip, self.__port))
         print 'Socket connected to ' + self.__host + ' on ip ' + remote_ip
-    def sendmessage(self, message):
+    def sendMessage(self, message):
         try:
-            self.s.sendall(message)
+            message_str = message.SerializeToString()
+            self.s.sendall(message_str)
         except socket.error:
             print 'Send failed'
             sys.exit()
         print 'Message send successfully!'
-        
+    def recvMessage(self):
+        reply = self.s.recv(4096)
+        return reply

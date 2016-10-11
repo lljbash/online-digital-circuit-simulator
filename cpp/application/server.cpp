@@ -32,8 +32,7 @@ void handle_request(int clnt_sock) {
             break;
         default:
             result = "";
-    }
-    
+    }   
     write(clnt_sock, result.c_str(), result.length());
     close(clnt_sock);
 }
