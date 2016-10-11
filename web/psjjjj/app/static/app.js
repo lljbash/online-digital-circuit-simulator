@@ -154,7 +154,7 @@ $scope.keyUp = function (evt) {
 };
 
 $scope.addNewNode = function () {
-  var nodeName = prompt("Enter a node name:", "New node");
+  var nodeName = prompt("输入元件类型:", "新元件");
   if (!nodeName) {
     return;
   }
