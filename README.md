@@ -7,8 +7,6 @@ Requirement
 g++-5
 cmake 2.8.12.2
 protobuf 2
-gflags
-gtest
 ```
 
 Compilation
