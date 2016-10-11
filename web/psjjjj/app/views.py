@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, redirect, flash, url_for, send_from_directory
-from .forms import VHDLForm, GraphForm
+from .forms import VHDLForm
 from client import MyClient
 from py2proto.request_pb2 import RequestProto
 from py2proto.vhdl_parsing_result_pb2 import VHDLParsingResultProto
