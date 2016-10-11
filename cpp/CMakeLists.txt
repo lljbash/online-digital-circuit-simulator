@@ -22,8 +22,8 @@ message("+-------------------------------------")
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
+add_subdirectory(vendor)
 add_subdirectory(proto)
 add_subdirectory(engine)
 add_subdirectory(application)
 add_subdirectory(test)
-
