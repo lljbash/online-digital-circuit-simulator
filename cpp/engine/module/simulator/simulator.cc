@@ -1,12 +1,14 @@
 #include "simulator.h"
+#include <unistd.h>
 
 using namespace psjjjj;
 using namespace std;
 
 SimulationResultProto Simulator::simulate(string vhdl_source_code) {
-    PSJJJJ_SHOW("start simulating...");
+    PSJJJJ_SHOW("start simulating...\n");
+    usleep(5000000);
     //TODO: execute modelsim to simulate
-    PSJJJJ_SHOW("end simulating.");
+    PSJJJJ_SHOW("end simulating.\n");
     
     SimulationResultProto srp;
     srp.set_success(true);
