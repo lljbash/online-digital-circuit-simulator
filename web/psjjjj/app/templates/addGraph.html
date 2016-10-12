@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div ng-app="app" ng-controller="AppCtrl" ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
+<div ng-app="app" ng-controller="AppCtrl as app" ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
 
 <div style="width: 100%; height: 1000px;">
   <div class="button-overlay">
@@ -14,6 +14,7 @@
     <button ng-click="activateWorkflow()">
       开始/结束仿真
     </button>
+    <!--input type="button" onclick={{"location.href='/submitted/'"+filename+";"}} value="download"/-->
   </div>
   <fc-canvas model="model" selected-objects="flowchartselected" edge-style="curved" callbacks="callbacks"
              automatic-resize="true"></fc-canvas>

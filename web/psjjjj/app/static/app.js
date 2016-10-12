@@ -15,6 +15,7 @@ angular.module('app', ['flowchart'])
     var nextNodeID = 10;
     var nextConnectorID = 20;
     var ctrlDown = false;
+    $scope.filename = "example.txt"
 
     var model = {
       nodes: [
@@ -196,7 +197,8 @@ $scope.activateWorkflow = function() {
   }).then(function successCallback(response) {
 
     console.log(response.data);
-    $location.path('/index');
+    var redirect_url = "/submitted/" + $scope.filename;
+    window.location = redirect_url;
   }, function errorCallback(response) {
 
   });
