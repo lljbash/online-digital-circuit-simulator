@@ -1,0 +1,20 @@
+syntax = "proto2";
+package psjjjj;
+
+message CircuitProto{
+    message Chip {
+        required string id = 1; // id name of the chip
+        required string type = 2; // type name of the chip
+    }
+    repeated Chip chips = 1;
+    message Wire {
+        message Pin {
+            required string chip_name = 1;
+            required string pin_name = 2;
+        }
+        required Pin start_pin = 1;
+        required Pin end_pin = 2;
+    }
+    repeated Wire wires = 2;
+}
+
