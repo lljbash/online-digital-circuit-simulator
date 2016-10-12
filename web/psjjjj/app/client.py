@@ -29,3 +29,6 @@ class MyClient:
     def recvMessage(self):
         reply = self.s.recv(4096)
         return reply
+    def close():
+        self.s.shutdown(0)
+        self.s.close()
