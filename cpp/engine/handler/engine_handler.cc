@@ -21,7 +21,7 @@ string EngineHandler::getVHDLParsingResult() const {
 }
 
 string EngineHandler::getSimulationResult(string vhdl_source_code) const {
-    SimulationResultProto srp = simulator_->simulate(vhdl_source_code);
+    SimulationResultProto srp = simulator_->simulate(vhdl_source_code, "../tmp");
     return srp.SerializeAsString();
 }
 
