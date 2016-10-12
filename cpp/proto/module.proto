@@ -1,0 +1,16 @@
+syntax = "proto2";
+package psjjjj;
+
+message ChipModuleProto {
+    required string name = 1; //74LS...
+    message Pin {
+        required string name = 1;
+        required string type = 2; // "in" or "out"
+    }
+    repeated Pin pins = 2;
+}
+
+message ChipModuleListProto {
+    repeated ChipModuleProto modules = 1;
+}
+
