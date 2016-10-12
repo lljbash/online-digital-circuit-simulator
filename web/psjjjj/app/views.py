@@ -61,4 +61,8 @@ def submitted(filename):
 @app.route('/download/<filename>')
 def download(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment = True)
+
+@app.route('/test', methods=['POST'])
+def test():
+    return redirect('/index')
    

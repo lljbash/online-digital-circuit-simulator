@@ -6,7 +6,7 @@ angular.module('app', ['flowchart'])
     NodeTemplatePathProvider.setTemplatePath("flowchart/node.html");
   })
 
-  .controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowchartConstants) {
+  .controller('AppCtrl', function AppCtrl($scope, $http, $location, prompt, Modelfactory, flowchartConstants) {
 
     var deleteKeyCode = 46;
     var ctrlKeyCode = 17;
@@ -189,9 +189,22 @@ $scope.addNewNode = function () {
 };
 
 $scope.activateWorkflow = function() {
-  angular.forEach($scope.model.edges, function(edge) {
-    edge.active = !edge.active;
+
+  $http({
+    method: 'POST',
+    url: '/test'
+  }).then(function successCallback(response) {
+
+    console.log(response.data);
+    $location.path('/index');
+  }, function errorCallback(response) {
+
   });
+
+// Original Code
+//  angular.forEach($scope.model.edges, function(edge) {
+//    edge.active = !edge.active;
+//  });
 };
 
 $scope.addNewInputConnector = function () {
