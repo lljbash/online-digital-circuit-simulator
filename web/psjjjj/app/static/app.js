@@ -20,7 +20,7 @@ angular.module('app', ['flowchart'])
     var model = {
       nodes: [
         {
-          name: "激励",
+          name: "Activation",
           id: 2,
           x: 400,
           y: 100,
@@ -38,7 +38,7 @@ angular.module('app', ['flowchart'])
           ]
         },
         {
-          name: "门电路",
+          name: "Chip1",
           id: 3,
           x: 400,
           y: 300,
@@ -59,7 +59,7 @@ angular.module('app', ['flowchart'])
           ]
         },
         {
-          name: "元件2",
+          name: "Chip2",
           id: 4,
           x: 250,
           y: 500,
@@ -81,7 +81,7 @@ angular.module('app', ['flowchart'])
           ]
         },
         {
-          name: "元件2",
+          name: "Chip3",
           id: 5,
           x: 550,
           y: 500,
@@ -155,7 +155,7 @@ $scope.keyUp = function (evt) {
 };
 
 $scope.addNewNode = function () {
-  var nodeName = prompt("输入元件类型:", "新元件");
+  var nodeName = prompt("Chip type:", "New node");
   if (!nodeName) {
     return;
   }
@@ -193,10 +193,12 @@ $scope.activateWorkflow = function() {
 
   $http({
     method: 'POST',
+    data: {'data' : model},
     url: '/test'
   }).then(function successCallback(response) {
 
     console.log(response.data);
+    $scope.filename = response.data;
     var redirect_url = "/submitted/" + $scope.filename;
     window.location = redirect_url;
   }, function errorCallback(response) {

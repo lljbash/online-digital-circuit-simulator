@@ -1,10 +1,11 @@
 from app import app
-from flask import render_template, redirect, flash, url_for, send_from_directory
+from flask import render_template, redirect, flash, url_for, send_from_directory, request
 from .forms import VHDLForm
 from client import MyClient
 from py2proto.request_pb2 import RequestProto
 from py2proto.vhdl_parsing_result_pb2 import VHDLParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
+import json
 
 @app.route('/')
 @app.route('/index')
@@ -64,5 +65,9 @@ def download(filename):
 
 @app.route('/test', methods=['POST'])
 def test():
-    return redirect('/index')
-   
+    if request.method == 'POST':
+        data = json.loads(request.data)
+        models = data['data']
+	nodes = models['nodes']
+        print nodes
+        return "example.txt"
