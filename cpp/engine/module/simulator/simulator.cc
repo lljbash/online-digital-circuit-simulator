@@ -44,7 +44,7 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
         execlp("vsim", "vsim", "-c", "-do", "run 100ps", "main", NULL);
     }
     else {
-        usleep(1000000);
+        usleep(2000000);
         int compile_status;
         int wait_status = waitpid(cpid, &compile_status, WNOHANG);
         
@@ -57,6 +57,10 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
                          output_file_path + string("/") + md5sum;
             PSJJJJ_SHOW("%s\n", cmd.c_str());
             system(cmd.c_str());
+#ifndef PSJJJJ_ENABLE_DEBUG
+            cmd = string("rm -rf ") + dir;
+            system(cmd.c_str());
+#endif
             
             srp.set_success(true);
             srp.set_file_name(md5sum);
