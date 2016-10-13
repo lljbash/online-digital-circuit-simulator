@@ -11,7 +11,11 @@ VHDLParsingResultProto VHDLParser::parse() {
     
     VHDLParsingResultProto vprp;
     vprp.set_success(true);
-    vprp.set_vhdl_code("hello world");
+    FILE *vhdl_file = fopen("data/test/engine/simulator/test.vhd", "r");
+    char code[999];
+    fread(code, sizeof(char), 999, vhdl_file);
+    fclose(vhdl_file);
+    vprp.set_vhdl_code(code);
     
     return vprp;
 }
