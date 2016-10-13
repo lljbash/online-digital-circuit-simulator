@@ -8,8 +8,11 @@
 #include <memory>
 #include "macro.h"
 #include "struct.h"
+#include "md5.h"
 
 namespace psjjjj {
+namespace util {
 
+} // namespace util
 } // namespace psjjjj
 
