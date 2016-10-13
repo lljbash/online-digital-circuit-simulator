@@ -23,6 +23,6 @@ Usage
 -----
 in directory prj7\_psjjjj/cpp/bin
 ```
-$ ./psjjjj_server [-port=<port>]
+$ ./psjjjj_server [-port=<port>] [-out=<path>]
 ```
 

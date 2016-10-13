@@ -14,6 +14,7 @@ using namespace psjjjj;
 using namespace std;
 
 DEFINE_int32(port, 1233, "Socket listen port");
+DEFINE_string(out, "tmp", "Result file path");
 
 void handle_request(int clnt_sock) {
     char request_str[255555] = "";
@@ -22,7 +23,7 @@ void handle_request(int clnt_sock) {
     request.ParseFromString(string(request_str));
     
     string result;
-    EnginePtr engine = Engine::createEngine();
+    EnginePtr engine = Engine::createEngine(FLAGS_out);
     switch (request.type()) {
         case 0:
             result = engine->getVHDLParsingResult();

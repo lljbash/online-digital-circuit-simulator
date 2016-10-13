@@ -15,7 +15,7 @@ class Engine {
         virtual std::string getVHDLParsingResult() const = 0;
         virtual std::string getSimulationResult(std::string vhdl_source_code) const = 0;
         
-        static EnginePtr createEngine();
+        static EnginePtr createEngine(std::string out_path);
          
         Engine(const Engine &) = delete;
         void operator=(const Engine &) = delete;

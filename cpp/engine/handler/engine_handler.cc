@@ -6,13 +6,14 @@
 using namespace psjjjj;
 using namespace std;
 
-EnginePtr Engine::createEngine() {
-    return EnginePtr(new EngineHandler());
+EnginePtr Engine::createEngine(string out_path) {
+    return EnginePtr(new EngineHandler(out_path));
 }
 
-EngineHandler::EngineHandler() :
+EngineHandler::EngineHandler(string out_path) :
     vhdl_parser_(new VHDLParser()),
-    simulator_(new Simulator()) {
+    simulator_(new Simulator()),
+    out_path_(out_path) {
 }
 
 string EngineHandler::getVHDLParsingResult() const {
@@ -21,7 +22,7 @@ string EngineHandler::getVHDLParsingResult() const {
 }
 
 string EngineHandler::getSimulationResult(string vhdl_source_code) const {
-    SimulationResultProto srp = simulator_->simulate(vhdl_source_code, "../tmp");
+    SimulationResultProto srp = simulator_->simulate(vhdl_source_code, out_path_);
     return srp.SerializeAsString();
 }
 
