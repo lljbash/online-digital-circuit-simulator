@@ -57,10 +57,6 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
                          output_file_path + string("/") + md5sum;
             PSJJJJ_SHOW("%s\n", cmd.c_str());
             system(cmd.c_str());
-#ifndef PSJJJJ_ENABLE_DEBUG
-            cmd = string("rm -rf ") + dir;
-            system(cmd.c_str());
-#endif
             
             srp.set_success(true);
             srp.set_file_name(md5sum);
@@ -84,6 +80,10 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
             srp.set_error_message("unknown error\n");
         }
         
+#ifndef PSJJJJ_ENABLE_DEBUG
+        string cmd = string("rm -rf ") + dir;
+        system(cmd.c_str());
+#endif
     }
     
     PSJJJJ_SHOW("end simulating.\n");
