@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, BooleanField
+from wtforms import StringField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired
 
 class VHDLForm(Form):
-    VHDLCode = StringField('VHDLCode', validators=[DataRequired()])
+    VHDLCode = TextAreaField('VHDLCode', validators=[DataRequired()])
