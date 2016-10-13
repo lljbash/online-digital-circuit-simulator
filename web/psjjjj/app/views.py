@@ -35,7 +35,10 @@ def addVHDL():
         flash('from server : ')
         flash('success : ' + str(reply.success))
         flash('file_name : ' + reply.file_name)
-        return redirect(url_for('submitted', filename = reply.file_name))
+        if reply.success:
+            return redirect(url_for('submitted', filename = reply.file_name))
+        else:
+            return redirect(url_for('error', error_message = reply.error_message))
     return render_template('addVHDL.html', form=form)
 
 @app.route('/studio/graph', methods=['GET', 'POST'])
@@ -63,6 +66,10 @@ def submitted(filename):
 def download(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment = True)
 
+@app.route('/error/<error_message>')
+def error(error_message):
+    return render_template('error.html', info=error_message)
+
 @app.route('/test', methods=['POST'])
 def test():
     if request.method == 'POST':
@@ -77,7 +84,6 @@ def test():
         reply.ParseFromString(cli.recvMessage())
 	cli.close(0)
         if reply.success:
-	    print "hahahaha"
 	    cli = MyClient()
   	    cli.connect()
             request_proto_2 = RequestProto()
@@ -87,6 +93,7 @@ def test():
 	    reply = SimulationResultProto()
 	    reply.ParseFromString(cli.recvMessage())
 	    if reply.success:
-		print "heihei"
 		return reply.file_name
+	    else:
+	        return redirect_url(url_for('error'), error_message=reply.error_message)
         return "test.txt"
