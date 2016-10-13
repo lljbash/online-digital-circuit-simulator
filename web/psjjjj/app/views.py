@@ -68,6 +68,25 @@ def test():
     if request.method == 'POST':
         data = json.loads(request.data)
         models = data['data']
-	nodes = models['nodes']
-        print nodes
-        return "example.txt"
+        cli = MyClient()
+        cli.connect()
+        request_proto = RequestProto()
+        request_proto.type = 0;
+        cli.sendMessage(request_proto)
+        reply = VHDLParsingResultProto()
+        reply.ParseFromString(cli.recvMessage())
+	cli.close(0)
+        if reply.success:
+	    print "hahahaha"
+	    cli = MyClient()
+  	    cli.connect()
+            request_proto_2 = RequestProto()
+	    request_proto_2.type = 1
+	    request_proto_2.vhdl_code = reply.vhdl_code
+	    cli.sendMessage(request_proto_2)
+	    reply = SimulationResultProto()
+	    reply.ParseFromString(cli.recvMessage())
+	    if reply.success:
+		print "heihei"
+		return reply.file_name
+        return "test.txt"
