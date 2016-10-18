@@ -23,16 +23,16 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 --- END_PIN_INFO ---
 
 --- BEGIN_CODE ---
-entity MY_74LS00 is
+entity MOD_74LS00 is
 --- BEGIN_PORT_DEF ---
 port(
 	X1, X2, X4, X5, X9, X10, X12, X13: in std_logic;
 	Y3, Y6, Y8, Y11: out std_logic
 );
 --- END_PORT_DEF ---
-end MY_74LS00;
+end MOD_74LS00;
 
-architecture LS00 of MY_74LS00 is
+architecture MOD_74LS00_behv of MOD_74LS00 is
 
 component NAND_GATE2 
 port(
@@ -49,6 +49,6 @@ begin
 	u3: NAND_GATE2 port map(X => X9, Y => X10, F2 => Y8);
 	u4: NAND_GATE2 port map(X => X12, Y => X13, F2 => Y11);
 
-end LS00;
+end MOD_74LS00_behv;
 
 --- END_CODE ---

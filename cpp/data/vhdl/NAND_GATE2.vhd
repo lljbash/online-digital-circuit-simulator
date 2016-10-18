@@ -21,12 +21,12 @@ port(
 --- END_PORT_DEF ---
 end NAND_GATE2;
 
-architecture behv of NAND_GATE2 is
+architecture NAND_GATE2_behv of NAND_GATE2 is
 begin
 process(X,Y)
 begin
 	F2 <= X nand Y;
 end process;
-end behv;
+end NAND_GATE2_behv;
 
 --- END_CODE ---
