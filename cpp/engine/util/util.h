@@ -13,6 +13,8 @@
 namespace psjjjj {
 namespace util {
 
+inline void trim(std::string &s);
+
 } // namespace util
 } // namespace psjjjj
 
