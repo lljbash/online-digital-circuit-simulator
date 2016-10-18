@@ -45,7 +45,7 @@ int ModOrganizer::load_modules(const string &module_path,
             continue;
         }
         
-        ifstream module_in(module_name);
+        ifstream module_in(module_name + string(".vhd"));
         if (!module_in.is_open()) {
             continue;
         }
@@ -84,21 +84,24 @@ void ModOrganizer::parse_module(const string &module_name,
         
         // 1. pin info
         
-        if (code_line == "--- BEGIN_PIN_INFO ---") {
-            status |= PIN_INFO;
-        }
-        
         if (code_line == "--- END_PIN_INFO ---") {
             status &= ~PIN_INFO;
         }
         
-        if (status & PIN_INFO) {
+        if ((status & PIN_INFO) && !code_line.empty()) {
             istringstream line_in(code_line);
             string buf, name, type;
-            line_in >> buf >> name >> type;
-            ChipModuleProto::Pin *pin = chip_module->add_pins();
-            pin->set_name(name);
-            pin->set_type(type);
+            line_in >> buf;
+            if (buf == "---") {
+                line_in >> name >> type;
+                ChipModuleProto::Pin *pin = chip_module->add_pins();
+                pin->set_name(name);
+                pin->set_type(type);
+            }
+        }
+        
+        if (code_line == "--- BEGIN_PIN_INFO ---") {
+            status |= PIN_INFO;
         }
         
         // 2. port code
