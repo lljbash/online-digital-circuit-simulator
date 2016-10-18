@@ -6,3 +6,5 @@ build/
 *.pyc
 *_pb2.py
 *~
+tmp/
+*.swp

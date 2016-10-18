@@ -9,7 +9,7 @@ namespace psjjjj {
 class EngineHandler : public Engine {
 
     public:
-        EngineHandler();
+        EngineHandler(std::string out_path);
         
         virtual std::string getVHDLParsingResult() const override;
         virtual std::string getSimulationResult(std::string vhdl_source_code) const override;
@@ -17,6 +17,7 @@ class EngineHandler : public Engine {
     private:
         std::unique_ptr<VHDLParser> vhdl_parser_;
         std::unique_ptr<Simulator> simulator_;
+        std::string out_path_;
     
 };
 
