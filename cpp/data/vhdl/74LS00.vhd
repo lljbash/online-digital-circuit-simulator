@@ -1,29 +1,54 @@
-LIBRARY IEEE ; 
-USE IEEE.STD_LOGIC_1164.ALL ; 
+LIBRARY IEEE; 
+USE IEEE.STD_LOGIC_1164.ALL; 
 USE IEEE.STD_LOGIC_ARITH.ALL;
-USE IEEE.STD_LOGIC_UNSIGNED.ALL ; 
+USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity my74LS00 is
-	port(
-		inpu: in std_logic_vector(7 downto 0);
-		outpu: out std_logic_vector(3 downto 0)
-		);
-end my74LS00;
+--- BEGIN_PIN_INFO ---
 
-architecture LS00 of my74LS00 is
+--- X1 in ---
+--- X2 in ---
+--- Y3 out ---
+--- X4 in ---
+--- X5 in ---
+--- Y6 out ---
+--- GND7 gnd ---
+--- Y8 out ---
+--- X9 in ---
+--- X10 in ---
+--- Y11 out ---
+--- X12 in ---
+--- X13 in ---
+--- VCC14 vcc ---
 
-	component notand2 
-		port(
-				a, b: in std_logic;
-				y: out std_logic
-			);
-	end component;
+--- END_PIN_INFO ---
 
-	begin
+--- BEGIN_CODE ---
+entity MY_74LS00 is
+--- BEGIN_PORT_DEF ---
+port(
+	X1, X2, X4, X5, X9, X10, X12, X13: in std_logic;
+	Y3, Y6, Y8, Y11: out std_logic
+);
+--- END_PORT_DEF ---
+end MY_74LS00;
 
-	u1: notand2 port map(a => inpu(0), b => inpu(1), y => outpu(0));
-	u2: notand2 port map(a => inpu(2), b => inpu(3), y => outpu(1));
-	u3: notand2 port map(a => inpu(4), b => inpu(5), y => outpu(2));
-	u4: notand2 port map(a => inpu(6), b => inpu(7), y => outpu(3));
+architecture LS00 of MY_74LS00 is
 
-	end LS00;
+component NAND_GATE2 
+port(
+	X: in std_logic;
+	Y: in std_logic;
+	F2: out std_logic
+	);
+end component;
+
+begin
+
+	u1: NAND_GATE2 port map(X => X1, Y => X2, F2 => Y3);
+	u2: NAND_GATE2 port map(X => X4, Y => X5, F2 => Y6);
+	u3: NAND_GATE2 port map(X => X9, Y => X10, F2 => Y8);
+	u4: NAND_GATE2 port map(X => X12, Y => X13, F2 => Y11);
+
+end LS00;
+
+--- END_CODE ---
