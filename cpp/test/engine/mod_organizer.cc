@@ -45,6 +45,17 @@ TEST_F(ModOrganizerTest, LoadModuleList) {
     cout << "Total Count: " << cnt << endl;
 }
 
+TEST_F(ModOrganizerTest, GenerateEntityByName) {
+    mod_organizer->clear_modules();
+    mod_organizer->load_modules("data/vhdl", "chip_list.txt");
+    cout << mod_organizer->generateEntityCodeForModule("MOD_74LS00") << endl;
+}
+TEST_F(ModOrganizerTest, GenerateComponentByName) {
+    mod_organizer->clear_modules();
+    mod_organizer->load_modules("data/vhdl", "chip_list.txt");
+    cout << mod_organizer->generateComponentCodeForModule("MOD_74LS00") << endl;
+}
+
 } // namespace test
 } // namespace psjjjj
 

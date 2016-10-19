@@ -24,7 +24,7 @@ string ModOrganizer::generateComponentCodeForModule(string name) const {
     if (mod_id_.count(name) == 0) {
         return string();
     }
-    string port_code = mod_list_->modules(mod_id_.at(name)).entity_code();
+    string port_code = mod_list_->modules(mod_id_.at(name)).port_code();
     return string("component ") + name + string("\n") +
            port_code + string("end component;\n");
 }
