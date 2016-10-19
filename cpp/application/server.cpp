@@ -29,7 +29,7 @@ void handle_request(int clnt_sock) {
     engine->addChipModules(FLAGS_module_path, FLAGS_module_list);
     switch (request.type()) {
         case 0:
-            result = engine->getCircuitParsingResult();
+            result = engine->getVHDLParsingResult();
             break;
         case 1:
             result = engine->getSimulationResult(request.vhdl_code());
