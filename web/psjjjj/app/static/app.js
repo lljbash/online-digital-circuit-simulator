@@ -156,17 +156,19 @@ $scope.keyUp = function (evt) {
 
 $scope.addNewNode = function () {
   var nodeName = prompt("Chip type:", "New node");
-  if (!nodeName) {
-    return;
-  }
-
-  var newNode = {
-    name: nodeName,
-    id: nextNodeID++,
-    x: 200,
-    y: 100,
-    color: '#F15B26',
-    connectors: [
+  $http({
+    method:'POST',
+    data:{'data' : nodeName},
+    url:'/add'
+  }).then(function successCallback(response){
+    console.log(response.data);
+    var newNode = {
+      name: nodeName,
+      id: nextNodeID++,
+      x: 200,
+      y: 100,
+      color: '#F15B26',
+      connectors: [
       {
         id: nextConnectorID++,
         type: flowchartConstants.topConnectorType
@@ -174,6 +176,22 @@ $scope.addNewNode = function () {
       {
         id: nextConnectorID++,
         type: flowchartConstants.topConnectorType
+      },
+      {
+        id: nextConnectorID++,
+	type:flowchartConstants.topConnectorType
+      },
+      {
+        id:nextConnectorID++,
+        type:flowchartConstants.topConnectorType
+      },
+      {
+        id: nextConnectorID++,
+        type: flowchartConstants.bottomConnectorType
+      },
+      {
+        id: nextConnectorID++,
+        type: flowchartConstants.bottomConnectorType
       },
       {
         id: nextConnectorID++,
@@ -185,8 +203,9 @@ $scope.addNewNode = function () {
       }
     ]
   };
-
   model.nodes.push(newNode);
+  }, function errorCallback(response){
+  });
 };
 
 $scope.activateWorkflow = function() {
