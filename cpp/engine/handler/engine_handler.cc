@@ -1,6 +1,6 @@
 #include "engine_handler.h"
 #include "util/util.h"
-#include "vhdl_parsing_result.pb.h"
+#include "circuit_parsing_result.pb.h"
 #include "simulation_result.pb.h"
 
 using namespace psjjjj;
@@ -12,7 +12,7 @@ EnginePtr Engine::createEngine(string out_path) {
 
 EngineHandler::EngineHandler(string out_path) :
     mod_organizer_(new ModOrganizer()),
-    vhdl_parser_(new VHDLParser()),
+    circuit_parser_(new CircuitParser()),
     simulator_(new Simulator()),
     out_path_(out_path) {
 }
@@ -21,8 +21,8 @@ string EngineHandler::getChipModuleList() const {
     return mod_organizer_->getModuleList();
 }
 
-string EngineHandler::getVHDLParsingResult() const {
-    VHDLParsingResultProto vprp = vhdl_parser_->parse();
+string EngineHandler::getCircuitParsingResult() const {
+    CircuitParsingResultProto vprp = circuit_parser_->parse();
     return vprp.SerializeAsString();
 }
 
