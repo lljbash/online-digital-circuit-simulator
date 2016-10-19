@@ -36,6 +36,15 @@ TEST_F(ModOrganizerTest, ParseSingleModule) {
     cout << chip_module.entity_code() << endl;
 }
 
+TEST_F(ModOrganizerTest, LoadModuleList) {
+    mod_organizer->clear_modules();
+    int cnt = mod_organizer->load_modules("data/vhdl", "chip_list.txt");
+    ChipModuleListProto mod_list;
+    mod_list.ParseFromString(mod_organizer->getModuleList());
+    cout << mod_list.DebugString() << endl;
+    cout << "Total Count: " << cnt << endl;
+}
+
 } // namespace test
 } // namespace psjjjj
 
