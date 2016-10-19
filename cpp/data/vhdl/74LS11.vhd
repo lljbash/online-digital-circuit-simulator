@@ -3,26 +3,50 @@ USE IEEE.STD_LOGIC_1164.ALL ;
 USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL ; 
 
-entity my74LS11 is
-	port(
-		inpu: in std_logic_vector(8 downto 0);
-		outpu: out std_logic_vector(2 downto 0)
-		);
-end my74LS11;
+--- BEGIN_PIN_INFO ---
 
-architecture LS11 of my74LS11 is
+--- X1 in ---
+--- X2 in ---
+--- X3 in ---
+--- X4 in ---
+--- X5 in ---
+--- Y6 out ---
+--- GND7 gnd ---
+--- Y8 out ---
+--- X9 in ---
+--- X10 in ---
+--- X11 in ---
+--- Y12 out ---
+--- X13 in ---
+--- VCC14 vcc ---
 
-	component and3 
-		port(
-				a, b, c: in std_logic;
-				y:out std_logic
-			);
-	end component;
+--- END_PIN_INFO ---
 
-	begin
+--- BEGIN_CODE ---
+entity MOD_74LS11 is
+--- BEGIN_PORT_DEF ---
+port(
+		X1, X2, X3, X4, X5, X9, X10, X11, X13: in std_logic;
+		Y6, Y8, Y12: out std_logic
+);
+--- END_PORT_DEF ---
+end MOD_74LS11;
 
-	u1: and3 port map(a => inpu(0), b => inpu(1), c => inpu(2), y => outpu(0));
-	u2: and3 port map(a => inpu(3), b => inpu(4), c => inpu(5), y => outpu(1));
-	u3: and3 port map(a => inpu(6), b => inpu(7), c => inpu(8), y => outpu(2));
+architecture behv of MOD_74LS11 is
 
-	end LS11;
+component AND_GATE3 
+port(
+	a, b, c: in std_logic;
+	f: out std_logic
+	);
+end component;
+
+begin
+
+	u1: AND_GATE3 port map(a => X1, b => X2, c => X13, f => Y12);
+	u2: AND_GATE3 port map(a => X3, b => X4, c => X5, f => Y6);
+	u3: AND_GATE3 port map(a => X9, b => X10, c => X11, f => Y8);
+
+end behv;
+
+--- END_CODE ---

@@ -3,25 +3,49 @@ USE IEEE.STD_LOGIC_1164.ALL ;
 USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL ; 
 
-entity my74LS20 is
-	port(
-		inpu: in std_logic_vector(7 downto 0);
-		outpu: out std_logic_vector(1 downto 0)
-		);
-end my74LS20;
+--- BEGIN_PIN_INFO ---
 
-architecture LS20 of my74LS20 is
+--- X1 in ---
+--- X2 in ---
+--- Z3 hang ---
+--- X4 in ---
+--- X5 in ---
+--- Y6 out ---
+--- GND7 gnd ---
+--- Y8 out ---
+--- X9 in ---
+--- X10 in ---
+--- Z11 hang ---
+--- X12 in ---
+--- X13 in ---
+--- VCC14 vcc ---
 
-	component notand4 
-		port(
-				a, b, c, d: in std_logic;
-				y: out std_logic
-			);
-	end component;
+--- END_PIN_INFO ---
 
-	begin
+--- BEGIN_CODE ---
+entity MOD_74LS20 is
+--- BEGIN_PORT_DEF ---
+port(
+	X1, X2, X4, X5, X9, X10, X12, X13: in std_logic;
+	Y6, Y8: out std_logic
+);
+--- END_PORT_DEF ---
+end MOD_74LS20;
 
-	u1: notand4 port map(a => inpu(0), b => inpu(1), c => inpu(2), d => inpu(3), y => outpu(0));
-	u2: notand4 port map(a => inpu(4), b => inpu(5), c => inpu(6), d => inpu(7), y => outpu(1));
+architecture behv of MOD_74LS20 is
 
-	end LS20;
+component NAND_GATE4 
+port(
+	a, b, c, d: in std_logic;
+	f: out std_logic
+	);
+end component;
+
+begin
+
+	u1: NAND_GATE4 port map(a => X1, b => X2, c => X4, d => X5, f => Y6);
+	u2: NAND_GATE4 port map(a => X9, b => X10, c => X12, d => X13, f => Y8);
+
+end behv;
+
+--- END_CODE ---
