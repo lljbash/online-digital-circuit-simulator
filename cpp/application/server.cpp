@@ -36,6 +36,7 @@ void handle_request(int clnt_sock) {
             break;
         case 2:
             result = engine->getChipModuleList();
+            break;
         default:
             result = "";
     }   
