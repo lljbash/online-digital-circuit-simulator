@@ -2,6 +2,7 @@
 
 #include "util/util.h"
 #include "module/mod_organizer/mod_organizer.h"
+#include "circuit.pb.h"
 #include "circuit_parsing_result.pb.h"
 
 namespace psjjjj {
