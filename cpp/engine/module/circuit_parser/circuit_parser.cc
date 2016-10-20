@@ -20,3 +20,19 @@ CircuitParsingResultProto CircuitParser::parse() {
     return vprp;
 }
 
+string CircuitParser::generatePinMapping(const util::ChipStatus &status) const {
+    string code = status.type + " port map (";
+    bool starting = true;
+    for (auto &pin : status.pin) {
+        if (starting) {
+            starting = false;
+        }
+        else {
+            code += ", ";
+        }
+        code += pin.first + "=>" + pin.second;
+    }
+    code += ");";
+    return code;
+}
+
