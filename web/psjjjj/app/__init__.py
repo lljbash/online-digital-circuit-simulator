@@ -16,4 +16,10 @@ init_cli.sendMessage(init_request)
 modulelist = ChipModuleListProto()
 init_cli.recvMessage()
 #modulelist = modulelist.ParseFromString(init_cli.recvMessage())
+in_module = modulelist.modules.add()
+in_module.name = 'input'
+in_module.pins.add()
+out_module = modulelist.modules.add()
+out_module.name = 'output'
+out_module.pins.add()
 from app import views
