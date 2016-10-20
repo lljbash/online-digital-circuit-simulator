@@ -855,6 +855,7 @@ if (!Function.prototype.bind) {
     bottomConnectorType: 'bottomConnector',
     curvedStyle: 'curved',
     lineStyle: 'line',
+    gridStyle: 'grid',
     dragAnimationRepaint: 'repaint',
     dragAnimationShadow: 'shadow'
   };
@@ -907,8 +908,13 @@ if (!Function.prototype.bind) {
         var sourceTangent = computeEdgeSourceTangent(pt1, pt2);
         var destinationTangent = computeEdgeDestinationTangent(pt1, pt2);
         dAddribute += 'C ' + sourceTangent.x + ', ' + sourceTangent.y + ' ' + destinationTangent.x + ', ' + destinationTangent.y + ' ' + pt2.x + ', ' + pt2.y;
-      } else {
+      } else if (style === flowchartConstants.curvedStyle) {
         dAddribute += 'L ' + pt2.x + ', ' + pt2.y;
+      } else if (style === flowchartConstants.gridStyle) {
+        var centralY = (pt1.y + pt2.y) / 2;
+        dAddribute += 'L ' + pt1.x + ', ' + centralY
+            + 'L ' + pt2.x + ', ' + centralY
+            + 'L ' + pt2.x + ', ' + pt2.y;
       }
       return dAddribute;
     };
@@ -1292,7 +1298,9 @@ if (!Function.prototype.bind) {
             element.css('height', Math.max(maxY, element.prop('offsetHeight')) + 'px');
           }
         }
-        if (scope.edgeStyle !== flowchartConstants.curvedStyle && scope.edgeStyle !== flowchartConstants.lineStyle) {
+        if (scope.edgeStyle !== flowchartConstants.curvedStyle
+            && scope.edgeStyle !== flowchartConstants.lineStyle
+            && scope.edgeStyle !== flowchartConstants.gridStyle) {
           throw new Error('edgeStyle not supported.');
         }
         scope.nodeHeight = scope.nodeHeight || 200;

@@ -54,6 +54,10 @@ angular.module('app', ['flowchart'])
             },
             {
               type: flowchartConstants.bottomConnectorType,
+              id: 4
+            },
+            {
+              type: flowchartConstants.bottomConnectorType,
               id: 5
             }
           ]
@@ -109,7 +113,7 @@ angular.module('app', ['flowchart'])
         destination: 1
       },
       {
-        source: 5,
+        source: 4,
         destination: 14
       },
       {
