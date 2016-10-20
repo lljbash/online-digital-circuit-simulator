@@ -14,12 +14,16 @@ namespace test {
 class CircuitParser {
 
     public:
-        static CircuitParsingResultProto parse();
+        CircuitParser(std::shared_ptr<const ModOrganizer> mod_organizer);
+        
+        CircuitParsingResultProto parse();
         
         friend test::CircuitParserTest;
     
     private:
         std::string generatePinMapping(const util::ChipStatus &status) const; 
+        
+        std::shared_ptr<const ModOrganizer> mod_organizer_;
 
 };
 

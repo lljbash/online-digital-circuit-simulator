@@ -10,7 +10,11 @@ class CircuitParserTest : public ::testing::Test {
 
     protected:
         virtual void SetUp() override {
-            circuit_parser.reset(new CircuitParser());
+            mod_organizer.reset(new ModOrganizer());
+            circuit_parser.reset(
+                new CircuitParser(const_pointer_cast<const ModOrganizer>(mod_organizer))
+            );
+            mod_organizer->load_modules("data/vhdl", "chip_list.txt");
         }
         virtual void TearDown() override {
             
@@ -21,6 +25,7 @@ class CircuitParserTest : public ::testing::Test {
         }
         
         unique_ptr<CircuitParser> circuit_parser;
+        shared_ptr<ModOrganizer> mod_organizer;
 
 };
 
@@ -30,6 +35,17 @@ TEST_F(CircuitParserTest, GeneratePinMapping) {
     status.pin["X"] = "input1";
     status.pin["Y"] = "input2";
     status.pin["F2"] = "output";
+    cout << generatePinMapping(status) << endl;
+}
+
+TEST_F(CircuitParserTest, GenerateHangedPinMapping) {
+    util::ChipStatus status;
+    status.type = "MOD_74LS20";
+    status.pin["X1"] = "input1";
+    status.pin["X2"] = "input2";
+    status.pin["X4"] = "input3";
+    status.pin["X5"] = "input4";
+    status.pin["Y6"] = "output";
     cout << generatePinMapping(status) << endl;
 }
 

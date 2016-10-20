@@ -19,7 +19,7 @@ class EngineHandler : public Engine {
         virtual int addChipModules(std::string path, std::string file) override;
         
     private:
-        std::unique_ptr<ModOrganizer> mod_organizer_;
+        std::shared_ptr<ModOrganizer> mod_organizer_;
         std::unique_ptr<CircuitParser> circuit_parser_;
         std::unique_ptr<Simulator> simulator_;
         std::string out_path_;

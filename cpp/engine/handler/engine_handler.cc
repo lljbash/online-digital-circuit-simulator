@@ -12,7 +12,7 @@ EnginePtr Engine::createEngine(string out_path) {
 
 EngineHandler::EngineHandler(string out_path) :
     mod_organizer_(new ModOrganizer()),
-    circuit_parser_(new CircuitParser()),
+    circuit_parser_(new CircuitParser(const_pointer_cast<const ModOrganizer>(mod_organizer_))),
     simulator_(new Simulator()),
     out_path_(out_path) {
 }
