@@ -16,11 +16,14 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     
     // 1. parsing
     // 1.1 parse chips
-    set<string> module_set;
+    vector<string> module_set = mod_organizer_->getAllModuleName();
     map<string, util::ChipStatus> chips;
     for (int i = 0; i < circuit.chips_size(); ++i) {
-        module_set.insert(circuit.chips(i).type());
-        chips[circuit.chips(i).id()] = {circuit.chips(i).type(), map<string, string>()};
+        string type = circuit.chips(i).type();
+        if (type == "input" || type == "output") {
+            continue;
+        }
+        chips[circuit.chips(i).id()] = {type, map<string, string>()};
     }
     
     // 1.2 parse wires
@@ -65,10 +68,6 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     code += "entity main is\n";
     code += "port(\n";
     string ending = "";
-    for (const auto &input : input_map) {
-        code += ending + "    " + input.first + ": in std_logic";
-        ending = ";\n";
-    }
     for (const auto &output : output_map) {
         code += ending + "    " + output.first + ": out std_logic";
         ending = ";\n";
@@ -80,10 +79,16 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     for (const string &name : module_set) {
         code += mod_organizer_->generateComponentCodeForModule(name) + "\n";
     }
+    for (const auto &input : input_map) {
+        code += string("signal ") + input.first + ": std_logic;\n";
+    }
     for (const string &name : wire_list) {
         code += string("signal ") + name + ": std_logic;\n";
     }
     code += "\nbegin\n\n";
+    for (const auto &input : input_map) {
+        code += input.first + " <= '1';\n" + input.second + " <= " + input.first + ";\n";
+    }
     for (const auto &chip : chips) {
         code += "    u_";
         code += chip.first;

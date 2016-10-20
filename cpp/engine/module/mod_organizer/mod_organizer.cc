@@ -12,6 +12,14 @@ string ModOrganizer::getModuleList() const {
     return mod_list_->SerializeAsString();
 }
 
+vector<string> ModOrganizer::getAllModuleName() const {
+    vector<string> names;
+    for (int i = 0; i < mod_list_->modules_size(); ++i) {
+        names.push_back(mod_list_->modules(i).name());
+    }
+    return names;
+}
+
 vector<ChipModuleProto::Pin> ModOrganizer::getPinList(string name) const {
     vector<ChipModuleProto::Pin> pin_list;
     if (mod_id_.count(name) == 0) {

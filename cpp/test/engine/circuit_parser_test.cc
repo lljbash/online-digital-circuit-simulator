@@ -49,6 +49,23 @@ TEST_F(CircuitParserTest, GenerateHangedPinMapping) {
     cout << generatePinMapping(status) << endl;
 }
 
+/*
+TEST_F(CircuitParserTest, ParseSimpleCircuit) {
+    CircuitProto circuit;
+    auto chip = circuit.add_chips();
+    chip->set_type("MOD_74LS00");
+    chip->set_id("74LS00");
+    chip = circuit.add_chips();
+    chip->set_type("input");
+    chip->set_id("input");
+    chip = circuit.add_chips();
+    chip->set_type("input");
+    chip->set_id("input");
+    auto wire = circuit.add_wires();
+    wire->set_allocated_start_pin()
+}
+*/
+
 } // namespace test
 } // namespace psjjjj
 
