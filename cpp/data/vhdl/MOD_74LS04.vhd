@@ -33,7 +33,7 @@ port(
 end MOD_74LS04;
 
 
-architecture behv of MOD_74LS04 is
+architecture MOD_74LS04_behv of MOD_74LS04 is
 
 component NOT1 
 port(
@@ -51,6 +51,6 @@ begin
     u5: NOT1 port map(X => X11, F1 => Y10);
     u6: NOT1 port map(X => X13, F1 => Y12);
 
-end behv;
+end MOD_74LS04_behv;
 
 --- END_CODE ---
