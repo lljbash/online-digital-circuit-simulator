@@ -18,6 +18,12 @@ class ModOrganizer {
          **/
         std::string getModuleList() const;
         
+        std::vector<std::string> getAllModuleName() const;
+        
+        /* get pin list of given module
+         **/
+        std::vector<ChipModuleProto::Pin> getPinList(std::string name) const;
+        
         /* generate VHDL entity code for given module type
          * format:
          *   <entity_code>

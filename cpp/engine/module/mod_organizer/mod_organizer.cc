@@ -12,6 +12,26 @@ string ModOrganizer::getModuleList() const {
     return mod_list_->SerializeAsString();
 }
 
+vector<string> ModOrganizer::getAllModuleName() const {
+    vector<string> names;
+    for (int i = 0; i < mod_list_->modules_size(); ++i) {
+        names.push_back(mod_list_->modules(i).name());
+    }
+    return names;
+}
+
+vector<ChipModuleProto::Pin> ModOrganizer::getPinList(string name) const {
+    vector<ChipModuleProto::Pin> pin_list;
+    if (mod_id_.count(name) == 0) {
+        return pin_list;
+    }
+    ChipModuleProto chip = mod_list_->modules(mod_id_.at(name));
+    for (int i = 0; i < chip.pins_size(); ++i) {
+        pin_list.push_back(chip.pins(i));
+    }
+    return pin_list;
+}
+
 string ModOrganizer::generateEntityCodeForModule(string name) const {
     if (mod_id_.count(name) == 0) {
         return string();

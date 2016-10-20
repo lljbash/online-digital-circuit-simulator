@@ -50,10 +50,20 @@ TEST_F(ModOrganizerTest, GenerateEntityByName) {
     mod_organizer->load_modules("data/vhdl", "chip_list.txt");
     cout << mod_organizer->generateEntityCodeForModule("MOD_74LS00") << endl;
 }
+
 TEST_F(ModOrganizerTest, GenerateComponentByName) {
     mod_organizer->clear_modules();
     mod_organizer->load_modules("data/vhdl", "chip_list.txt");
     cout << mod_organizer->generateComponentCodeForModule("MOD_74LS00") << endl;
+}
+
+TEST_F(ModOrganizerTest, GetPinList) {
+    mod_organizer->clear_modules();
+    mod_organizer->load_modules("data/vhdl", "chip_list.txt");
+    auto pin_list = mod_organizer->getPinList("MOD_74LS20");
+    for (auto pin : pin_list) {
+        cout << pin.DebugString() << endl;
+    }
 }
 
 } // namespace test
