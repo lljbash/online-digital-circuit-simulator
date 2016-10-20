@@ -7,7 +7,7 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL ;
 
 --- X1 in ---
 --- X2 in ---
---- Y3 out ---
+--- Z3 hang ---
 --- X4 in ---
 --- X5 in ---
 --- Y6 out ---
@@ -15,7 +15,7 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL ;
 --- Y8 out ---
 --- X9 in ---
 --- X10 in ---
---- Y11 out ---
+--- Z11 hang ---
 --- X12 in ---
 --- X13 in ---
 --- VCC14 vcc ---
@@ -23,30 +23,28 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL ;
 --- END_PIN_INFO ---
 
 --- BEGIN_CODE ---
-entity MOD_74LS86 is
+entity MOD_74LS20 is
 --- BEGIN_PORT_DEF ---
 port(
-    X1, X2, X4, X5, X9, X10, X12, X13: in std_logic;
-	Y3, Y6, Y8, Y11: out std_logic
+	X1, X2, X4, X5, X9, X10, X12, X13: in std_logic;
+	Y6, Y8: out std_logic
 );
 --- END_PORT_DEF ---
-end MOD_74LS86;
+end MOD_74LS20;
 
-architecture behv of MOD_74LS86 is
+architecture behv of MOD_74LS20 is
 
-component XOR_GATE2 
+component NAND_GATE4 
 port(
-	a, b: in std_logic;
+	a, b, c, d: in std_logic;
 	f: out std_logic
-);
+	);
 end component;
 
 begin
 
-	u1: XOR_GATE2 port map(a => X1, b => X2, f => Y3);
-	u2: XOR_GATE2 port map(a => X4, b => X5, f => Y6);
-	u3: XOR_GATE2 port map(a => X9, b => X10, f => Y8);
-	u4: XOR_GATE2 port map(a => X12, b => X13, f => Y11);
+	u1: NAND_GATE4 port map(a => X1, b => X2, c => X4, d => X5, f => Y6);
+	u2: NAND_GATE4 port map(a => X9, b => X10, c => X12, d => X13, f => Y8);
 
 end behv;
 

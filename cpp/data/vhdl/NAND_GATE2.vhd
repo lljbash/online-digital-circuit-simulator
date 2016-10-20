@@ -23,10 +23,8 @@ end NAND_GATE2;
 
 architecture NAND_GATE2_behv of NAND_GATE2 is
 begin
-process(X,Y)
-begin
 	F2 <= X nand Y;
-end process;
+	
 end NAND_GATE2_behv;
 
 --- END_CODE ---

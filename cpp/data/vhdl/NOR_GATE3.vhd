@@ -4,23 +4,25 @@ USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL ; 
 
 --- BEGIN_PIN_INFO ---
---- X in ---
---- F1 out ---
+--- a in ---
+--- b in ---
+--- c in ---
+--- f out ---
 --- END_PIN_INFO ---
 
 --- BEGIN_CODE ---
-entity NOT_GATE1 is
+entity NOR_GATE3 is
 --- BEGIN_PORT_DEF ---
 port(
-    X: in std_logic;
-    F1: out std_logic
+	a, b, c: in std_logic;
+	f: out std_logic
 );
 --- END_PORT_DEF ---
-end NOT_GATE1;
+end NOR_GATE3;
 
-architecture NOT_GATE1_behv of NOT_GATE1 is
+architecture NOR_GATE3_behv of NOR_GATE3 is
 begin
-    F1 <= not(X);
-end NOT_GATE1_behv;
+	f <= not(a or b or c);
+end NOR_GATE3_behv;
 
 --- END_CODE ---
