@@ -195,8 +195,15 @@ $scope.activateWorkflow = function() {
 
     console.log(response.data);
     $scope.filename = response.data;
-    var redirect_url = "/submitted/" + $scope.filename;
-    window.location = redirect_url;
+    if(response.data == "error"){
+        console.log("error");
+        window.location = '/error';
+    }
+    else{
+        console.log("success");
+        var redirect_url = "/submitted/" + $scope.filename;
+        window.location = redirect_url;
+    }
   }, function errorCallback(response) {
 
   });
