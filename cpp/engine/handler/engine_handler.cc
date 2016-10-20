@@ -21,9 +21,11 @@ string EngineHandler::getChipModuleList() const {
     return mod_organizer_->getModuleList();
 }
 
-string EngineHandler::getCircuitParsingResult() const {
-    CircuitParsingResultProto vprp = circuit_parser_->parse();
-    return vprp.SerializeAsString();
+string EngineHandler::getCircuitParsingResult(std::string circuit) const {
+    CircuitProto cp;
+    cp.ParseFromString(circuit);
+    CircuitParsingResultProto cprp = circuit_parser_->parse(cp);
+    return cprp.SerializeAsString();
 }
 
 string EngineHandler::getSimulationResult(string vhdl_source_code) const {

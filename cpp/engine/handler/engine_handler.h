@@ -13,7 +13,7 @@ class EngineHandler : public Engine {
         EngineHandler(std::string out_path);
         
         virtual std::string getChipModuleList() const override;
-        virtual std::string getCircuitParsingResult() const override;
+        virtual std::string getCircuitParsingResult(std::string circuit) const override;
         virtual std::string getSimulationResult(std::string vhdl_source_code) const override;
         
         virtual int addChipModules(std::string path, std::string file) override;

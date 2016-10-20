@@ -16,7 +16,9 @@ class CircuitParser {
     public:
         CircuitParser(std::shared_ptr<const ModOrganizer> mod_organizer);
         
-        CircuitParsingResultProto parse();
+        /* translate a circuit into VHDL code
+         **/
+        CircuitParsingResultProto parse(const CircuitProto &circuit);
         
         friend test::CircuitParserTest;
     

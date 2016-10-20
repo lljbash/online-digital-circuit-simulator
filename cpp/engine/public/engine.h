@@ -13,7 +13,7 @@ class Engine {
         Engine() = default;
         
         virtual std::string getChipModuleList() const = 0;
-        virtual std::string getCircuitParsingResult() const = 0;
+        virtual std::string getCircuitParsingResult(std::string circuit) const = 0;
         virtual std::string getSimulationResult(std::string vhdl_source_code) const = 0;
         
         /* add chip modules from a given file
