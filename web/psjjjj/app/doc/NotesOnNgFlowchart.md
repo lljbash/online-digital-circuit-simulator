@@ -59,3 +59,58 @@ var svgHtmlElement = null;
 定义的子类包括 `modelservice.connectors` 、 `modelservice.nodes` 、 `modelservice.edges` 三个主要成员，以及很多功能函数。
 
 To be continued.
+
+mouseover-service
+-----------
+作为 Factory 生成鼠标悬停服务，通过服务参数 `mouseoverscope.*` ，可以得知当前悬停的元素。星号内容可以是 `connector` `edge` `node` 三种。
+
+edgedrawing-service
+----
+作为 Service 对两个点之间画线。通过 `style` 参数来确定是画曲线还是直线。 **主要需要修改的代码，加入第三种style:直线。**
+
+edgedragging-service
+------
+作为一个Factory，含有函数：
+
+* `edgedraggingService.dragstart` 开始拖拽；
+* `edgedraggingService.dragover` 结束拖拽，在此函数内会判断结束拖拽时是否在magnet内；
+* `dragoverConnector` 会调用 `dragover` ；
+* `dragoverMagnet` 在鼠标移到 magnet 上时起作用，把线吸到magenet上；
+* `dragleaveMagnet` 取消会移到 magnet 上的特性。
+
+Nodedraggingfactory
+------
+作为一个Factory，含有内部函数：
+* `getXCoordinate` 和 `getYCoordinate` 求在[0..max]之间的坐标。
+* `resizeCanvas` 放大 Canvas 使之无限拖动。
+
+返回一个 NodeDraggingService ？包括
+* `dragstart`
+* `drop`
+* `dragover`
+* `dragend`
+
+canvas-service
+------
+**有一些看不懂的地方**
+定义了很多 `$scope` 的东西，不太确定用来干什么。
+
+canvas-controller
+--------
+本包的 `controller` 。
+
+canvas-directive
+-------
+**看不懂** 大概是定义了一个新的 directive 叫作 `fcCanvas` ？
+
+connector-directive
+-------
+**看不懂** 大概是定义了一个新的 directive 叫作 `fcConnector` ？
+
+node-directive
+-------
+**看不懂** 大概是定义了一个新的 directive 叫作 `fcNode` ？
+
+magnet-directive
+-------
+**看不懂** 大概是定义了一个新的 directive 叫作 `fcMagnet` ？
