@@ -42,7 +42,7 @@ angular
   .module('flowchart')
   .service('Modelvalidation', Modelvalidation);
 ```
-导出为一个 **service** ，可以被 `new` 出来。可以看成 *一个类* ？？不是很懂。
+导出为一个 **service** ，可以被 `new` 出来。可以看成 *一个类* ？？**TODO**
 
 model-service
 -----
@@ -92,7 +92,7 @@ Nodedraggingfactory
 
 canvas-service
 ------
-**有一些看不懂的地方**
+**TODO**
 定义了很多 `$scope` 的东西，不太确定用来干什么。
 
 canvas-controller
@@ -101,16 +101,16 @@ canvas-controller
 
 canvas-directive
 -------
-**看不懂** 大概是定义了一个新的 directive 叫作 `fcCanvas` ？
+**TODO** 定义了一个新的 directive 叫作 `fcCanvas` 
 
 connector-directive
 -------
-**看不懂** 大概是定义了一个新的 directive 叫作 `fcConnector` ？
+**TODO** 定义了一个新的 directive 叫作 `fcConnector` 
 
 node-directive
 -------
-**看不懂** 大概是定义了一个新的 directive 叫作 `fcNode` ？
+**TODO** 定义了一个新的 directive 叫作 `fcNode` 
 
 magnet-directive
 -------
-**看不懂** 大概是定义了一个新的 directive 叫作 `fcMagnet` ？
+**TODO** 定义了一个新的 directive 叫作 `fcMagnet` 
