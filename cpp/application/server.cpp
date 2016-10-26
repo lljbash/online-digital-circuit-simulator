@@ -22,7 +22,7 @@ void handle_request(int clnt_sock) {
     char request_str[255555] = "";
     read(clnt_sock, request_str, sizeof(request_str) - 1);
     RequestProto request;
-    request.ParseFromString(string(request_str));
+    request.ParseFromArray(request_str, sizeof(request_str) - 1);
     
     string result;
     EnginePtr engine = Engine::createEngine(FLAGS_out);

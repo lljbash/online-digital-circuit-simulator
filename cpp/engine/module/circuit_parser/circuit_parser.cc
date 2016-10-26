@@ -18,12 +18,20 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     // 1.1 parse chips
     vector<string> module_set = mod_organizer_->getAllModuleName();
     map<string, util::ChipStatus> chips;
+    set<string> input_set;
+    set<string> output_set;
     for (int i = 0; i < circuit.chips_size(); ++i) {
         string type = circuit.chips(i).type();
-        if (type == "input" || type == "output") {
-            continue;
+        string name = circuit.chips(i).id();
+        if (type == "input") {
+            input_set.insert(name);
         }
-        chips[circuit.chips(i).id()] = {type, map<string, string>()};
+        else if (type == "output") {
+            output_set.insert(name);
+        }
+        else {
+            chips[name] = {type, map<string, string>()};
+        }
     }
     
     // 1.2 parse wires
@@ -33,13 +41,14 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     for (int i = 0; i < circuit.wires_size(); ++i) {
         CircuitProto::Wire wire = circuit.wires(i);
         string wire_name = string("wire_") + to_string(i + 1);
+        wire_list.push_back(wire_name);
         
         for (CircuitProto::Wire::Pin pin : {wire.start_pin(), wire.end_pin()}) {
-            if (pin.chip_name() == "input") {
+            if (input_set.count(pin.chip_name())) {
                 string input_name = string("input_") + to_string(input_map.size() + 1);
                 input_map[input_name] = wire_name;
             }
-            else if (pin.chip_name() == "output") {
+            else if (output_set.count(pin.chip_name())) {
                 string output_name = string("output_") + to_string(output_map.size() + 1);
                 output_map[output_name] = wire_name;
             }
@@ -53,18 +62,17 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     }
     
     // 2. generating
-    // 2.1 generate headers
+    // 2.1 generate modules' entity
+    for (const string &name : module_set) {
+        code += mod_organizer_->generateEntityCodeForModule(name) + "\n";
+    }
+
+    // 2.2 generate main entity
     code += "LIBRARY IEEE;\n";
     code += "USE IEEE.STD_LOGIC_1164.ALL;\n";
     code += "USE IEEE.STD_LOGIC_ARITH.ALL;\n";
     code += "USE IEEE.STD_LOGIC_UNSIGNED.ALL;\n\n";
     
-    // 2.2 generate modules' entity
-    for (const string &name : module_set) {
-        code += mod_organizer_->generateEntityCodeForModule(name) + "\n";
-    }
-
-    // 2.3 generate main entity
     code += "entity main is\n";
     code += "port(\n";
     string ending = "";
@@ -74,7 +82,7 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     }
     code += "\n);\nend main;\n";
     
-    // 2.4 generate main struct
+    // 2.3 generate main struct
     code += "architecture struct of main is\n\n";
     for (const string &name : module_set) {
         code += mod_organizer_->generateComponentCodeForModule(name) + "\n";
@@ -113,6 +121,7 @@ string CircuitParser::generatePinMapping(const util::ChipStatus &status) const {
     vector<ChipModuleProto::Pin> pin_list = mod_organizer_->getPinList(status.type);
     string code = status.type + " port map (";
     bool starting = true;
+    int pin_id = 0;
     for (auto &pin : pin_list) {
         if (pin.type() != "in" && pin.type() != "out") {
             continue;
@@ -124,13 +133,18 @@ string CircuitParser::generatePinMapping(const util::ChipStatus &status) const {
             code += ", ";
         }
         string mapping;
-        if (status.pin.count(pin.name())) {
-            mapping = status.pin.at(pin.name());
+        string pin_id_str = std::to_string(pin_id);
+        if (status.pin.count(pin_id_str)) {
+            mapping = status.pin.at(pin_id_str);
+        }
+        else if (pin.type() == "in") {
+            mapping = "'1'";
         }
         else {
             mapping = "open";
         }
         code += pin.name() + "=>" + mapping;
+        ++pin_id;
     }
     code += ");";
     return code;

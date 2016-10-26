@@ -88,8 +88,15 @@ def test():
         chip.type = node['name']
         connectors = node['connectors']
         pin_id = 0
+        tot_size = len(connectors)
+        up_size = (tot_size + 1) / 2
+        down_size = tot_size / 2
         for connector in connectors:
-            map_dic[connector['id']] = [chip.id, pin_id]
+            if pin_id < up_size:
+                real_id = up_size - pin_id - 1 + down_size
+            else:
+                real_id = pin_id - up_size
+            map_dic[connector['id']] = [chip.id, real_id]
             pin_id = pin_id + 1
     edges = models['edges']
     for edge in edges:

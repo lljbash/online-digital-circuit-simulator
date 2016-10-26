@@ -41,19 +41,14 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
         dup2(fd, 1);
         dup2(fd, 2);
         close(fd);
-        execlp("vsim", "vsim", "-c", "-do", "run 100ps", "main", NULL);
+        execlp("vsim", "vsim", "-c", "-do", "vcd file main.vcd;vcd add *;run 100ps;exit", "main", NULL);
     }
     else {
-        usleep(2000000);
         int compile_status;
-        int wait_status = waitpid(cpid, &compile_status, WNOHANG);
+        int wait_status = wait(&compile_status);
         
-        if (wait_status == 0) {
-            kill(cpid, SIGKILL);
-            PSJJJJ_SHOW("killed\n");
-            
-            system("touch output.txt");
-            string cmd = string("cp ") + dir + string("/out.txt ") +
+        if (compile_status != 1) {
+            string cmd = string("cp ") + dir + string("/main.vcd ") +
                          output_file_path + string("/") + md5sum;
             PSJJJJ_SHOW("%s\n", cmd.c_str());
             system(cmd.c_str());
