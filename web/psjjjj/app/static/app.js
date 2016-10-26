@@ -165,6 +165,9 @@ $scope.addNewNode = function () {
     data:{'data' : nodeName},
     url:'/add'
   }).then(function successCallback(response){
+    if (!nodeName) {
+      return;
+    }
     console.log(response.data);
     var pinsNum = parseInt(response.data);
     var connectors_array = new Array();
@@ -183,8 +186,8 @@ $scope.addNewNode = function () {
       y: 100,
       color: '#F15B26',
       connectors: connectors_array
-  };
-  model.nodes.push(newNode);
+    };
+    model.nodes.push(newNode);
   }, function errorCallback(response){
   });
 };
