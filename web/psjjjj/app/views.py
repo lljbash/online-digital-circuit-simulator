@@ -4,7 +4,7 @@ from flask import render_template, redirect, flash, url_for, send_from_directory
 from .forms import VHDLForm
 from client import MyClient
 from py2proto.request_pb2 import RequestProto
-from py2proto.vhdl_parsing_result_pb2 import VHDLParsingResultProto
+from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
 from py2proto.circuit_pb2 import CircuitProto
 import json
@@ -52,7 +52,7 @@ def addGraph():
         request = RequestProto()
         request.type = 0
         cli.sendMessage(request)
-        reply = VHDLParsingResultProto()
+        reply = CircuitParsingResultProto()
         reply.ParseFromString(cli.recvMessage())
         flash('form server : ')
         flash('success : ' + str(reply.success))
@@ -103,7 +103,7 @@ def test():
     cli = MyClient()
     cli.connect()
     cli.sendMessage(request_proto)
-    reply = VHDLParsingResultProto()
+    reply = CircuitParsingResultProto()
     reply.ParseFromString(cli.recvMessage())
     cli.close(0)
     if reply.success:
