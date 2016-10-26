@@ -169,7 +169,7 @@ $scope.addNewNode = function () {
     var pinsNum = parseInt(response.data);
     var connectors_array = new Array();
     for(var i=0;i<pinsNum;i++){
-        if(i<4){
+        if(i<pinsNum / 2){
             connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.topConnectorType};
         }
         else{

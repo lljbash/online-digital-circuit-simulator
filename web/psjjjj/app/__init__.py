@@ -14,8 +14,8 @@ init_request = RequestProto()
 init_request.type = 2
 init_cli.sendMessage(init_request)
 modulelist = ChipModuleListProto()
-init_cli.recvMessage()
-#modulelist = modulelist.ParseFromString(init_cli.recvMessage())
+#print init_cli.recvMessage()
+modulelist.ParseFromString(init_cli.recvMessage())
 in_module = modulelist.modules.add()
 in_module.name = 'input'
 in_module.pins.add()
