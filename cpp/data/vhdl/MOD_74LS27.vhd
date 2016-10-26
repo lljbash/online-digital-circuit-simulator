@@ -46,8 +46,8 @@ end component;
 begin
 
 	u1: NOR_GATE3 port map(a => X1, b => X2, c => X13, f => Y12);
-	u1: NOR_GATE3 port map(a => X3, b => X4, c => X5, f => Y6);
-	u1: NOR_GATE3 port map(a => X9, b => X10, c => X11, f => Y8);
+	u2: NOR_GATE3 port map(a => X3, b => X4, c => X5, f => Y6);
+	u3: NOR_GATE3 port map(a => X9, b => X10, c => X11, f => Y8);
 
 end MOD_74LS27_behv;
 
