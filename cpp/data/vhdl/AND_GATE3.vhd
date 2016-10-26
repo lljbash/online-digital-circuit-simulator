@@ -24,7 +24,7 @@ end AND_GATE3;
 
 architecture AND_GATE3_behv of AND_GATE3 is
 begin
-	f <= (a and b and c)
+	f <= (a and b and c);
 end AND_GATE3_behv;
 
 --- END_CODE ---
