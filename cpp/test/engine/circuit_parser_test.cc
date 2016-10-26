@@ -49,22 +49,25 @@ TEST_F(CircuitParserTest, GenerateHangedPinMapping) {
     cout << generatePinMapping(status) << endl;
 }
 
-/*
+
 TEST_F(CircuitParserTest, ParseSimpleCircuit) {
     CircuitProto circuit;
     auto chip = circuit.add_chips();
-    chip->set_type("MOD_74LS00");
-    chip->set_id("74LS00");
-    chip = circuit.add_chips();
     chip->set_type("input");
     chip->set_id("input");
     chip = circuit.add_chips();
-    chip->set_type("input");
-    chip->set_id("input");
+    chip->set_type("output");
+    chip->set_id("output");
     auto wire = circuit.add_wires();
-    wire->set_allocated_start_pin()
+    CircuitProto::Wire::Pin *pin = new CircuitProto::Wire::Pin;
+    pin->set_chip_name("input");
+    wire->set_allocated_start_pin(pin);
+    pin = new CircuitProto::Wire::Pin;
+    pin->set_chip_name("output");
+    wire->set_allocated_end_pin(pin);
+    cout << circuit_parser->parse(circuit).vhdl_code();
 }
-*/
+
 
 } // namespace test
 } // namespace psjjjj

@@ -89,8 +89,11 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     for (const auto &input : input_map) {
         code += input.first + " <= '1';\n" + input.second + " <= " + input.first + ";\n";
     }
+    for (const auto &output : output_map) {
+        code += output.first + " <= " + output.second + ";\n";
+    }
     for (const auto &chip : chips) {
-        code += "    u_";
+        code += "u_";
         code += chip.first;
         code += ": ";
         code += generatePinMapping(chip.second);
