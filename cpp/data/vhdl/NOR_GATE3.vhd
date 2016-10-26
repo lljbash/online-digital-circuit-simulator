@@ -12,18 +12,18 @@ USE IEEE.STD_LOGIC_1164.ALL ;
 USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL ; 
 
-
-entity AND_GATE3 is
+entity NOR_GATE3 is
 --- BEGIN_PORT_DEF ---
 port(
 	a, b, c: in std_logic;
 	f: out std_logic
 );
 --- END_PORT_DEF ---
-end AND_GATE3;
+end NOR_GATE3;
 
-architecture AND_GATE3_behv of AND_GATE3 is
-	f <= (a and b and c)
-end AND_GATE3_behv;
+architecture NOR_GATE3_behv of NOR_GATE3 is
+begin
+	f <= not(a or b or c);
+end NOR_GATE3_behv;
 
 --- END_CODE ---
