@@ -270,7 +270,7 @@ $scope.callbacks = {
     console.log('mouserover')
   },
   isValidEdge: function (source, destination) {
-    return source.type === flowchartConstants.bottomConnectorType && destination.type === flowchartConstants.topConnectorType;
+    return true;
   },
   edgeAdded: function (edge) {
     console.log("edge added");

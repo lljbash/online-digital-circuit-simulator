@@ -52,7 +52,7 @@ body {
 
 .fc-node.fc-hover {
   -webkit-filter: brightness(70%);
-  filter: brightness(70%);;
+  filter: brightness(70%);
 }
 
 .fc-node.fc-selected {
@@ -92,6 +92,8 @@ body {
   display: flex;
   flex-grow: 1;
   height: 60px;
+
+  z-index:-10;
 
   justify-content: center;
 }

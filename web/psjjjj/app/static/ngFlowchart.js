@@ -475,10 +475,6 @@ if (!Function.prototype.bind) {
         });
       });
 
-      if (Topsortservice({nodes: nodes, edges: edges}) === null) {
-        throw new ModelvalidationError('Graph has a circle.');
-      }
-
       return edges;
     };
 
@@ -505,9 +501,6 @@ if (!Function.prototype.bind) {
       var destinationNode = nodes.filter(function(node) {return node.connectors.some(function(connector) {return connector.id === edge.destination})})[0];
       if (destinationNode === undefined) {
         throw new ModelvalidationError('Destination not valid.');
-      }
-      if (sourceNode === destinationNode) {
-        throw new ModelvalidationError('Edge with same source and destination nodes.');
       }
       return edge;
     };
@@ -902,7 +895,7 @@ if (!Function.prototype.bind) {
       };
     }
 
-    this.getEdgeDAttribute = function(pt1, pt2, style) {
+    this.getEdgeDAttribute = function(pt1, pt2, style, edge) {
       var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
       if (style === flowchartConstants.curvedStyle) {
         var sourceTangent = computeEdgeSourceTangent(pt1, pt2);
@@ -911,10 +904,24 @@ if (!Function.prototype.bind) {
       } else if (style === flowchartConstants.curvedStyle) {
         dAddribute += 'L ' + pt2.x + ', ' + pt2.y;
       } else if (style === flowchartConstants.gridStyle) {
-        var centralY = (pt1.y + pt2.y) / 2;
-        dAddribute += 'L ' + pt1.x + ', ' + centralY
-            + 'L ' + pt2.x + ', ' + centralY
-            + 'L ' + pt2.x + ', ' + pt2.y;
+        if (edge === undefined) {
+          if (pt1.y === pt2.y) {
+            console.log("two y's same!");
+            // TODO finish this
+            dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+20)
+                + 'L ' + (pt2.x) + ', ' + (pt2.y+20)
+                + 'L ' + (pt2.x) + ', ' + (pt2.y-20)
+                + 'L ' + pt1.x + ', ' + (pt1.y-20)
+                + 'L ' + pt1.x + ', ' + (pt1.y);
+          } else {
+            var centralY = (pt1.y + pt2.y) / 2;
+            dAddribute += 'L ' + pt1.x + ', ' + centralY
+                + 'L ' + pt2.x + ', ' + centralY
+                + 'L ' + pt2.x + ', ' + pt2.y;
+          }
+        } else {
+          // TODO
+        }
       }
       return dAddribute;
     };
@@ -1015,7 +1022,7 @@ if (!Function.prototype.bind) {
             }
 
             edgeDragging.gElement.css('display', 'block');
-            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle));
+            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle, null));
             edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
             edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
           }
@@ -1042,7 +1049,7 @@ if (!Function.prototype.bind) {
               y: event.clientY + dragOffset.y
             };
 
-            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle));
+            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle, null));
             edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
             edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
 
@@ -1096,7 +1103,8 @@ if (!Function.prototype.bind) {
         return function(event) {
           if (edgeDragging.isDragging) {
             edgedraggingService.dragover(event);
-              try {
+            console.log("dragoverMagnet");
+            try {
               Modelvalidation.validateEdges(model.edges.concat([{
                 source: draggedEdgeSource.id,
                 destination: connector.id
@@ -1105,6 +1113,7 @@ if (!Function.prototype.bind) {
               if (error instanceof Modelvalidation.ModelvalidationError) {
                 return true;
               } else {
+                console.log("dragoverMagnet error!");
                 throw error;
               }
             }
@@ -1114,7 +1123,7 @@ if (!Function.prototype.bind) {
                 edgeDragging.magnetActive = true;
 
                 edgeDragging.dragPoint2 = modelservice.connectors.getCenteredCoord(connector.id);
-                edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle));
+                edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle, null));
                 edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
                 edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
 
