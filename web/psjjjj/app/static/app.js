@@ -127,6 +127,8 @@ $scope.flowchartselected = [];
 var modelservice = Modelfactory(model, $scope.flowchartselected);
 
 $scope.model = model;
+$scope.inputArray = new Array();
+$scope.inputNum = 0;
 $scope.modelservice = modelservice;
 
 $scope.keyDown = function (evt) {
@@ -196,7 +198,7 @@ $scope.activateWorkflow = function() {
 
   $http({
     method: 'POST',
-    data: {'data' : model},
+    data: {'data' : model, 'activation':$scope.inputArray},
     url: '/test'
   }).then(function successCallback(response) {
 
@@ -214,11 +216,20 @@ $scope.activateWorkflow = function() {
   }, function errorCallback(response) {
 
   });
-
 // Original Code
 //  angular.forEach($scope.model.edges, function(edge) {
 //    edge.active = !edge.active;
 //  });
+};
+
+$scope.inputActivation = function() {
+    var selectedNodes = modelservice.nodes.getSelectedNodes();
+    angular.forEach(selectedNodes, function(node){
+        var inputType_s = prompt("Please input your activation(0/1):", '0');
+        var inputType = parseInt(inputType_s);
+        $scope.inputArray[$scope.inputNum++] = {input:inputType, id:node.id};
+        console.log('inputType:' + inputType);
+    });
 };
 
 $scope.addNewInputConnector = function () {

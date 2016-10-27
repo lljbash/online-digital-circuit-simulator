@@ -78,6 +78,7 @@ def test():
     request_proto.type = 0;
     data = json.loads(request.data)
     models = data['data']
+    activation = data['activation'];
     nodes = models['nodes']
     map_dic = []
     for i in range(100):
@@ -86,6 +87,10 @@ def test():
         chip = request_proto.circuit.chips.add()
         chip.id = str(node['id'])
         chip.type = node['name']
+        if chip.type=="input":
+            for input_unit in activation:
+                if str(input_unit['id'])==chip.id:
+                    chip.activation.initial = input_unit['input']
         connectors = node['connectors']
         pin_id = 0
         tot_size = len(connectors)
