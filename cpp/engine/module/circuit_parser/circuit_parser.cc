@@ -18,16 +18,22 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     // 1.1 parse chips
     vector<string> module_set = mod_organizer_->getAllModuleName();
     map<string, util::ChipStatus> chips;
-    set<string> input_set;
-    set<string> output_set;
+    map<string, string> input_set;
+    map<string, string> output_set;
+    map<string, CircuitProto::Chip::Activation> activation;
     for (int i = 0; i < circuit.chips_size(); ++i) {
         string type = circuit.chips(i).type();
         string name = circuit.chips(i).id();
         if (type == "input") {
-            input_set.insert(name);
+            string input_name = string("input_") + to_string(input_set.size() + 1);
+            input_set.insert(make_pair(name, input_name));
+            if (circuit.chips(i).has_activation()) {
+                activation.insert(make_pair(name, circuit.chips(i).activation()));
+            }
         }
         else if (type == "output") {
-            output_set.insert(name);
+            string output_name = string("output_") + to_string(output_set.size() + 1);
+            output_set.insert(make_pair(name, output_name));
         }
         else {
             chips[name] = {type, map<string, string>()};
@@ -45,11 +51,11 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
         
         for (CircuitProto::Wire::Pin pin : {wire.start_pin(), wire.end_pin()}) {
             if (input_set.count(pin.chip_name())) {
-                string input_name = string("input_") + to_string(input_map.size() + 1);
+                string input_name = input_set.at(pin.chip_name());
                 input_map[input_name] = wire_name;
             }
             else if (output_set.count(pin.chip_name())) {
-                string output_name = string("output_") + to_string(output_map.size() + 1);
+                string output_name = output_set.at(pin.chip_name());
                 output_map[output_name] = wire_name;
             }
             else {
@@ -94,8 +100,22 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
         code += string("signal ") + name + ": std_logic;\n";
     }
     code += "\nbegin\n\n";
+    for (const auto &input : input_set) { // TODO: time relavant activation
+        if (activation.count(input.first)) {
+            auto act = activation.at(input.first);
+            if (act.initial() == true) {
+                code += input.second + " <= '1';\n";
+            }
+            else {
+                code += input.second + " <= '0';\n";
+            }
+        }
+        else {
+            code += input.second + " <= '1';\n";
+        }
+    }
     for (const auto &input : input_map) {
-        code += input.first + " <= '1';\n" + input.second + " <= " + input.first + ";\n";
+        code += input.second + " <= " + input.first + ";\n";
     }
     for (const auto &output : output_map) {
         code += output.first + " <= " + output.second + ";\n";
