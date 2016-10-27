@@ -5,7 +5,7 @@ message CircuitProto{
     message Chip {
         required string id = 1; // id name of the chip
         required string type = 2; // type name of the chip
-        message Activision {
+        message Activation {
             required bool initial = 1;
             repeated int32 times = 2;
             repeated bool values = 3;
