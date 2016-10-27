@@ -42,7 +42,7 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     
     // 1.2 parse wires
     vector<string> wire_list;
-    map<string, string> input_map;
+    map<string, vector<string>> input_map;
     map<string, string> output_map;
     for (int i = 0; i < circuit.wires_size(); ++i) {
         CircuitProto::Wire wire = circuit.wires(i);
@@ -52,7 +52,7 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
         for (CircuitProto::Wire::Pin pin : {wire.start_pin(), wire.end_pin()}) {
             if (input_set.count(pin.chip_name())) {
                 string input_name = input_set.at(pin.chip_name());
-                input_map[input_name] = wire_name;
+                input_map[input_name].push_back(wire_name);
             }
             else if (output_set.count(pin.chip_name())) {
                 string output_name = output_set.at(pin.chip_name());
@@ -115,7 +115,9 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
         }
     }
     for (const auto &input : input_map) {
-        code += input.second + " <= " + input.first + ";\n";
+        for (const auto &wire : input.second) {
+            code += wire + " <= " + input.first + ";\n";
+        }
     }
     for (const auto &output : output_map) {
         code += output.first + " <= " + output.second + ";\n";
