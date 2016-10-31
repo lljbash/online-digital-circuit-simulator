@@ -846,9 +846,6 @@ if (!Function.prototype.bind) {
     htmlPrefix: 'fc',
     topConnectorType: 'topConnector',
     bottomConnectorType: 'bottomConnector',
-    curvedStyle: 'curved',
-    lineStyle: 'line',
-    gridStyle: 'grid',
     dragAnimationRepaint: 'repaint',
     dragAnimationShadow: 'shadow'
   };
@@ -876,57 +873,30 @@ if (!Function.prototype.bind) {
 
   'use strict';
 
-  function Edgedrawingservice(flowchartConstants) {
-    function computeEdgeTangentOffset(pt1, pt2) {
-        return (pt2.y - pt1.y) / 2;
-    }
+  function Edgedrawingservice() {
 
-    function computeEdgeSourceTangent(pt1, pt2) {
-      return {
-        x: pt1.x,
-        y: pt1.y + computeEdgeTangentOffset(pt1, pt2)
-      };
-    }
-
-    function computeEdgeDestinationTangent(pt1, pt2) {
-      return {
-        x: pt2.x,
-        y: pt2.y - computeEdgeTangentOffset(pt1, pt2)
-      };
-    }
-
-    this.getEdgeDAttribute = function(pt1, pt2, style, edge) {
+    this.getEdgeDAttribute = function(pt1, pt2, edge) {
       var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
-      if (style === flowchartConstants.curvedStyle) {
-        var sourceTangent = computeEdgeSourceTangent(pt1, pt2);
-        var destinationTangent = computeEdgeDestinationTangent(pt1, pt2);
-        dAddribute += 'C ' + sourceTangent.x + ', ' + sourceTangent.y + ' ' + destinationTangent.x + ', ' + destinationTangent.y + ' ' + pt2.x + ', ' + pt2.y;
-      } else if (style === flowchartConstants.curvedStyle) {
-        dAddribute += 'L ' + pt2.x + ', ' + pt2.y;
-      } else if (style === flowchartConstants.gridStyle) {
-        if (edge === undefined) {
-          if (pt1.y === pt2.y) {
-            console.log("two y's same!");
-            // TODO finish this
-            dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+20)
-                + 'L ' + (pt2.x) + ', ' + (pt2.y+20)
-                + 'L ' + (pt2.x) + ', ' + (pt2.y-20)
-                + 'L ' + pt1.x + ', ' + (pt1.y-20)
-                + 'L ' + pt1.x + ', ' + (pt1.y);
-          } else {
-            var centralY = (pt1.y + pt2.y) / 2;
-            dAddribute += 'L ' + pt1.x + ', ' + centralY
-                + 'L ' + pt2.x + ', ' + centralY
-                + 'L ' + pt2.x + ', ' + pt2.y;
-          }
+      if (edge === undefined) {
+        if (pt1.y === pt2.y) {
+          console.log("two y's same!");
+          // TODO finish this
+          dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+20)
+              + 'L ' + (pt2.x) + ', ' + (pt2.y+20)
+              + 'L ' + (pt2.x) + ', ' + (pt2.y-20)
+              + 'L ' + pt1.x + ', ' + (pt1.y-20)
+              + 'L ' + pt1.x + ', ' + (pt1.y);
         } else {
-          // TODO
+          var centralY = (pt1.y + pt2.y) / 2;
+          dAddribute += 'L ' + pt1.x + ', ' + centralY
+              + 'L ' + pt2.x + ', ' + centralY
+              + 'L ' + pt2.x + ', ' + pt2.y;
         }
       }
       return dAddribute;
     };
+
   }
-  Edgedrawingservice.$inject = ["flowchartConstants"];
 
   angular
     .module('flowchart')
@@ -939,7 +909,7 @@ if (!Function.prototype.bind) {
   'use strict';
 
   function Edgedraggingfactory(Modelvalidation, flowchartConstants, Edgedrawingservice) {
-    function factory(modelservice, model, edgeDragging, isValidEdgeCallback, applyFunction, dragAnimation, edgeStyle) {
+    function factory(modelservice, model, edgeDragging, isValidEdgeCallback, applyFunction, dragAnimation) {
       if (isValidEdgeCallback === null) {
         isValidEdgeCallback = function() {
           return true;
@@ -1022,7 +992,7 @@ if (!Function.prototype.bind) {
             }
 
             edgeDragging.gElement.css('display', 'block');
-            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle, null));
+            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2));
             edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
             edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
           }
@@ -1049,7 +1019,7 @@ if (!Function.prototype.bind) {
               y: event.clientY + dragOffset.y
             };
 
-            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle, null));
+            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, null));
             edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
             edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
 
@@ -1123,7 +1093,7 @@ if (!Function.prototype.bind) {
                 edgeDragging.magnetActive = true;
 
                 edgeDragging.dragPoint2 = modelservice.connectors.getCenteredCoord(connector.id);
-                edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle, null));
+                edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, null));
                 edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
                 edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
 
@@ -1286,7 +1256,6 @@ if (!Function.prototype.bind) {
       scope: {
         model: "=",
         selectedObjects: "=",
-        edgeStyle: '@',
         userCallbacks: '=?callbacks',
         automaticResize: '=?',
         dragAnimation: '=?',
@@ -1307,11 +1276,7 @@ if (!Function.prototype.bind) {
             element.css('height', Math.max(maxY, element.prop('offsetHeight')) + 'px');
           }
         }
-        if (scope.edgeStyle !== flowchartConstants.curvedStyle
-            && scope.edgeStyle !== flowchartConstants.lineStyle
-            && scope.edgeStyle !== flowchartConstants.gridStyle) {
-          throw new Error('edgeStyle not supported.');
-        }
+
         scope.nodeHeight = scope.nodeHeight || 200;
         scope.nodeWidth = scope.nodeWidth || 200;
         scope.dragAnimation = scope.dragAnimation || 'repaint';
@@ -1360,7 +1325,7 @@ if (!Function.prototype.bind) {
     var nodedraggingservice = Nodedraggingfactory($scope.modelservice, $scope.nodeDragging, $scope.$apply.bind($scope), $scope.automaticResize, $scope.dragAnimation);
 
     $scope.edgeDragging = {};
-    var edgedraggingservice = Edgedraggingfactory($scope.modelservice, $scope.model, $scope.edgeDragging, $scope.userCallbacks.isValidEdge || null, $scope.$apply.bind($scope), $scope.dragAnimation, $scope.edgeStyle);
+    var edgedraggingservice = Edgedraggingfactory($scope.modelservice, $scope.model, $scope.edgeDragging, $scope.userCallbacks.isValidEdge || null, $scope.$apply.bind($scope), $scope.dragAnimation);
 
     $scope.mouseOver = {};
     var mouseoverservice = Mouseoverfactory($scope.mouseOver, $scope.$apply.bind($scope));
@@ -1447,12 +1412,12 @@ module.run(['$templateCache', function($templateCache) {
     '        ng-mouseenter="edgeMouseEnter($event, edge)"\n' +
     '        ng-mouseleave="edgeMouseLeave($event, edge)"\n' +
     '        ng-attr-class="{{(modelservice.edges.isSelected(edge) && flowchartConstants.selectedClass + \' \' + flowchartConstants.edgeClass) || edge == mouseOver.edge && flowchartConstants.hoverClass + \' \' + flowchartConstants.edgeClass || edge.active && flowchartConstants.activeClass + \' \' + flowchartConstants.edgeClass || flowchartConstants.edgeClass}}"\n' +
-    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), edgeStyle)}}"></path>\n' +
+    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge))}}"></path>\n' +
     '    </g>\n' +
     '    <g ng-if="dragAnimation == flowchartConstants.dragAnimationRepaint && edgeDragging.isDragging">\n' +
     '\n' +
     '      <path class="{{ flowchartConstants.edgeClass }} {{ flowchartConstants.draggingClass }}"\n' +
-    '            ng-attr-d="{{getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, edgeStyle)}}"></path>\n' +
+    '            ng-attr-d="{{getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2)}}"></path>\n' +
     '      <circle class="edge-endpoint" r="4" ng-attr-cx="{{edgeDragging.dragPoint2.x}}"\n' +
     '              ng-attr-cy="{{edgeDragging.dragPoint2.y}}"></circle>\n' +
     '\n' +
