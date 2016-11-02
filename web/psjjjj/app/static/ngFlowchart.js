@@ -881,10 +881,10 @@ if (!Function.prototype.bind) {
         if (pt1.y === pt2.y) {
           console.log("two y's same!");
           // TODO finish this
-          dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+20)
-              + 'L ' + (pt2.x) + ', ' + (pt2.y+20)
-              + 'L ' + (pt2.x) + ', ' + (pt2.y-20)
-              + 'L ' + pt1.x + ', ' + (pt1.y-20)
+          dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+25)
+              + 'L ' + (pt2.x) + ', ' + (pt2.y+25)
+              + 'L ' + (pt2.x) + ', ' + (pt2.y-25)
+              + 'L ' + pt1.x + ', ' + (pt1.y-25)
               + 'L ' + pt1.x + ', ' + (pt1.y);
         } else {
           var centralY = (pt1.y + pt2.y) / 2;
