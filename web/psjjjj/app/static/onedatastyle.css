@@ -81,17 +81,17 @@ body {
 }
 
 .fc-topConnectors {
-  top: -40px;
+  top: -20px;
 }
 
 .fc-bottomConnectors {
-  bottom: -40px;
+  bottom: -20px;
 }
 
 .fc-magnet {
   display: flex;
   flex-grow: 1;
-  height: 60px;
+  height: 40px;
 
   z-index:-10;
 
