@@ -13,23 +13,29 @@
 using namespace psjjjj;
 using namespace std;
 
-DEFINE_int32(port, 1233, "Socket listen port");
+DEFINE_int32(port, 1234, "Socket listen port");
 DEFINE_string(out, "tmp", "Result file path");
+DEFINE_string(module_path, "data/vhdl", "Chip module path");
+DEFINE_string(module_list, "chip_list.txt", "Chip module list file name");
 
 void handle_request(int clnt_sock) {
     char request_str[255555] = "";
     read(clnt_sock, request_str, sizeof(request_str) - 1);
     RequestProto request;
-    request.ParseFromString(string(request_str));
+    request.ParseFromArray(request_str, sizeof(request_str) - 1);
     
     string result;
     EnginePtr engine = Engine::createEngine(FLAGS_out);
+    engine->addChipModules(FLAGS_module_path, FLAGS_module_list);
     switch (request.type()) {
         case 0:
-            result = engine->getVHDLParsingResult();
+            result = engine->getCircuitParsingResult(request.circuit().SerializeAsString());
             break;
         case 1:
             result = engine->getSimulationResult(request.vhdl_code());
+            break;
+        case 2:
+            result = engine->getChipModuleList();
             break;
         default:
             result = "";

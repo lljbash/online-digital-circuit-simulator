@@ -54,6 +54,10 @@ angular.module('app', ['flowchart'])
             },
             {
               type: flowchartConstants.bottomConnectorType,
+              id: 4
+            },
+            {
+              type: flowchartConstants.bottomConnectorType,
               id: 5
             }
           ]
@@ -109,7 +113,7 @@ angular.module('app', ['flowchart'])
         destination: 1
       },
       {
-        source: 5,
+        source: 4,
         destination: 14
       },
       {
@@ -123,6 +127,8 @@ $scope.flowchartselected = [];
 var modelservice = Modelfactory(model, $scope.flowchartselected);
 
 $scope.model = model;
+$scope.inputArray = new Array();
+$scope.inputNum = 0;
 $scope.modelservice = modelservice;
 
 $scope.keyDown = function (evt) {
@@ -156,59 +162,74 @@ $scope.keyUp = function (evt) {
 
 $scope.addNewNode = function () {
   var nodeName = prompt("Chip type:", "New node");
-  if (!nodeName) {
-    return;
-  }
-
-  var newNode = {
-    name: nodeName,
-    id: nextNodeID++,
-    x: 200,
-    y: 100,
-    color: '#F15B26',
-    connectors: [
-      {
-        id: nextConnectorID++,
-        type: flowchartConstants.topConnectorType
-      },
-      {
-        id: nextConnectorID++,
-        type: flowchartConstants.topConnectorType
-      },
-      {
-        id: nextConnectorID++,
-        type: flowchartConstants.bottomConnectorType
-      },
-      {
-        id: nextConnectorID++,
-        type: flowchartConstants.bottomConnectorType
-      }
-    ]
-  };
-
-  model.nodes.push(newNode);
+  $http({
+    method:'POST',
+    data:{'data' : nodeName},
+    url:'/add'
+  }).then(function successCallback(response){
+    if (!nodeName) {
+      return;
+    }
+    console.log(response.data);
+    var pinsNum = parseInt(response.data);
+    var connectors_array = new Array();
+    for(var i=0;i<pinsNum;i++){
+        if(i<pinsNum / 2){
+            connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.topConnectorType};
+        }
+        else{
+            connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.bottomConnectorType};
+        }
+    }
+    var newNode = {
+      name: nodeName,
+      id: nextNodeID++,
+      x: 200,
+      y: 100,
+      color: '#F15B26',
+      connectors: connectors_array
+    };
+    model.nodes.push(newNode);
+  }, function errorCallback(response){
+  });
 };
 
 $scope.activateWorkflow = function() {
 
   $http({
     method: 'POST',
-    data: {'data' : model},
+    data: {'data' : model, 'activation':$scope.inputArray},
     url: '/test'
   }).then(function successCallback(response) {
 
     console.log(response.data);
     $scope.filename = response.data;
-    var redirect_url = "/submitted/" + $scope.filename;
-    window.location = redirect_url;
+    if(response.data == "error"){
+        console.log("error");
+        window.location = '/error';
+    }
+    else{
+        console.log("success");
+        var redirect_url = "/submitted/" + $scope.filename;
+        window.location = redirect_url;
+    }
   }, function errorCallback(response) {
 
   });
-
 // Original Code
 //  angular.forEach($scope.model.edges, function(edge) {
 //    edge.active = !edge.active;
 //  });
+};
+
+$scope.inputActivation = function() {
+    var selectedNodes = modelservice.nodes.getSelectedNodes();
+    angular.forEach(selectedNodes, function(node){
+        var inputType_s = prompt("Please input your activation(0/1):", '0');
+        var inputType = parseInt(inputType_s);
+        $scope.inputArray[$scope.inputNum++] = {input:inputType, id:node.id};
+        console.log('inputType:' + inputType);
+    });
 };
 
 $scope.addNewInputConnector = function () {
@@ -249,7 +270,7 @@ $scope.callbacks = {
     console.log('mouserover')
   },
   isValidEdge: function (source, destination) {
-    return source.type === flowchartConstants.bottomConnectorType && destination.type === flowchartConstants.topConnectorType;
+    return true;
   },
   edgeAdded: function (edge) {
     console.log("edge added");

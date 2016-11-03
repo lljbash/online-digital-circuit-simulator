@@ -5,9 +5,11 @@ message ChipModuleProto {
     required string name = 1; //74LS...
     message Pin {
         required string name = 1;
-        required string type = 2; // "in" or "out"
+        required string type = 2; // "in" or "out" or "vcc" or "gnd"
     }
     repeated Pin pins = 2;
+    optional string port_code = 3;
+    optional string entity_code = 4;
 }
 
 message ChipModuleListProto {

@@ -3,7 +3,7 @@ body {
 }
 
 .button-overlay {
-  position: absolute;
+  position: relative;
   top: 40px;
   left: 40px;
   z-index: 10;
@@ -42,7 +42,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 100px;
+  min-width: 150px;
   border-radius: 5px;
 
   background-color: #F15B26;
@@ -52,7 +52,7 @@ body {
 
 .fc-node.fc-hover {
   -webkit-filter: brightness(70%);
-  filter: brightness(70%);;
+  filter: brightness(70%);
 }
 
 .fc-node.fc-selected {
@@ -92,6 +92,8 @@ body {
   display: flex;
   flex-grow: 1;
   height: 60px;
+
+  z-index:-10;
 
   justify-content: center;
 }
