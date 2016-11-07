@@ -73,7 +73,10 @@ TEST_F(CircuitParserTest, ParseSimpleCircuitiWithActivation) {
     chip->set_type("input");
     chip->set_id("input");
     auto act = new CircuitProto::Chip::Activation;
-    act->set_initial(false);
+    act->set_initial(true);
+    act->add_jumping_time(4);
+    act->add_jumping_time(5);
+    act->set_repeat(true);
     chip->set_allocated_activation(act);
     chip = circuit.add_chips();
     chip->set_type("output");
