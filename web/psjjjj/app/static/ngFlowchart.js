@@ -873,26 +873,90 @@ if (!Function.prototype.bind) {
 
   'use strict';
 
-  function Edgedrawingservice() {
+  function Edgedrawingservice(flowchartConstants) {
 
-    this.getEdgeDAttribute = function(pt1, pt2) {
+    function top_topAttribute(pt1, pt2) {
+      var miny = pt1.y > pt2.y ? pt2.y : pt1.y;
+      return 'L ' + (pt1.x) + ', ' + (miny-25)
+          + 'L ' + (pt2.x) + ', ' + (miny-25)
+          + 'L ' + pt2.x + ', ' + (pt2.y);
+    }
+
+    function bottom_bottomAttribute(pt1, pt2) {
+      var maxy = pt1.y > pt2.y ? pt1.y : pt2.y;
+      return 'L ' + (pt1.x) + ', ' + (maxy+25)
+          + 'L ' + (pt2.x) + ', ' + (maxy+25)
+          + 'L ' + pt2.x + ', ' + (pt2.y);
+    }
+
+    function top_bottom_normalAttribute(pt1, pt2) {
+      return defaultAttribute(pt1, pt2);
+    }
+
+    function bottom_top_normalAttribute(pt1, pt2) {
+      return defaultAttribute(pt1, pt2);
+    }
+
+    function top_bottom_reverseAttribute(pt1, pt2) {
+      var centralX = (pt1.x + pt2.x) / 2;
+      return 'L ' + (pt1.x) + ', ' + (pt1.y-25)
+          + 'L ' + centralX + ', ' + (pt1.y-25)
+          + 'L ' + centralX + ', ' + (pt2.y+25)
+          + 'L ' + pt2.x + ', ' + (pt2.y+25)
+          + 'L ' + pt2.x + ', ' + (pt2.y);
+    }
+
+    function bottom_top_reverseAttribute(pt1, pt2) {
+      var centralX = (pt1.x + pt2.x) / 2;
+      return 'L ' + (pt1.x) + ', ' + (pt1.y+25)
+          + 'L ' + centralX + ', ' + (pt1.y+25)
+          + 'L ' + centralX + ', ' + (pt2.y-25)
+          + 'L ' + pt2.x + ', ' + (pt2.y-25)
+          + 'L ' + pt2.x + ', ' + (pt2.y);
+    }
+
+    function defaultAttribute(pt1, pt2) {
+      var centralY = (pt1.y + pt2.y) / 2;
+      return 'L ' + pt1.x + ', ' + centralY
+          + 'L ' + pt2.x + ', ' + centralY
+          + 'L ' + pt2.x + ', ' + pt2.y;
+    }
+
+    this.getEdgeDAttribute = function(pt1, pt2, type1, type2) {
       var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
-        if (pt1.y === pt2.y) {
-          console.log("two y's same!");
-          dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+25)
-              + 'L ' + (pt2.x) + ', ' + (pt2.y+25)
-              + 'L ' + (pt2.x) + ', ' + (pt2.y-25)
-              + 'L ' + pt1.x + ', ' + (pt1.y-25)
-              + 'L ' + pt1.x + ', ' + (pt1.y);
+      if (type1 === flowchartConstants.topConnectorType) {
+
+        if (type2 === flowchartConstants.topConnectorType) {
+          dAddribute += top_topAttribute(pt1, pt2);
+        } else if (type2 === flowchartConstants.bottomConnectorType) {
+          if (50 < pt1.y - pt2.y) {
+            dAddribute += top_bottom_normalAttribute(pt1, pt2);
+          } else {
+            dAddribute += top_bottom_reverseAttribute(pt1, pt2);
+          }
         } else {
-          var centralY = (pt1.y + pt2.y) / 2;
-          dAddribute += 'L ' + pt1.x + ', ' + centralY
-              + 'L ' + pt2.x + ', ' + centralY
-              + 'L ' + pt2.x + ', ' + pt2.y;
+          dAddribute += defaultAttribute(pt1, pt2);
         }
+
+      } else if(type1 === flowchartConstants.bottomConnectorType){
+        if (type2 === flowchartConstants.bottomConnectorType) {
+          dAddribute += bottom_bottomAttribute(pt1, pt2);
+        } else if (type2 === flowchartConstants.topConnectorType) {
+          if (50 < pt2.y - pt1.y) {
+            dAddribute += bottom_top_normalAttribute(pt1, pt2);
+          } else {
+            dAddribute += bottom_top_reverseAttribute(pt1, pt2);
+          }
+        } else {
+          dAddribute += top_bottom_reverseAttribute(pt1, pt2);
+        }
+      } else {
+          dAddribute += defaultAttribute(pt1, pt2);
+      }
       return dAddribute;
     };
 
+    Edgedrawingservice.$inject = ["flowchartConstants"];
   }
 
   angular
@@ -989,7 +1053,8 @@ if (!Function.prototype.bind) {
             }
 
             edgeDragging.gElement.css('display', 'block');
-            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2));
+            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1,
+                edgeDragging.dragPoint2, draggedEdgeSource.type));
             edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
             edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
           }
@@ -1016,7 +1081,8 @@ if (!Function.prototype.bind) {
               y: event.clientY + dragOffset.y
             };
 
-            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2));
+            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1,
+                edgeDragging.dragPoint2, draggedEdgeSource.type));
             edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
             edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
 
@@ -1090,7 +1156,8 @@ if (!Function.prototype.bind) {
                 edgeDragging.magnetActive = true;
 
                 edgeDragging.dragPoint2 = modelservice.connectors.getCenteredCoord(connector.id);
-                edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2));
+                edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1,
+                    edgeDragging.dragPoint2, draggedEdgeSource.type, connector.type));
                 edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
                 edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
 
@@ -1409,12 +1476,12 @@ module.run(['$templateCache', function($templateCache) {
     '        ng-mouseenter="edgeMouseEnter($event, edge)"\n' +
     '        ng-mouseleave="edgeMouseLeave($event, edge)"\n' +
     '        ng-attr-class="{{(modelservice.edges.isSelected(edge) && flowchartConstants.selectedClass + \' \' + flowchartConstants.edgeClass) || edge == mouseOver.edge && flowchartConstants.hoverClass + \' \' + flowchartConstants.edgeClass || edge.active && flowchartConstants.activeClass + \' \' + flowchartConstants.edgeClass || flowchartConstants.edgeClass}}"\n' +
-    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge))}}"></path>\n' +
+    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), modelservice.connectors.getConnector(edge.source).type, modelservice.connectors.getConnector(edge.destination).type)}}"></path>\n' +
     '    </g>\n' +
     '    <g ng-if="dragAnimation == flowchartConstants.dragAnimationRepaint && edgeDragging.isDragging">\n' +
     '\n' +
     '      <path class="{{ flowchartConstants.edgeClass }} {{ flowchartConstants.draggingClass }}"\n' +
-    '            ng-attr-d="{{getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2)}}"></path>\n' +
+    '            ng-attr-d="{{getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, draggedEdgeSource.type, connector.type)}}"></path>\n' +
     '      <circle class="edge-endpoint" r="4" ng-attr-cx="{{edgeDragging.dragPoint2.x}}"\n' +
     '              ng-attr-cy="{{edgeDragging.dragPoint2.y}}"></circle>\n' +
     '\n' +
