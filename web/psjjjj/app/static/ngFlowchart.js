@@ -875,12 +875,10 @@ if (!Function.prototype.bind) {
 
   function Edgedrawingservice() {
 
-    this.getEdgeDAttribute = function(pt1, pt2, edge) {
+    this.getEdgeDAttribute = function(pt1, pt2) {
       var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
-      if (edge === undefined) {
         if (pt1.y === pt2.y) {
           console.log("two y's same!");
-          // TODO finish this
           dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+25)
               + 'L ' + (pt2.x) + ', ' + (pt2.y+25)
               + 'L ' + (pt2.x) + ', ' + (pt2.y-25)
@@ -892,7 +890,6 @@ if (!Function.prototype.bind) {
               + 'L ' + pt2.x + ', ' + centralY
               + 'L ' + pt2.x + ', ' + pt2.y;
         }
-      }
       return dAddribute;
     };
 
@@ -1019,7 +1016,7 @@ if (!Function.prototype.bind) {
               y: event.clientY + dragOffset.y
             };
 
-            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, null));
+            edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2));
             edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
             edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
 
@@ -1093,7 +1090,7 @@ if (!Function.prototype.bind) {
                 edgeDragging.magnetActive = true;
 
                 edgeDragging.dragPoint2 = modelservice.connectors.getCenteredCoord(connector.id);
-                edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2, null));
+                edgeDragging.pathElement.attr('d', Edgedrawingservice.getEdgeDAttribute(edgeDragging.dragPoint1, edgeDragging.dragPoint2));
                 edgeDragging.circleElement.attr('cx', edgeDragging.dragPoint2.x);
                 edgeDragging.circleElement.attr('cy', edgeDragging.dragPoint2.y);
 
