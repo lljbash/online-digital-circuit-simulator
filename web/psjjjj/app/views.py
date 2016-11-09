@@ -1,12 +1,16 @@
 from app import app
 from app import modulelist
-from flask import render_template, redirect, flash, url_for, send_from_directory, request
-from .forms import VHDLForm
+from flask import render_template, redirect, flash, url_for, send_from_directory, request, g
+from werkzeug.utils import secure_filename
+from .forms import VHDLForm, LoginForm,ResetPasswordForm, CheckPasswordForm, TaskForm
 from client import MyClient
 from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
 from py2proto.circuit_pb2 import CircuitProto
+from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist
+from model import User
+from flask_login import login_user, logout_user, login_required, current_user
 import json
 
 @app.route('/')
@@ -14,9 +18,54 @@ import json
 def index():
     return render_template('index.html')
 
-@app.route('/login')
+@app.route('/login', methods = ['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    form = LoginForm()
+    error = None
+    if form.validate_on_submit():
+        error = tryToLogin(form.name.data, form.password.data)
+        if error == None:
+            user = User(form.name.data)
+            login_user(user, remember = True)
+            flash('You are logged in!')
+            return redirect(url_for('index'))
+    if error != None:
+        flash(error)
+    return render_template('login.html', form = form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/account/resetPassword/check', methods=['GET', 'POST'])
+@login_required
+def checkPassword():
+    form = CheckPasswordForm()
+    if request.method == 'POST':
+        psw = form.password.data
+        if tryToLogin(g.user.id, psw) == None:
+            return redirect(url_for('resetPassword'))
+        else:
+            flash('Wrong password. Try again.')
+    return render_template('checkPassword.html', form = form)
+
+@app.route('/account/resetPassword/reset', methods=['GET', 'POST'])
+@login_required
+def resetPassword():
+    form = ResetPasswordForm()
+    if request.method == 'POST':
+        psw = form.password.data
+        flash('successfully reset your password!')
+        verifyPassword(g.user.id, psw)
+        return redirect(url_for('index'))
+    return render_template('resetPassword.html', form = form)
+
+@app.route('/account')
+@login_required
+def account():
+    return render_template('accountInfo.html')
 
 @app.route('/studio')
 def addProject():
@@ -130,6 +179,7 @@ def test():
         if reply.success:
             return reply.file_name
     return "test.txt"
+
 @app.route('/add', methods=['POST'])
 def add():
     data = json.loads(request.data)
@@ -141,4 +191,34 @@ def add():
                 pins_num = pins_num + 1
             return str(pins_num)
     return '8'
-    
+
+
+@app.route('/addTask', methods=['GET', 'POST'])
+def addTask():
+    form = TaskForm()
+    if request.method == 'POST':
+        saveTask(form)
+        tasktitle = form.title.data
+        flash('Successfully add task <' + tasktitle + '>')
+        return redirect(url_for('tasklist'))
+    return render_template('addTask.html', form = form)
+
+@app.route('/tasklist')
+def tasklist():
+    tasks = getTasklist()
+    return render_template('tasklist.html', tasks = tasks)
+
+@app.route('/task/<title>')
+def showTask(title):
+    content_md = getTask(title)
+    print content_md
+    return render_template('task.html', title = title, content_md = content_md)
+
+@app.route('/submissionlist')
+def submissionlist():
+    submissions = getSubmissionlist(g.user.id)
+    return render_template('submissionlist.html', submissions = submissions)
+
+@app.before_request
+def befor_request():
+    g.user = current_user

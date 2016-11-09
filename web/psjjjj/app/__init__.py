@@ -3,6 +3,9 @@ from flask import Flask
 from client import MyClient
 from py2proto.module_pb2 import ChipModuleListProto
 from py2proto.request_pb2 import RequestProto
+from flask_login import LoginManager
+from config import UPLOAD_FOLDER
+import MySQLdb
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -22,4 +25,10 @@ in_module.pins.add()
 out_module = modulelist.modules.add()
 out_module.name = 'output'
 out_module.pins.add()
+lm = LoginManager()
+lm.init_app(app)
+lm.login_view = "login"
+conn = MySQLdb.connect(host = 'localhost', user = 'root', passwd = 'psjjjj')
+conn.select_db('test')
+print "Database connected!"
 from app import views

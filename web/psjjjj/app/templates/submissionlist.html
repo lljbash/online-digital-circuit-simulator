@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Task List</h1>
+    {% for submission in submissions %}
+        {{ submission[0] }} <!--submission id-->
+        {{ submission[1] }} <!--author-->
+        {{ submission[2] }} <!--time-->
+        {{ submission[3] }} <!--task title-->
+        {{ submission[4] }} <!--result-->
+        <br>
+    {% endfor %}
+{% endblock %}
