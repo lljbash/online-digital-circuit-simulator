@@ -899,19 +899,19 @@ if (!Function.prototype.bind) {
 
     function top_bottom_reverseAttribute(pt1, pt2) {
       var centralX = (pt1.x + pt2.x) / 2;
-      return 'L ' + (pt1.x) + ', ' + (pt1.y-25)
-          + 'L ' + centralX + ', ' + (pt1.y-25)
-          + 'L ' + centralX + ', ' + (pt2.y+25)
-          + 'L ' + pt2.x + ', ' + (pt2.y+25)
+      return 'L ' + (pt1.x) + ', ' + (pt1.y-28)
+          + 'L ' + centralX + ', ' + (pt1.y-28)
+          + 'L ' + centralX + ', ' + (pt2.y+28)
+          + 'L ' + pt2.x + ', ' + (pt2.y+28)
           + 'L ' + pt2.x + ', ' + (pt2.y);
     }
 
     function bottom_top_reverseAttribute(pt1, pt2) {
       var centralX = (pt1.x + pt2.x) / 2;
-      return 'L ' + (pt1.x) + ', ' + (pt1.y+25)
-          + 'L ' + centralX + ', ' + (pt1.y+25)
-          + 'L ' + centralX + ', ' + (pt2.y-25)
-          + 'L ' + pt2.x + ', ' + (pt2.y-25)
+      return 'L ' + (pt1.x) + ', ' + (pt1.y+28)
+          + 'L ' + centralX + ', ' + (pt1.y+28)
+          + 'L ' + centralX + ', ' + (pt2.y-28)
+          + 'L ' + pt2.x + ', ' + (pt2.y-28)
           + 'L ' + pt2.x + ', ' + (pt2.y);
     }
 
@@ -924,6 +924,15 @@ if (!Function.prototype.bind) {
 
     this.getEdgeDAttribute = function(pt1, pt2, type1, type2) {
       var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
+
+      if (pt1.y === pt2.y) {
+        dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+23)
+            + 'L ' + pt2.x + ', ' + (pt1.y+23)
+            + 'L ' + pt2.x + ', ' + (pt2.y-23)
+            + 'L ' + pt1.x + ', ' + (pt1.y-23)
+            + 'L ' + pt1.x + ', ' + (pt1.y);
+      } else
+
       if (type1 === flowchartConstants.topConnectorType) {
 
         if (type2 === flowchartConstants.topConnectorType) {
