@@ -43,12 +43,13 @@ body {
   justify-content: center;
   align-items: center;
   min-width: 150px;
-  border-radius: 5px;
+  border: 2px;
+  border-radius: 3px;
   border-style: solid;
 
   background-color: #fff;
   color: #000;
-  font-size: 20px;
+  font-size: 15px;
 }
 
 .fc-node.fc-hover {
@@ -68,6 +69,10 @@ body {
 .fc-node p {
   padding: 0 15px;
   text-align: center;
+  margin: 10px;
+  font-family: "Times Roman", times, serif;
+  font-size: large;
+  font-weight: 500;
 }
 
 .fc-topConnectors, .fc-bottomConnectors {
@@ -76,23 +81,23 @@ body {
   width: 100%;
 
   display: flex;
-  flex-direction: row;
-
+  flex-flow: row;
   z-index: -10;
 }
 
 .fc-topConnectors {
-  top: -20px;
+  top: -25px;
 }
 
 .fc-bottomConnectors {
-  bottom: -20px;
+  bottom: -25px;
 }
 
 .fc-magnet {
   display: flex;
   flex-grow: 1;
-  height: 40px;
+  height: 30px;
+  min-width: 10px;
 
   z-index:-10;
 
@@ -108,15 +113,15 @@ body {
 }
 
 .fc-connector {
-  width: 18px;
-  height: 18px;
+  width: 10px;
+  height: 10px;
 
-  border: 10px solid transparent;
+  border: 2px solid black;
   -moz-background-clip: padding; /* Firefox 3.6 */
   -webkit-background-clip: padding; /* Safari 4? Chrome 6? */
   background-clip: padding-box;
-  border-radius: 50% 50%;
-  background-color:black;
+  /*  border-radius: 50% 50%; */
+  background-color:white;
   color: white;
 }
 
@@ -126,13 +131,13 @@ body {
 
 .fc-edge {
   stroke: black;
-  stroke-width: 4;
+  stroke-width: 3;
   fill: transparent;
 }
 
 .fc-edge.fc-hover {
   stroke: black;
-  stroke-width: 6;
+  stroke-width: 5;
   fill: transparent;
 }
 
@@ -144,7 +149,7 @@ body {
 
 .fc-edge.fc-selected {
   stroke: red;
-  stroke-width: 4;
+  stroke-width: 2;
   fill: transparent;
 }
 

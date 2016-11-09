@@ -1516,6 +1516,7 @@ module.run(['$templateCache', function($templateCache) {
     '  ng-attr-style="position: absolute; top: {{ node.y }}px; left: {{ node.x }}px;"\n' +
     '  ng-dblclick="callbacks.doubleClick($event)">\n' +
     '  <div class="innerNode">\n' +
+    // '    <svg width="10" height="50"><circle cx="0" cy="25" r="10"/></svg>\n' +
     '    <p>{{ node.name }}</p>\n' +
     '\n' +
     '    <div class="{{flowchartConstants.topConnectorClass}}">\n' +
