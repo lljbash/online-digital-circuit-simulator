@@ -65,7 +65,7 @@ def resetPassword():
 @app.route('/account')
 @login_required
 def account():
-    return render_template('accountInfo.html')
+    return render_template('account.html')
 
 @app.route('/studio')
 def addProject():
