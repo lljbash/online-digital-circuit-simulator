@@ -8,7 +8,7 @@ from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
 from py2proto.circuit_pb2 import CircuitProto
-from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist
+from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission
 from model import User
 from flask_login import login_user, logout_user, login_required, current_user
 import json
@@ -123,6 +123,7 @@ def error(error_message):
 
 @app.route('/test', methods=['POST'])
 def test():
+    saveSubmission()
     request_proto = RequestProto()
     request_proto.type = 0;
     data = json.loads(request.data)
@@ -197,7 +198,10 @@ def add():
 def addTask():
     form = TaskForm()
     if request.method == 'POST':
-        saveTask(form)
+        message = saveTask(form)
+        if message != None:
+            flash(message)
+            return render_template('addTask.html', form = form)
         tasktitle = form.title.data
         flash('Successfully add task <' + tasktitle + '>')
         return redirect(url_for('tasklist'))

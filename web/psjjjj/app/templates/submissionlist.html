@@ -2,11 +2,13 @@
 {% block content %}
 <h1>Task List</h1>
     {% for submission in submissions %}
-        {{ submission[0] }} <!--submission id-->
-        {{ submission[1] }} <!--author-->
+        submission id = {{ submission[0] }} <!--submission id-->
+        author={{ submission[1] }} <!--author-->
         {{ submission[2] }} <!--time-->
+        <br>
         {{ submission[3] }} <!--task title-->
         {{ submission[4] }} <!--result-->
+        <br>
         <br>
     {% endfor %}
 {% endblock %}

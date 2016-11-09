@@ -49,12 +49,18 @@ def random_str(randomlength=6):
 def saveTask(form):
     cursor = conn.cursor()
     addr = UPLOAD_FOLDER + '/' + form.title.data
+    sql = "select * from tasks where title = '%s'"%(form.title.data)
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    if data != None:
+        return 'title exists'
     sql = "insert tasks values('%s', '%s')"%(form.title.data, addr)
     cursor.execute(sql)
     cursor.close()
     conn.commit()
     os.makedirs(addr)
     form.content.data.save(addr + '/content')
+    return None
 
 def getTask(taskname):
     cursor = conn.cursor()
@@ -82,7 +88,7 @@ def getTasklist():
     return tasklist
     
 #save and get submission
-def getSubmissionlist(name)
+def getSubmissionlist(name):
     cursor = conn.cursor()
     sql = "select * from submissions where author = '%s'"%(name)
     cursor.execute(sql)
@@ -90,7 +96,7 @@ def getSubmissionlist(name)
     cursor.close()
     return data
 
-def getSubmission(sub_id)
+def getSubmission(sub_id):
     cursor = conn.cursor()
     sql = "select * from submissions where id = '%s'"%(sub_id)
     cursor.execute(sql)
@@ -98,15 +104,16 @@ def getSubmission(sub_id)
     cursor.close()
     return data
 
-def saveSubmission()
+def saveSubmission():
     author = g.user.id
-    time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    save_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
     id_time = time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()))
     sub_id = id_time + author
     result = 'accepted'
     task = 'task'
     cursor = conn.cursor()
-    sql = "insert into submissions values('%s', '%s', '%s', '%s', '%s')"%(sub_id, author, time, task, result)
+    sql = "insert submissions values('%s', '%s', '%s', '%s', '%s')"%(sub_id, author, save_time, task, result)
+    print sql
     cursor.execute(sql)
     cursor.close()
     conn.commit()
