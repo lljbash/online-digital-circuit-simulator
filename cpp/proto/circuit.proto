@@ -7,8 +7,8 @@ message CircuitProto{
         required string type = 2; // type name of the chip
         message Activation {
             required bool initial = 1;
-            repeated int32 times = 2;
-            repeated bool values = 3;
+            repeated int32 jumping_time = 2;
+            optional bool repeat = 3 [default = false];
         }
         optional Activation activation = 3; // if it is an input
     }

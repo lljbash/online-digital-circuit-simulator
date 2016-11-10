@@ -89,29 +89,42 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
     code += "\n);\nend main;\n";
     
     // 2.3 generate main struct
+    const vector<string> std_logic = {"'0'", "'1'"};
     code += "architecture struct of main is\n\n";
     for (const string &name : module_set) {
         code += mod_organizer_->generateComponentCodeForModule(name) + "\n";
     }
     for (const auto &input : input_map) {
-        code += string("signal ") + input.first + ": std_logic;\n";
+        code += string("signal ") + input.first + ": std_logic := ";
+        if (activation.count(input.first)) {
+            code += std_logic[activation.at(input.first).initial()] + ";\n";
+        }
+        else {
+            code += "'1';\n";
+        }
     }
     for (const string &name : wire_list) {
         code += string("signal ") + name + ": std_logic;\n";
     }
     code += "\nbegin\n\n";
-    for (const auto &input : input_set) { // TODO: time relavant activation
+    for (const auto &input : input_set) {
         if (activation.count(input.first)) {
             auto act = activation.at(input.first);
-            if (act.initial() == true) {
-                code += input.second + " <= '1';\n";
+            int current_time = 0;
+            bool initial = act.initial();
+            code += "process\n";
+            code += "begin\n";
+            for (int i = 0; i < act.jumping_time_size(); ++i) {
+                initial = !initial;
+                code += "    wait for ";
+                code += to_string(act.jumping_time(i) - current_time) + "ps;\n";
+                code += "    " + input.first + " <= " + std_logic[initial] + ";\n";
+                current_time = act.jumping_time(i);
             }
-            else {
-                code += input.second + " <= '0';\n";
+            if (!act.repeat()) {
+                code += "    wait;\n";
             }
-        }
-        else {
-            code += input.second + " <= '1';\n";
+            code += "end process;\n\n";
         }
     }
     for (const auto &input : input_map) {
