@@ -43,7 +43,7 @@ cv::Mat VcdParser::parse(string vcd_code) {
         }
     }
     
-    const int kLeft = 100;
+    const int kLeft = 200;
     const int kPs = 5;
     const int kTime = 100;
     const int kUpDown = 10;

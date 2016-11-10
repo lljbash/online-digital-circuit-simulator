@@ -62,7 +62,7 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
             cv::Mat mat = VcdParser::parse(string(code));
             string png_name = md5sum + ".png";
             cv::imwrite(png_name, mat);
-            cmd = string("mv ") + png_name + "../web/psjjjj/app/static";
+            cmd = string("mv ") + png_name + " ../web/psjjjj/app/static";
             system(cmd.c_str());
             
             srp.set_success(true);
