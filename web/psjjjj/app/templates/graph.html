@@ -45,6 +45,8 @@
       <button ng-click="activateWorkflow()" class="btn btn-danger">
         开始/结束仿真
       </button>
+      <button ng-click="downloadResult()" class="btn btn-info">下载仿真结果</button>
+      <button ng-click="showResult()" class="btn btn-warning">显示仿真结果</button>
     </div>
     <fc-canvas model="model" selected-objects="flowchartselected" callbacks="callbacks"
                automatic-resize="true"></fc-canvas>

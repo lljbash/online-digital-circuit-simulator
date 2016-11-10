@@ -127,3 +127,6 @@ def test():
 		if reply.success:
 			return reply.file_name
 	return "test.txt"
+@app.route('/result/<filename>', methods=['GET'])
+def result(filename):
+	return render_template('result.html', url=url_for('static', filename=filename))

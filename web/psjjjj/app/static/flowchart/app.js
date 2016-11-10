@@ -241,18 +241,18 @@ $scope.activateWorkflow = function() {
         console.log("error");
         window.location = '/error';
     }
-    else{
-        console.log("success");
-        var redirect_url = "/submitted/" + $scope.filename;
-        window.location = redirect_url;
-    }
   }, function errorCallback(response) {
 
   });
-// Original Code
-//  angular.forEach($scope.model.edges, function(edge) {
-//    edge.active = !edge.active;
-//  });
+};
+
+$scope.downloadResult = function() {
+  var redirect_url = "/submitted/" + $scope.filename;
+  window.location = redirect_url;
+};
+
+$scope.showResult = function() {
+  window.location = "/result/" + $scope.filename + ".jpg";
 };
 
 $scope.inputActivation = function() {
