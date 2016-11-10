@@ -252,7 +252,7 @@ $scope.downloadResult = function() {
 };
 
 $scope.showResult = function() {
-  window.location = "/result/" + $scope.filename + ".jpg";
+  window.location = "/result/" + $scope.filename + ".png";
 };
 
 $scope.inputActivation = function() {
