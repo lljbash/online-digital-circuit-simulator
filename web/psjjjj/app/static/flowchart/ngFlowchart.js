@@ -575,6 +575,16 @@ if (!Function.prototype.bind) {
 
       modelservice.connectors = {
 
+        getNode: function (connectorId) {
+          for(var i=0; i<model.nodes.length; i++) {
+            for(var j=0; j<model.nodes[i].connectors.length; j++) {
+              if(model.nodes[i].connectors[j].id == connectorId) {
+                return model.nodes[i];
+              }
+            }
+          }
+        },
+
         getConnector: function(connectorId) {
           for(var i=0; i<model.nodes.length; i++) {
             for(var j=0; j<model.nodes[i].connectors.length; j++) {
@@ -915,6 +925,27 @@ if (!Function.prototype.bind) {
           + 'L ' + pt2.x + ', ' + (pt2.y);
     }
 
+    function top_bottom_inNodeAttribute(pt1, pt2) {
+      var minx = pt1.x > pt2.x ? pt2.x : pt1.x;
+      var offset = (pt1.x - pt2.x) / 10;
+      minx += 150;
+      return 'L ' + (pt1.x) + ', ' + (pt1.y-20+offset)
+          + 'L ' + minx + ', ' + (pt1.y-20+offset)
+          + 'L ' + minx + ', ' + (pt2.y+20+offset)
+          + 'L ' + pt2.x + ', ' + (pt2.y+20+offset)
+          + 'L ' + pt2.x + ', ' + (pt2.y);
+    }
+
+    function bottom_top_inNodeAttribute(pt1, pt2) {
+      var minx = pt1.x > pt2.x ? pt2.x : pt1.x;
+      minx += 150;
+      return 'L ' + (pt1.x) + ', ' + (pt1.y+20)
+          + 'L ' + minx + ', ' + (pt1.y+20)
+          + 'L ' + minx + ', ' + (pt2.y-20)
+          + 'L ' + pt2.x + ', ' + (pt2.y-20)
+          + 'L ' + pt2.x + ', ' + (pt2.y);
+    }
+
     function defaultAttribute(pt1, pt2) {
       var centralY = (pt1.y + pt2.y) / 2;
       return 'L ' + pt1.x + ', ' + centralY
@@ -922,7 +953,7 @@ if (!Function.prototype.bind) {
           + 'L ' + pt2.x + ', ' + pt2.y;
     }
 
-    this.getEdgeDAttribute = function(pt1, pt2, type1, type2) {
+    this.getEdgeDAttribute = function(pt1, pt2, type1, type2, sameNode) {
       var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
 
       if (pt1.y === pt2.y) {
@@ -938,7 +969,9 @@ if (!Function.prototype.bind) {
         if (type2 === flowchartConstants.topConnectorType) {
           dAddribute += top_topAttribute(pt1, pt2);
         } else if (type2 === flowchartConstants.bottomConnectorType) {
-          if (50 < pt1.y - pt2.y) {
+          if (sameNode === true) {
+            dAddribute += top_bottom_inNodeAttribute(pt1, pt2);
+          } else if (50 < pt1.y - pt2.y) {
             dAddribute += top_bottom_normalAttribute(pt1, pt2);
           } else {
             dAddribute += top_bottom_reverseAttribute(pt1, pt2);
@@ -951,7 +984,9 @@ if (!Function.prototype.bind) {
         if (type2 === flowchartConstants.bottomConnectorType) {
           dAddribute += bottom_bottomAttribute(pt1, pt2);
         } else if (type2 === flowchartConstants.topConnectorType) {
-          if (50 < pt2.y - pt1.y) {
+          if (sameNode === true) {
+            dAddribute += bottom_top_inNodeAttribute(pt1, pt2);
+          } else if (50 < pt2.y - pt1.y) {
             dAddribute += bottom_top_normalAttribute(pt1, pt2);
           } else {
             dAddribute += bottom_top_reverseAttribute(pt1, pt2);
@@ -1485,7 +1520,7 @@ module.run(['$templateCache', function($templateCache) {
     '        ng-mouseenter="edgeMouseEnter($event, edge)"\n' +
     '        ng-mouseleave="edgeMouseLeave($event, edge)"\n' +
     '        ng-attr-class="{{(modelservice.edges.isSelected(edge) && flowchartConstants.selectedClass + \' \' + flowchartConstants.edgeClass) || edge == mouseOver.edge && flowchartConstants.hoverClass + \' \' + flowchartConstants.edgeClass || edge.active && flowchartConstants.activeClass + \' \' + flowchartConstants.edgeClass || flowchartConstants.edgeClass}}"\n' +
-    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), modelservice.connectors.getConnector(edge.source).type, modelservice.connectors.getConnector(edge.destination).type)}}"></path>\n' +
+    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), modelservice.connectors.getConnector(edge.source).type, modelservice.connectors.getConnector(edge.destination).type, modelservice.connectors.getNode(edge.source).id === modelservice.connectors.getNode(edge.destination).id)}}"></path>\n' +
     '    </g>\n' +
     '    <g ng-if="dragAnimation == flowchartConstants.dragAnimationRepaint && edgeDragging.isDragging">\n' +
     '\n' +
