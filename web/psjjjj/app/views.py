@@ -20,18 +20,17 @@ def index():
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
-    form = LoginForm()
     error = None
-    if form.validate_on_submit():
-        error = tryToLogin(form.name.data, form.password.data)
+    if request.method == 'POST':
+        error = tryToLogin(request.form['id'], request.form['password'])
         if error == None:
-            user = User(form.name.data)
+            user = User(request.form['id'])
             login_user(user, remember = True)
             flash('You are logged in!')
             return redirect(url_for('index'))
     if error != None:
         flash(error)
-    return render_template('login.html', form = form)
+    return render_template('login.html')
 
 @app.route('/logout')
 @login_required

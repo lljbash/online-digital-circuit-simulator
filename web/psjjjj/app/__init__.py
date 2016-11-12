@@ -1,5 +1,5 @@
-import os
 from flask import Flask
+from flask_bootstrap import Bootstrap
 from client import MyClient
 from py2proto.module_pb2 import ChipModuleListProto
 from py2proto.request_pb2 import RequestProto
@@ -8,9 +8,8 @@ from config import UPLOAD_FOLDER
 import MySQLdb
 
 app = Flask(__name__)
+Bootstrap(app)
 app.config.from_object('config')
-app.jinja_env.variable_start_string = '{{ '
-app.jinja_env.variable_end_string = ' }}'
 init_cli = MyClient()
 init_cli.connect()
 init_request = RequestProto()
