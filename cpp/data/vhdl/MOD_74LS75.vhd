@@ -51,7 +51,7 @@ begin
     begin
     if CP12_13'event and CP12_13 = 1 then 
         if (d1 = '0') then cur_q1 = '0'; cur_nq1 = '1';
-        elseif(d1 = '1') then cur_q1 = '1'; cur_nq1 = '0';
+        elsif(d1 = '1') then cur_q1 = '1'; cur_nq1 = '0';
         end if;
 
     end if;
@@ -61,7 +61,7 @@ begin
     begin
     if CP12_13'event and CP12_13 = 1 then 
         if (d2 = '0') then cur_q2 = '0'; cur_nq2 = '1';
-        elseif(d2 = '1') then cur_q2 = '1'; cur_nq2 = '0';
+        elsif(d2 = '1') then cur_q2 = '1'; cur_nq2 = '0';
         end if;
 
     end if;
@@ -71,7 +71,7 @@ begin
     begin
     if CP34_4'event and CP34_4 = 1 then 
         if (d3 = '0') then cur_q3 = '0'; cur_nq3 = '1';
-        elseif(d3 = '1') then cur_q3 = '1'; cur_nq3 = '0';
+        elsif(d3 = '1') then cur_q3 = '1'; cur_nq3 = '0';
         end if;
 
     end if;
@@ -81,7 +81,7 @@ begin
     begin
     if CP34_4'event and CP34_4 = 1 then 
         if (d4 = '0') then cur_q4 = '0'; cur_nq4 = '1';
-        elseif(d4 = '1') then cur_q4 = '1'; cur_nq4 = '0';
+        elsif(d4 = '1') then cur_q4 = '1'; cur_nq4 = '0';
         end if;
 
     end if;
