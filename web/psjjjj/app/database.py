@@ -52,8 +52,8 @@ def saveTask(form):
     sql = "select * from tasks where title = '%s'"%(form.title.data)
     cursor.execute(sql)
     data = cursor.fetchall()
-    if data != None:
-        return 'title exists'
+    #if data != None:
+    #    return 'title exists'
     sql = "insert tasks values('%s', '%s')"%(form.title.data, addr)
     cursor.execute(sql)
     cursor.close()
