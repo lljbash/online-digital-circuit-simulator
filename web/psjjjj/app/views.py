@@ -2,6 +2,7 @@ from app import app
 from app import modulelist
 from flask import render_template, request, url_for, send_from_directory
 from client import MyClient
+from item import Item
 from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
@@ -14,7 +15,13 @@ def login():
     return render_template('login.html')
 @app.route('/index')
 def index():
-	return render_template('index.html')
+	items = []
+	for i in range(10):
+		item = Item()
+		item.name = "Thumbnail label"
+		item.description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit."
+		items.append(item)
+	return render_template('index.html', items=items)
 @app.route('/login_test', methods = ['POST'])
 def login_test():
 	return '{state:success}'

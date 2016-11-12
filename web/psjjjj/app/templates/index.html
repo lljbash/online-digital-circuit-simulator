@@ -15,13 +15,14 @@
     </form>
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+          <img src="{{ url_for('static', filename='images/default.png') }}" style="height:40px;width:40px;">
+          <span class="caret"></span>
+        </button>
         <ul class="dropdown-menu" role="menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li class="divider"></li>
-          <li><a href="#">Separated link</a></li>
+          <li><a href="#">修改资料</a></li>
+          <li><a href="#">退出登录</a></li>
+          <li><a href="#">查看提交情况</a></li>
         </ul>
       </li>
     </ul>
@@ -29,11 +30,22 @@
 </nav>
 {% endblock %}
 {% block content %}
-<div class="jumbotron">
-  <div class="container">
-    <h1>Welcome to PSJJJJ!</h1>
-    <p>Build your digital circuit with this system!</p>
-    <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+<div class="container">
+  <div class="row">
+  {% for item in items %}
+    <div class="col-sm-6 col-md-3">
+      <div class="thumbnail">
+        <img src="{{ url_for('static', filename='images/circuit.jpeg') }}">
+        <div class="caption">
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+          <p>
+            <a href="#" class="btn btn-primary" role="button">查看详情</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}
