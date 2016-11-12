@@ -40,12 +40,12 @@
           <h3>{{ item.name }}</h3>
           <p>{{ item.description }}</p>
           <p>
-            <a href="#" class="btn btn-primary" role="button">查看详情</a>
+            <a href="/detail/{{ userid }}" class="btn btn-primary" role="button">查看详情</a>
           </p>
         </div>
       </div>
     </div>
-    {% endfor %}
+  {% endfor %}
   </div>
 </div>
 {% endblock %}

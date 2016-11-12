@@ -2,6 +2,7 @@ from app import app
 from app import modulelist
 from flask import render_template, request, url_for, send_from_directory
 from client import MyClient
+from detail import Detail
 from item import Item
 from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
@@ -16,12 +17,18 @@ def login():
 @app.route('/index')
 def index():
 	items = []
+	userid = "maq14"
 	for i in range(10):
 		item = Item()
 		item.name = "Thumbnail label"
 		item.description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit."
 		items.append(item)
-	return render_template('index.html', items=items)
+	return render_template('index.html', items=items, userid=userid)
+@app.route('/detail/<userid>', methods=['GET', 'POST'])
+def detail(userid):
+	detail = Detail()
+	detail.text = "<h1 class=\"text-uppercase\">Task</h1>"
+	return render_template('detail.html', detail=detail)
 @app.route('/login_test', methods = ['POST'])
 def login_test():
 	return '{state:success}'
