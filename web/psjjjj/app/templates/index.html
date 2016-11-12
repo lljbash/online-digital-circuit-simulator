@@ -37,10 +37,10 @@
       <div class="thumbnail">
         <img src="{{ url_for('static', filename='images/circuit.jpeg') }}">
         <div class="caption">
-          <h3>{{ item.name }}</h3>
-          <p>{{ item.description }}</p>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.abstract }}</p>
           <p>
-            <a href="/detail/{{ userid }}" class="btn btn-primary" role="button">查看详情</a>
+            <a href="/detail/{{ item.itemID }}" class="btn btn-primary" role="button">查看详情</a>
           </p>
         </div>
       </div>

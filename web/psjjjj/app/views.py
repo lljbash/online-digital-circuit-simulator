@@ -20,8 +20,9 @@ def index():
 	userid = "maq14"
 	for i in range(10):
 		item = Item()
-		item.name = "Thumbnail label"
-		item.description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit."
+		item.title = "Thumbnail label"
+		item.abstract = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit."
+		item.itemID = i
 		items.append(item)
 	return render_template('index.html', items=items, userid=userid)
 @app.route('/detail/<userid>', methods=['GET', 'POST'])
