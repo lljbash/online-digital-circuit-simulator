@@ -5,12 +5,14 @@ import random, string
 from forms import TaskForm
 from config import UPLOAD_FOLDER
 from flask import g
+from flask_login import current_user
 import os
 import time
+from item import Item
 
 def tryToLogin(name, password):
     cursor = conn.cursor()
-    sql = "select salt, password from students where id = '%s'"%(name)
+    sql = "select salt, password from users where id = '%s'"%(name)
     cursor.execute(sql)  
     data = cursor.fetchone()
     cursor.close()
@@ -25,9 +27,9 @@ def verifyPassword(name, password):
     cursor = conn.cursor()
     salt = random_str(6)
     new_hash_password = getmd5(password, salt)
-    sql = "update students set salt = '%s' where id = '%s'"%(salt, name)
+    sql = "update users set salt = '%s' where id = '%s'"%(salt, name)
     cursor.execute(sql)
-    sql = "update students set password = '%s' where id = '%s'" %(new_hash_password, name)
+    sql = "update users set password = '%s' where id = '%s'" %(new_hash_password, name)
     cursor.execute(sql)
     conn.commit()
     
@@ -62,28 +64,29 @@ def saveTask(form):
     form.content.data.save(addr + '/content')
     return None
 
-def getTask(taskname):
+def getTask(taskID):
     cursor = conn.cursor()
-    sql = "select taskdir from tasks where title = '%s'"%(taskname)
+    sql = "select title, detail from tasks where id = %s"%(taskID)
     cursor.execute(sql)
     data = cursor.fetchone()
-    cursor.close()    
-    addr = data[0]
-    fileobj = open(addr + '/content')
-    try:
-        content_md = fileobj.read()
-    finally:
-        fileobj.close()
-    return content_md
+    cursor.close()
+    item = Item()
+    item.title = data[0]
+    item.detail = data[1]
+    return item
 
 def getTasklist():
     cursor = conn.cursor()
-    sql = "select title from tasks"
+    sql = "select id, title, abstract from tasks"
     cursor.execute(sql)
     data = cursor.fetchall()
     tasklist = []
     for task in data:
-        tasklist.append(task[0])
+        item = Item()
+        item.itemID = task[0]
+        item.title = task[1]
+        item.abstract = task[2]
+        tasklist.append(item)      
     cursor.close()
     return tasklist
     
@@ -119,3 +122,10 @@ def saveSubmission():
     conn.commit()
     
     
+def getUserInfo(field):
+    userid = current_user.id
+    cursor = conn.cursor()
+    sql = "select %s from users where id = %s"%(field, userid)
+    cursor.execute(sql)
+    data = cursor.fetchone()
+    return data[0]

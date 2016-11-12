@@ -1,6 +1,6 @@
-from app import app
+from app import app, admin_permission, stu_permission
 from app import modulelist
-from flask import render_template, redirect, flash, url_for, send_from_directory, request, g
+from flask import render_template, redirect, flash, url_for, send_from_directory, request, g, current_app
 from werkzeug.utils import secure_filename
 from .forms import VHDLForm, LoginForm,ResetPasswordForm, CheckPasswordForm, TaskForm
 from client import MyClient
@@ -8,15 +8,17 @@ from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
 from py2proto.circuit_pb2 import CircuitProto
-from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission
+from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo
 from model import User
 from flask_login import login_user, logout_user, login_required, current_user
+from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Principal, Identity, identity_changed
 import json
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    items = getTasklist()
+    return render_template('index.html', items = items, userid = g.user.id)
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -25,7 +27,8 @@ def login():
         error = tryToLogin(request.form['id'], request.form['password'])
         if error == None:
             user = User(request.form['id'])
-            login_user(user, remember = True)
+            login_user(user, remember = False)
+            identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
             flash('You are logged in!')
             return redirect(url_for('index'))
     if error != None:
@@ -37,6 +40,7 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
 
 @app.route('/account/resetPassword/check', methods=['GET', 'POST'])
 @login_required
@@ -71,6 +75,7 @@ def addProject():
     return render_template('studio.html')
 
 @app.route('/studio/vhdl', methods=['GET', 'POST'])
+@stu_permission.require()
 def addVHDL():
     form = VHDLForm()
     if form.validate_on_submit():
@@ -89,9 +94,10 @@ def addVHDL():
             return redirect(url_for('submitted', filename = reply.file_name))
         else:
             return redirect(url_for('error', error_message = reply.error_message))
-    return render_template('addVHDL.html', form=form)
+    return render_template('vhdl.html', form=form)
 
 @app.route('/studio/graph', methods=['GET', 'POST'])
+@stu_permission.require()
 def addGraph():
     form = VHDLForm()
     if form.validate_on_submit():
@@ -194,6 +200,7 @@ def add():
 
 
 @app.route('/addTask', methods=['GET', 'POST'])
+@admin_permission.require()
 def addTask():
     form = TaskForm()
     if request.method == 'POST':
@@ -211,11 +218,10 @@ def tasklist():
     tasks = getTasklist()
     return render_template('tasklist.html', tasks = tasks)
 
-@app.route('/task/<title>')
-def showTask(title):
-    content_md = getTask(title)
-    print content_md
-    return render_template('task.html', title = title, content_md = content_md)
+@app.route('/detail/<taskID>')
+def showTask(taskID):
+    item = getTask(taskID)
+    return render_template('detail.html', item = item)
 
 @app.route('/submissionlist')
 def submissionlist():
@@ -225,3 +231,11 @@ def submissionlist():
 @app.before_request
 def befor_request():
     g.user = current_user
+
+@identity_loaded.connect_via(app)
+def on_identity_load(sender, identity):
+    identity.user = current_user
+    if getUserInfo('flag') == 0:
+        identity.provides.add(RoleNeed('stu'))
+    if getUserInfo('flag') == 1:
+        identity.provides.add(RoleNeed('admin'))
