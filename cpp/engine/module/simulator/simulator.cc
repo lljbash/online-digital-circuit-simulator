@@ -48,7 +48,7 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
         int compile_status;
         int wait_status = wait(&compile_status);
         
-        if (compile_status != 1) {
+        if (compile_status == 0) {
             string cmd = string("cp ") + dir + string("/main.vcd ") +
                          output_file_path + string("/") + md5sum;
             PSJJJJ_SHOW("%s\n", cmd.c_str());
