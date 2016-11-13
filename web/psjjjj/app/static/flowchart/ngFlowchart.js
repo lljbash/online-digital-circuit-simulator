@@ -1037,27 +1037,10 @@ if (!Function.prototype.bind) {
       edgedraggingService.dragstart = function(connector) {
         return function(event) {
 
-          if (connector.type == flowchartConstants.topConnectorType) {
-            for (var i = 0; i < model.edges.length; i++) {
-              if (model.edges[i].destination == connector.id) {
-                var swapConnector = modelservice.connectors.getConnector(model.edges[i].source);
-                applyFunction(function() {
-                  modelservice.edges.delete(model.edges[i]);
-                });
-                break;
-              }
-            }
-          }
-
           edgeDragging.isDragging = true;
 
-          if (swapConnector != undefined) {
-            draggedEdgeSource = swapConnector;
-            edgeDragging.dragPoint1 = modelservice.connectors.getCenteredCoord(swapConnector.id);
-          } else {
-            draggedEdgeSource = connector;
-            edgeDragging.dragPoint1 = modelservice.connectors.getCenteredCoord(connector.id);
-          }
+          draggedEdgeSource = connector;
+          edgeDragging.dragPoint1 = modelservice.connectors.getCenteredCoord(connector.id);
 
           var canvas = modelservice.getCanvasHtmlElement();
           if (!canvas) {
