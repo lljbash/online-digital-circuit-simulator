@@ -232,7 +232,7 @@ $scope.activateWorkflow = function() {
   $http({
     method: 'POST',
     data: {'data' : model, 'activation':$scope.inputArray},
-    url: '/test'
+    url: '/simulate'
   }).then(function successCallback(response) {
 
     console.log(response.data);
@@ -245,6 +245,24 @@ $scope.activateWorkflow = function() {
 
   });
 };
+
+$scope.save = function() {
+  $http({
+    method: 'POST',
+    data: {'data' : model, 'activation':$scope.inputArray},
+    url: '/save'
+  }).then(function successCallback(response) {
+
+    console.log(response.data);
+    $scope.filename = response.data;
+    if(response.data == "error"){
+        console.log("error");
+        window.location = '/error';
+    }
+  }, function errorCallback(response) {
+
+  });
+}
 
 $scope.downloadResult = function() {
   var redirect_url = "/submitted/" + $scope.filename;

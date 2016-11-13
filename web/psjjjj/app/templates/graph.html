@@ -20,13 +20,14 @@
     </form>
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+          <img src="{{ url_for('static', filename='images/default.png') }}" style="height:40px;width:40px;">
+          <span class="caret"></span>
+        </button>
         <ul class="dropdown-menu" role="menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li class="divider"></li>
-          <li><a href="#">Separated link</a></li>
+          <li><a href="#">修改资料</a></li>
+          <li><a href="#">退出登录</a></li>
+          <li><a href="#">查看提交情况</a></li>
         </ul>
       </li>
     </ul>
@@ -38,15 +39,15 @@
 <div ng-app="app" ng-controller="AppCtrl" ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
   <div style="width: 80%; height: 1000px; float:right; border:3px solid black; border-radius: 5px">
     <div class="btn-group">
-      <button ng-click="addNewNode()" class="btn btn-primary">增加元件</button>
       <button ng-click="deleteSelected()"
-              ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0" class="btn btn-success">删除元件/线路</button>
-      <button ng-click="inputActivation()" ng-disabled="modelservice.nodes.getSelectedNodes().length == 0" class="btn btn-warning">输入激励</button>
+              ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0" class="btn btn-success">delete</button>
+      <button ng-click="inputActivation()" ng-disabled="modelservice.nodes.getSelectedNodes().length == 0" class="btn btn-warning">input activation</button>
+      <button ng-click="save_circuit()" class="btn btn-primary">save</button>
       <button ng-click="activateWorkflow()" class="btn btn-danger">
-        开始/结束仿真
+        submit
       </button>
-      <button ng-click="downloadResult()" class="btn btn-info">下载仿真结果</button>
-      <button ng-click="showResult()" class="btn btn-warning">显示仿真结果</button>
+      <button ng-click="downloadResult()" class="btn btn-info">download</button>
+      <button ng-click="showResult()" class="btn btn-warning">show</button>
     </div>
     <fc-canvas model="model" selected-objects="flowchartselected" callbacks="callbacks"
                automatic-resize="true"></fc-canvas>

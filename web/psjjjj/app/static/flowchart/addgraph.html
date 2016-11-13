@@ -1,0 +1,43 @@
+{% extends "bootstrap/base.html" %}
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='flowchart/flowchart.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='flowchart/onedatastyle.css') }}" type="text/css">
+  <link href="{{ url_for('static', filename='jstree/dist/themes/default/style.min.css') }}" rel="stylesheet">
+{% endblock %}
+{% block navbar %}
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <img alt="Brand" src="{{ url_for('static', filename='brand.jpeg') }}">
+      </a>
+    </div>
+    <button type="button" class="btn btn-primary navbar-btn">save</button>
+    <button type="button" class="btn btn-warning navbar-btn">submit</button>
+    <button type="button" class="btn btn-info navbar-btn">result</button>
+    <button type="button" class="btn btn-info navbar-btn">download</button>
+  </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div id=filetree></div>
+  <div id="right-pane">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation"><a href="#graph" role="tab" data-toggle="tab">graph</a></li>
+      <li role="presentation"><a href="#vhdl" role="tab" data-toggle="tab">vhdl</a></li>
+    </ul>
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane" id="graph">
+        <div ng-app="app" ng-controller="AppCtrl" ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
+          <fc-canvas model="model" selected-objects="flowchartselected" callbacks="callbacks" automatic-resize="true"></fc-canvas>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="vhdl">
+        <pre id="editor"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
