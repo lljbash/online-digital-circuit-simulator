@@ -42,8 +42,8 @@
       <button ng-click="deleteSelected()"
               ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0" class="btn btn-success">delete</button>
       <button ng-click="inputActivation()" ng-disabled="modelservice.nodes.getSelectedNodes().length == 0" class="btn btn-warning">input activation</button>
-      <button ng-click="save_circuit()" class="btn btn-primary">save</button>
-      <button ng-click="activateWorkflow()" class="btn btn-danger">
+      <button ng-click="save_circuit({{ itemID }})" class="btn btn-primary">save</button>
+      <button ng-click="activateWorkflow({{ itemID }})" class="btn btn-danger">
         submit
       </button>
       <button ng-click="downloadResult()" class="btn btn-info">download</button>

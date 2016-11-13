@@ -227,11 +227,11 @@ $scope.$on('addnode', function(event, data){
   });
 });
 
-$scope.activateWorkflow = function() {
+$scope.activateWorkflow = function(itemID) {
 
   $http({
     method: 'POST',
-    data: {'data' : model, 'activation':$scope.inputArray},
+    data: {'data' : model, 'activation':$scope.inputArray, 'itemID':itemID},
     url: '/simulate'
   }).then(function successCallback(response) {
 
@@ -246,10 +246,10 @@ $scope.activateWorkflow = function() {
   });
 };
 
-$scope.save = function() {
+$scope.save = function(itemID) {
   $http({
     method: 'POST',
-    data: {'data' : model, 'activation':$scope.inputArray},
+    data: {'data' : model, 'activation':$scope.inputArray, 'itemID':itemID},
     url: '/save'
   }).then(function successCallback(response) {
 
