@@ -152,32 +152,6 @@ $scope.inputActivation = function() {
     });
 };
 
-$scope.addNewInputConnector = function () {
-  var connectorName = prompt("Enter a connector name:", "New connector");
-  if (!connectorName) {
-    return;
-  }
-
-  var selectedNodes = modelservice.nodes.getSelectedNodes($scope.model);
-  for (var i = 0; i < selectedNodes.length; ++i) {
-    var node = selectedNodes[i];
-    node.connectors.push({id: nextConnectorID++, type: flowchartConstants.topConnectorType});
-  }
-};
-
-$scope.addNewOutputConnector = function () {
-  var connectorName = prompt("Enter a connector name:", "New connector");
-  if (!connectorName) {
-    return;
-  }
-
-  var selectedNodes = modelservice.nodes.getSelectedNodes($scope.model);
-  for (var i = 0; i < selectedNodes.length; ++i) {
-    var node = selectedNodes[i];
-    node.connectors.push({id: nextConnectorID++, type: flowchartConstants.bottomConnectorType});
-  }
-};
-
 $scope.deleteSelected = function () {
   modelservice.deleteSelected();
 };
