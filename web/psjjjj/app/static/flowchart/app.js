@@ -159,6 +159,7 @@ $scope.deleteSelected = function () {
 $scope.callbacks = {
   edgeDoubleClick: function () {
     console.log('Edge double clicked.');
+    $scope.deleteSelected();
   },
   edgeMouseOver: function () {
     console.log('mouserover')
@@ -181,6 +182,7 @@ $scope.callbacks = {
   nodeCallbacks: {
     'doubleClick': function (event) {
       console.log('Node was doubleclicked.')
+      $scope.deleteSelected();
     }
   }
 };
