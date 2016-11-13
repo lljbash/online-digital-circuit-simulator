@@ -16,6 +16,7 @@ var app = angular.module('app', ['flowchart']);
     var nextConnectorID = 20;
     var ctrlDown = false;
     $scope.filename = "example.txt"
+    var offsetNum = 0;
 
     var model = {
       nodes: [
@@ -63,36 +64,7 @@ $scope.keyUp = function (evt) {
 
 $scope.addNewNode = function () {
   var nodeName = prompt("Chip type:", "New node");
-  $http({
-    method:'POST',
-    data:{'data' : nodeName},
-    url:'/add'
-  }).then(function successCallback(response){
-    if (!nodeName) {
-      return;
-    }
-    console.log(response.data);
-    var pinsNum = parseInt(response.data);
-    var connectors_array = new Array();
-    for(var i=0;i<pinsNum;i++){
-        if(i<pinsNum / 2){
-            connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.topConnectorType};
-        }
-        else{
-            connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.bottomConnectorType};
-        }
-    }
-    var newNode = {
-      name: nodeName,
-      id: nextNodeID++,
-      x: 200,
-      y: 100,
-      color: '#F15B26',
-      connectors: connectors_array
-    };
-    model.nodes.push(newNode);
-  }, function errorCallback(response){
-  });
+  $scope.$emit('addnode', nodeName);
 };
 
 $scope.$on('addnode', function(event, data){
@@ -115,15 +87,18 @@ $scope.$on('addnode', function(event, data){
             connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.bottomConnectorType};
         }
     }
+    var _x = 50 + (offsetNum % 5) * 20;
+    var _y = 60 + (offsetNum % 5 + offsetNum / 5) * 10;
     var newNode = {
       name: data,
       id: nextNodeID++,
-      x: 200,
-      y: 100,
+      x: _x,
+      y: _y,
       color: '#F15B26',
       connectors: connectors_array
     };
     model.nodes.push(newNode);
+    offsetNum++;
   }, function errorCallback(response){
   });
 });
