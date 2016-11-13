@@ -25,19 +25,19 @@ def index():
 		item.itemID = i
 		items.append(item)
 	return render_template('index.html', items=items, userid=userid)
-@app.route('/detail/<userid>', methods=['GET', 'POST'])
-def detail(userid):
-	detail = Detail()
-	detail.text = "<h1 class=\"text-uppercase\">Task</h1>"
-	return render_template('detail.html', detail=detail)
+@app.route('/detail/<itemID>', methods=['GET', 'POST'])
+def detail(itemID):
+	item = Item()
+	item.text = "<h1 class=\"text-uppercase\">Task" + itemID +"</h1>"
+	return render_template('detail.html', item=item)
 @app.route('/login_test', methods = ['POST'])
 def login_test():
 	return '{state:success}'
 @app.route('/studio/vhdl')
 def vhdl():
 	return render_template('vhdl.html')
-@app.route('/studio/graph')
-def graph():
+@app.route('/studio/graph/<itemID>')
+def graph(itemID):
 	return render_template('graph.html')
 @app.route('/vhdlcode_simulate', methods = ['POST'])
 def vhdlcode_simulate():

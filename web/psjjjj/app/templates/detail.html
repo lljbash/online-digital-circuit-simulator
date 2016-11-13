@@ -31,7 +31,7 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-  {{ detail.text|safe }}
-  <button type="button" class="btn btn-primary">开始项目</button>
+  {{ item.text|safe }}
+  <a href="/studio/graph/{{ item.itemID }}" class="btn btn-primary" role="button">begin project</a>
 </div>
 {% endblock %}
