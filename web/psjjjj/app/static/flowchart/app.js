@@ -21,10 +21,16 @@ var app = angular.module('app', ['flowchart']);
     var items = url.split("/");
     var length = items.length;
     var itemID = items[length-1];
+    var submissionID = '';
+    if (length == 7) { 
+        itemID = items[length -2];
+        submissionID = items[length - 1];
+    }
+    console.log(length)
     console.log(url);
     $http({
       method:'POST',
-      data:{'itemID' : itemID},
+      data:{'itemID' : itemID, 'submissionID' : submissionID},
       url:'/load'
     }).then(function successCallback(response){
       console.log("success!");
@@ -37,11 +43,18 @@ var app = angular.module('app', ['flowchart']);
     
       for(var i=0;i<length;i++){
         model.nodes.push(nodes[i]);
+	nextNodeID = Math.max(nextNodeID, nodes[i].id) + 1;
+	var connectorLength = nodes[i].connectors.length;
+	for(var j=0;j<connectorLength;j++){
+	  var connector = nodes[i].connectors[j];
+	  nextConnectorID = Math.max(nextConnectorID, connector.id) + 1;
+        }
       }
       length = edges.length;
       for(var i=0;i<length;i++){
         model.edges.push(edges[i]);
       }
+
     }, function errorCallback(response){
       console.log("error!");  
     });

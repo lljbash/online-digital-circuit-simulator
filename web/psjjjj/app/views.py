@@ -102,6 +102,10 @@ def addVHDL():
 def addGraph(itemID):
     return render_template('graph.html', itemID = itemID)
 
+@app.route('/studio/graph/<itemID>/<subID>', methods = ['GET', 'POST'])
+def addGraph_sub(itemID, subID):
+    return render_template('graph.html', itemID = itemID, submissionID = subID)
+
 @app.route('/submitted/<filename>', methods=['GET', 'POST'])
 def submitted(filename):
     return render_template('submitted.html', url = url_for('download', filename = filename))
@@ -214,13 +218,12 @@ def tasklist():
 @app.route('/detail/<itemID>')
 def showTask(itemID):
     item = getTask(itemID)
-    print item.itemID
     return render_template('detail.html', item = item)
 
-@app.route('/submissionlist')
-def submissionlist():
-    submissions = getSubmissionlist(g.user.id)
-    return render_template('submissionlist.html', submissions = submissions)
+@app.route('/submissionlist/<itemID>')
+def submissionlist(itemID):
+    submissions = getSubmissionlist(itemID)
+    return render_template('submissionlist.html', submissions = submissions, itemID = itemID)
 
 @app.before_request
 def befor_request():
@@ -239,5 +242,6 @@ def load():
     if request.method == 'POST':
         data = json.loads(request.data)
         itemID = data['itemID']
-        print data
-        return getModel(itemID)
+        submissionID = data['submissionID']
+        print submissionID
+        return getModel(itemID, submissionID)

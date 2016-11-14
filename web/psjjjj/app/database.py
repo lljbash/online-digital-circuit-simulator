@@ -8,7 +8,7 @@ from flask import g
 from flask_login import current_user
 import os
 import time
-from item import Item
+from item import Item, Submission
 import json
 
 def tryToLogin(name, password):
@@ -93,13 +93,25 @@ def getTasklist():
     return tasklist
     
 #save and get submission
-def getSubmissionlist(name):
+def getSubmissionlist(itemID):
     cursor = conn.cursor()
-    sql = "select * from submissions where author = '%s'"%(name)
+    sql = "select title from tasks where id = '%s'"%(itemID)
+    cursor.execute(sql)
+    data = cursor.fetchone()
+    title = data[0]
+    sql = "select time, result, id from submissions where author = '%s' and task = '%s'"%(g.user.id, itemID)
     cursor.execute(sql)
     data = cursor.fetchall()
     cursor.close()
-    return data
+    sublist = []
+    for sub in data:
+        submission = Submission()
+        submission.title = title
+        submission.time = sub[0]
+        submission.status = sub[1]
+        submission.submissionID = sub[2]
+        sublist.append(submission)
+    return sublist
 
 def getSubmission(sub_id):
     cursor = conn.cursor()
@@ -112,11 +124,10 @@ def getSubmission(sub_id):
 def saveSubmission(subID, data):
     author = g.user.id
     save_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
-    task = 'task'
+    task = '0'
     cursor = conn.cursor()
-    sql = "insert submissions (id, author, time, task) values('%s', '%s', '%s', '%s')"\
+    sql = "insert submissions (id, author, time, task, result) values('%s', '%s', '%s', '%s', 'AC')"\
            %(subID, author, save_time, task)
-    print sql
     f = open(UPLOAD_FOLDER + "/graph/" + subID + ".json", 'w')
     f.write(data)
     f.close()
@@ -138,13 +149,11 @@ def saveProject(request_data):
     itemID = data['itemID']
     author = g.user.id
     saveID = getmd5(author + str(itemID), '158647')
-    print author, itemID, saveID
     save_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
     task = 'task'
     cursor = conn.cursor()
     sql = "insert savedfiles (id, author, time, task) values('%s', '%s', '%s', '%s')"\
            %(saveID, author, save_time, itemID)
-    print sql
     f = open(UPLOAD_FOLDER + "/graph/" + saveID + ".json", 'w')
     f.write(request_data)
     f.close()
@@ -152,11 +161,12 @@ def saveProject(request_data):
     cursor.close()
     conn.commit()
 
-def getModel(itemID):
+def getModel(itemID, submissionID):
     author = g.user.id
-    print itemID
     saveID = getmd5(author + itemID, '158647')
-    print author, itemID, saveID
+    if submissionID != '':
+        saveID = submissionID
+    print submissionID
     cursor = conn.cursor()
     try: 
         #saveID = '13e9a4962d7e0815e4af851608f49d73'

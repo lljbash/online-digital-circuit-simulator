@@ -4,3 +4,8 @@ class Item:
     detail = "";
     itemID = 0;
 
+class Submission:
+    title = "";
+    time = "";
+    statu = "";
+    submissionID = "";
