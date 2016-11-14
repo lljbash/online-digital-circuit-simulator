@@ -100,8 +100,7 @@ def addVHDL():
 @app.route('/studio/graph/<itemID>', methods=['GET', 'POST'])
 @stu_permission.require()
 def addGraph(itemID):
-    model = getModel(itemID)
-    return render_template('graph.html',  model = model)
+    return render_template('graph.html')
 
 @app.route('/submitted/<filename>', methods=['GET', 'POST'])
 def submitted(filename):
@@ -233,3 +232,10 @@ def on_identity_load(sender, identity):
         identity.provides.add(RoleNeed('stu'))
     if getUserInfo('flag') == 1:
         identity.provides.add(RoleNeed('admin'))
+
+@app.route('/load')
+def load():
+    if request.method == 'POST':
+        data = json.loads(request.data)
+        itemID = data['itemID']
+        return getModel(itemID)
