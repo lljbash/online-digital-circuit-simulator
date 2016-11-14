@@ -16,20 +16,34 @@ var app = angular.module('app', ['flowchart']);
     var nextConnectorID = 20;
     var ctrlDown = false;
     $scope.filename = "example.txt";
-    var model = [];
-    var url = $location.url();
+    var model = {nodes:[], edges:[]};
+    var url = $location.absUrl();
     var items = url.split("/");
     var length = items.length;
     var itemID = items[length-1];
+    console.log(url);
     $http({
       method:'POST',
       data:{'itemID' : itemID},
       url:'/load'
     }).then(function successCallback(response){
       console.log("success!");
-      model = JSON.parse(response);
+      console.log(response.data);
+      var nodes = response.data.nodes;
+      var edges = response.data.edges;
+      console.log(nodes);
+      console.log(edges);
+      var length = nodes.length;
+    
+      for(var i=0;i<length;i++){
+        model.nodes.push(nodes[i]);
+      }
+      length = edges.length;
+      for(var i=0;i<length;i++){
+        model.edges.push(edges[i]);
+      }
     }, function errorCallback(response){
-      console.log("error!" + response);
+      console.log("error!");  
     });
 $scope.flowchartselected = [];
 var modelservice = Modelfactory(model, $scope.flowchartselected);
@@ -155,6 +169,7 @@ $scope.activateWorkflow = function(itemID) {
 };
 
 $scope.save_circuit = function(itemID) {
+  console.log(itemID);
   $http({
     method: 'POST',
      data: {'data' : model, 'activation':$scope.inputArray, 'itemID':itemID},

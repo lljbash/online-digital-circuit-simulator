@@ -40,4 +40,4 @@ data text
 
 insert users values('2014011358', '51cd3ce4893e3965a6dd864090d455eb', 'zZTnps', 0, '??');
 
-exit;
+quit;

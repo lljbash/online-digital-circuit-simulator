@@ -1,14 +1,24 @@
-{% extends "base.html" %}
+{% extends "bootstrap/base.html" %}
 {% block content %}
-<h1>Task List</h1>
-    {% for submission in submissions %}
-        submission id = {{ submission[0] }} <!--submission id-->
-        author={{ submission[1] }} <!--author-->
-        {{ submission[2] }} <!--time-->
-        <br>
-        {{ submission[3] }} <!--task title-->
-        {{ submission[4] }} <!--result-->
-        <br>
-        <br>
-    {% endfor %}
+<div class="container">
+  <div class="page-header">
+    <h1>Task List</h1>
+  </div>
+  <div class="list-group">
+  {% for submission in submissions %}
+    <a href="/studio/graph/{{ itemID }}/{{ submission.submissionID }}" class="list-group-item active">
+    {% if submission.status=="AC" %}
+      <h4 class="list-group-item-heading">{{ submission.title }}<span class="label label-success">Success</span></h4>
+      <p class="list-group-item-text">submission.time</p>
+    {% else if submission.status=="CE" %}
+      <h4 class="list-group-item-heading">{{ submission.title }}<span class="label label-danger">Compile Error</span></h4>
+      <p class="list-group-item-text">submission.time</p>
+    {% else if submission.status=="WA" %}
+      <h4 class="list-group-item-heading">{{ submission.title }}<span class="label label-default">Wrong Answer</span></h4>
+      <p class="list-group-item-text">submission.time</p>
+    {% endif %}
+    </a>
+  {% endfor %}
+  </div>
+</div>
 {% endblock %}

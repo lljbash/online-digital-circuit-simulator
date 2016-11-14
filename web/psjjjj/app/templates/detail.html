@@ -20,9 +20,9 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li><a href="#">修改资料</a></li>
-          <li><a href="#">退出登录</a></li>
-          <li><a href="#">查看提交情况</a></li>
+          <li><a href="#">User</a></li>
+          <li><a href="#">logout</a></li>
+          <li><a href="#">history</a></li>
         </ul>
       </li>
     </ul>
@@ -33,5 +33,6 @@
 <div class="container">
   {{ item.text|safe }}
   <a href="/studio/graph/{{ item.itemID }}" class="btn btn-primary" role="button">begin project</a>
+  <a href="/submissionlist/{{ item.itemID }}" class="btn btn-primary" role="button">see history</a>
 </div>
 {% endblock %}
