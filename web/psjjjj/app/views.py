@@ -100,7 +100,7 @@ def addVHDL():
 @app.route('/studio/graph/<itemID>', methods=['GET', 'POST'])
 @stu_permission.require()
 def addGraph(itemID):
-    return render_template('graph.html')
+    return render_template('graph.html', itemID = itemID)
 
 @app.route('/submitted/<filename>', methods=['GET', 'POST'])
 def submitted(filename):
@@ -119,7 +119,7 @@ def save():
     saveProject(request.data)
     return "test.txt"
 
-@app.route('/submit', methods=['POST'])
+@app.route('/simulate', methods=['POST'])
 def test():
     request_proto = RequestProto()
     request_proto.type = 0;
@@ -211,9 +211,10 @@ def tasklist():
     tasks = getTasklist()
     return render_template('tasklist.html', tasks = tasks)
 
-@app.route('/detail/<taskID>')
-def showTask(taskID):
-    item = getTask(taskID)
+@app.route('/detail/<itemID>')
+def showTask(itemID):
+    item = getTask(itemID)
+    print item.itemID
     return render_template('detail.html', item = item)
 
 @app.route('/submissionlist')
@@ -233,9 +234,10 @@ def on_identity_load(sender, identity):
     if getUserInfo('flag') == 1:
         identity.provides.add(RoleNeed('admin'))
 
-@app.route('/load')
+@app.route('/load', methods = ['POST'])
 def load():
     if request.method == 'POST':
         data = json.loads(request.data)
         itemID = data['itemID']
+        print data
         return getModel(itemID)

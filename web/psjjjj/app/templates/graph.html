@@ -35,7 +35,7 @@
 {% endblock %}
 {% block content %}
 
- <div ng-app="app" ng-controller="AppCtrl" ng-init="model_s={{ model }}" ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
+ <div ng-app="app" ng-controller="AppCtrl"  ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
   <div style="width: 80%; height: 1000px; float:right; border:3px solid black; border-radius: 5px">
     <div class="btn-group">
       <button ng-click="deleteSelected()"

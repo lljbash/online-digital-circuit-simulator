@@ -74,6 +74,7 @@ def getTask(taskID):
     item = Item()
     item.title = data[0]
     item.detail = data[1]
+    item.itemID = taskID
     return item
 
 def getTasklist():
@@ -136,7 +137,8 @@ def saveProject(request_data):
     data = json.loads(request_data)
     itemID = data['itemID']
     author = g.user.id
-    saveID = getmd5(author + itemID, '158647')
+    saveID = getmd5(author + str(itemID), '158647')
+    print author, itemID, saveID
     save_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
     task = 'task'
     cursor = conn.cursor()
@@ -152,20 +154,21 @@ def saveProject(request_data):
 
 def getModel(itemID):
     author = g.user.id
+    print itemID
     saveID = getmd5(author + itemID, '158647')
-    print saveID
+    print author, itemID, saveID
     cursor = conn.cursor()
     try: 
+        #saveID = '13e9a4962d7e0815e4af851608f49d73'
         f = open(UPLOAD_FOLDER + "/graph/" + saveID + ".json", 'r' )
         data = f.read()
-        data = json.loads(data)
+        data = json.loads(data)       
         model = data['data']
-        print model
+        model = json.dumps(model)
         f.close()
         return model
     except:
-        model = "{'node':[], 'edges':[]}"
-        model = model.encode()
-        print model
+        model = '{"nodes":[], "edges":[]}'
+        #model = json.dumps(model)
         return model
 
