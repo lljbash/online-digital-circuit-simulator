@@ -42,19 +42,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 150px;
-  border: 2px;
-  border-radius: 3px;
-  border-style: solid;
 
   background-color: #fff;
   color: #000;
   font-size: 15px;
-}
-
-.fc-node.fc-hover {
-  -webkit-filter: brightness(70%);
-  filter: brightness(70%);
 }
 
 .fc-node.fc-selected {
@@ -64,15 +55,6 @@ body {
 
 .fc-node.fc-dragging {
   z-index: 10;
-}
-
-.fc-node p {
-  padding: 0 15px;
-  text-align: center;
-  margin: 10px;
-  font-family: "Times Roman", times, serif;
-  font-size: large;
-  font-weight: 500;
 }
 
 .fc-topConnectors, .fc-bottomConnectors {
@@ -191,3 +173,14 @@ body {
   vertical-align: bottom;
 }
 
+.chipname {
+  font-family: "Times Roman", times, serif;
+  font-size: large;
+  font-weight: 500;
+}
+
+.chipborder {
+  fill: white;
+  stroke: black;
+  stroke-width: 2;
+}
