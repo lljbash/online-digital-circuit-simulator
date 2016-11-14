@@ -16,12 +16,21 @@ var app = angular.module('app', ['flowchart']);
     var nextConnectorID = 20;
     var ctrlDown = false;
     $scope.filename = "example.txt";
-    //console.log($scope.model_s);
-    $scope.model = JSON.parse($scope.model_s);
-    //var model = [
-    //    nodes:[],
-    //    edges:[]
-    //];
+    var model = [];
+    var url = $location.url();
+    var items = url.split("/");
+    var length = items.length;
+    var itemID = items[length-1];
+    $http({
+      method:'POST',
+      data:{'itemID' : itemID},
+      url:'/load'
+    }).then(function successCallback(response){
+      console.log("success!");
+      model = JSON.parse(response);
+    }, function errorCallback(response){
+      console.log("error!" + response);
+    });
 $scope.flowchartselected = [];
 var modelservice = Modelfactory(model, $scope.flowchartselected);
 
