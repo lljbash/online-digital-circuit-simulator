@@ -28,7 +28,7 @@ out_module.pins.add()
 lm = LoginManager()
 lm.init_app(app)
 lm.login_view = "login"
-conn = MySQLdb.connect(host = 'localhost', user = 'root', passwd = 'psjjjj')
+conn = MySQLdb.connect(host = 'localhost', user = 'root', passwd = 'maqiang1995')
 conn.select_db('test')
 print "Database connected!"
 principals = Principal(app)
