@@ -780,7 +780,9 @@ if (!Function.prototype.bind) {
     topConnectorType: 'topConnector',
     bottomConnectorType: 'bottomConnector',
     dragAnimationRepaint: 'repaint',
-    dragAnimationShadow: 'shadow'
+    dragAnimationShadow: 'shadow',
+    vccNodeName: 'vcc',
+    gndNodeName: 'gnd'
   };
   constants.canvasClass = constants.htmlPrefix + '-canvas';
   constants.selectedClass = constants.htmlPrefix + '-selected';
@@ -1466,11 +1468,24 @@ module.run(['$templateCache', function($templateCache) {
     '  ng-attr-style="position: absolute; top: {{ node.y }}px; left: {{ node.x }}px;"\n' +
     '  ng-dblclick="callbacks.doubleClick($event)">\n' +
     '  <div class="innerNode">\n' +
-    '    <svg width="150" height="50">\n' +
+    '    <svg width="150" height="50" ng-if="node.name !== flowchartConstants.vccNodeName && node.name !== flowchartConstants.gndNodeName ">\n' +
     '    <g>\n' +
     '      <rect class="chipborder" x="1" y="1" width="148" height="48"/>\n' +
     '      <circle class="chipborder" cx="0" cy="25" r="8"/>\n' +
     '      <text class="chipname" x="75" y="28" text-anchor="middle">{{ node.name }}</text>\n' +
+    '    </g>\n' +
+    '    </svg>\n' +
+    '    <svg width="50" height="30" ng-if="node.name == flowchartConstants.vccNodeName">\n' +
+    '    <g>\n' +
+    '      <text class="chipname" x="25" y="20" text-anchor="middle">Vcc</text>\n' +
+    '      <line class="chipborder" x1="10" y1="29" x2="40" y2="29"/>' +
+    '    </g>\n' +
+    '    </svg>\n' +
+    '    <svg width="50" height="30" ng-if="node.name == flowchartConstants.gndNodeName">\n' +
+    '    <g>\n' +
+    '      <line class="chipborder" x1="1" y1="1" x2="49" y2="1"/>' +
+    '      <line class="chipborder" x1="13" y1="9" x2="37" y2="9"/>' +
+    '      <line class="chipborder" x1="21" y1="17" x2="29" y2="17"/>' +
     '    </g>\n' +
     '    </svg>\n' +
     '\n' +
