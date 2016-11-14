@@ -9,6 +9,7 @@ from flask_login import current_user
 import os
 import time
 from item import Item
+import json
 
 def tryToLogin(name, password):
     cursor = conn.cursor()
@@ -50,7 +51,7 @@ def random_str(randomlength=6):
 #save and get task
 def saveTask(form):
     cursor = conn.cursor()
-    addr = UPLOAD_FOLDER + '/' + form.title.data
+    addr = UPLOAD_FOLDER + '/tasks/' + form.title.data
     sql = "select * from tasks where title = '%s'"%(form.title.data)
     cursor.execute(sql)
     data = cursor.fetchall()
@@ -107,16 +108,17 @@ def getSubmission(sub_id):
     cursor.close()
     return data
 
-def saveSubmission():
+def saveSubmission(subID, data):
     author = g.user.id
     save_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
-    id_time = time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()))
-    sub_id = id_time + author
-    result = 'accepted'
     task = 'task'
     cursor = conn.cursor()
-    sql = "insert submissions values('%s', '%s', '%s', '%s', '%s')"%(sub_id, author, save_time, task, result)
+    sql = "insert submissions (id, author, time, task) values('%s', '%s', '%s', '%s')"\
+           %(subID, author, save_time, task)
     print sql
+    f = open(UPLOAD_FOLDER + "/graph/" + subID + ".json", 'w')
+    f.write(data)
+    f.close()
     cursor.execute(sql)
     cursor.close()
     conn.commit()
@@ -129,3 +131,41 @@ def getUserInfo(field):
     cursor.execute(sql)
     data = cursor.fetchone()
     return data[0]
+
+def saveProject(request_data):
+    data = json.loads(request_data)
+    itemID = data['itemID']
+    author = g.user.id
+    saveID = getmd5(author + itemID, '158647')
+    save_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    task = 'task'
+    cursor = conn.cursor()
+    sql = "insert savedfiles (id, author, time, task) values('%s', '%s', '%s', '%s')"\
+           %(saveID, author, save_time, itemID)
+    print sql
+    f = open(UPLOAD_FOLDER + "/graph/" + saveID + ".json", 'w')
+    f.write(request_data)
+    f.close()
+    cursor.execute(sql)
+    cursor.close()
+    conn.commit()
+
+def getModel(itemID):
+    author = g.user.id
+    saveID = getmd5(author + itemID, '158647')
+    print saveID
+    cursor = conn.cursor()
+    try: 
+        f = open(UPLOAD_FOLDER + "/graph/" + saveID + ".json", 'r' )
+        data = f.read()
+        data = json.loads(data)
+        model = data['data']
+        print model
+        f.close()
+        return model
+    except:
+        model = "{'node':[], 'edges':[]}"
+        model = model.encode()
+        print model
+        return model
+

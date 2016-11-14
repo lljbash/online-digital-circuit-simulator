@@ -8,11 +8,12 @@ from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
 from py2proto.circuit_pb2 import CircuitProto
-from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo
+from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo, saveProject, getModel
 from model import User
 from flask_login import login_user, logout_user, login_required, current_user
 from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Principal, Identity, identity_changed
 import json
+
 
 @app.route('/')
 @app.route('/index')
@@ -96,23 +97,11 @@ def addVHDL():
             return redirect(url_for('error', error_message = reply.error_message))
     return render_template('vhdl.html', form=form)
 
-@app.route('/studio/graph', methods=['GET', 'POST'])
+@app.route('/studio/graph/<itemID>', methods=['GET', 'POST'])
 @stu_permission.require()
-def addGraph():
-    form = VHDLForm()
-    if form.validate_on_submit():
-        cli = MyClient()
-        cli.connect()
-        request = RequestProto()
-        request.type = 0
-        cli.sendMessage(request)
-        reply = CircuitParsingResultProto()
-        reply.ParseFromString(cli.recvMessage())
-        flash('form server : ')
-        flash('success : ' + str(reply.success))
-        flash('vhdl_code : ' + reply.vhdl_code)
-        return redirect('submitted')
-    return render_template('addGraph.html', form=form)
+def addGraph(itemID):
+    model = getModel(itemID)
+    return render_template('graph.html',  model = model)
 
 @app.route('/submitted/<filename>', methods=['GET', 'POST'])
 def submitted(filename):
@@ -126,9 +115,13 @@ def download(filename):
 def error(error_message):
     return render_template('error.html', info=error_message)
 
-@app.route('/test', methods=['POST'])
+@app.route('/save', methods=['POST'])
+def save():
+    saveProject(request.data)
+    return "test.txt"
+
+@app.route('/submit', methods=['POST'])
 def test():
-    saveSubmission()
     request_proto = RequestProto()
     request_proto.type = 0;
     data = json.loads(request.data)
@@ -182,6 +175,7 @@ def test():
         cli.sendMessage(request_proto_2)
         reply = SimulationResultProto()
         reply.ParseFromString(cli.recvMessage())
+        saveSubmission(reply.file_name, request.data)
         if reply.success:
             return reply.file_name
     return "test.txt"
