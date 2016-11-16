@@ -1,8 +1,12 @@
-from flask import Flask
+from flask import Flask, Response
 from flask_bootstrap import Bootstrap
 from client import MyClient
 from py2proto.module_pb2 import ChipModuleListProto
 from py2proto.request_pb2 import RequestProto
+from flask_login import LoginManager
+from config import UPLOAD_FOLDER
+from flask.ext.principal import Principal, Permission, RoleNeed
+import MySQLdb
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -21,5 +25,14 @@ in_module.pins.add()
 out_module = modulelist.modules.add()
 out_module.name = 'output'
 out_module.pins.add()
+lm = LoginManager()
+lm.init_app(app)
+lm.login_view = "login"
+conn = MySQLdb.connect(host = 'localhost', user = 'root', passwd = 'psjjjj')
+conn.select_db('test')
+print "Database connected!"
+principals = Principal(app)
+admin_permission = Permission(RoleNeed('admin'))
+stu_permission = Permission(RoleNeed('stu'))
 
 from app import views

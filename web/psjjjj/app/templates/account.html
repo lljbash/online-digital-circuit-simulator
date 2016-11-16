@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Account</h1>
+    <a href = {{ url_for('checkPassword') }}> reset password </a> <br>
+    <a href = {{ url_for('submissionlist') }}> my submissions </a> <br>
+{% endblock %}

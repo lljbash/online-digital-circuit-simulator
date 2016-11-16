@@ -8,6 +8,7 @@ var app = angular.module('app', ['flowchart']);
 
   app.controller('AppCtrl', function AppCtrl($scope, $http, $location, prompt, Modelfactory, flowchartConstants) {
 
+    var offsetNum = 0;
     var deleteKeyCode = 46;
     var ctrlKeyCode = 17;
     var aKeyCode = 65;
@@ -15,15 +16,51 @@ var app = angular.module('app', ['flowchart']);
     var nextNodeID = 10;
     var nextConnectorID = 20;
     var ctrlDown = false;
-    $scope.filename = "example.txt"
+    $scope.filename = "example.txt";
+    var model = {nodes:[], edges:[]};
+    var url = $location.absUrl();
+    var items = url.split("/");
+    var length = items.length;
+    var itemID = items[length-1];
+    var submissionID = '';
+    if (length == 7) { 
+        itemID = items[length -2];
+        submissionID = items[length - 1];
+    }
+    console.log(length)
+    console.log(url);
+    $http({
+      method:'POST',
+      data:{'itemID' : itemID, 'submissionID' : submissionID},
+      url:'/load'
+    }).then(function successCallback(response){
+      console.log("success!");
+      console.log(response.data);
+      var nodes = response.data.nodes;
+      var edges = response.data.edges;
+      console.log(nodes);
+      console.log(edges);
+      var length = nodes.length;
+    
+      for(var i=0;i<length;i++){
+        model.nodes.push(nodes[i]);
+	nextNodeID = Math.max(nextNodeID, nodes[i].id) + 1;
+	var connectorLength = nodes[i].connectors.length;
+	for(var j=0;j<connectorLength;j++){
+	  var connector = nodes[i].connectors[j];
+	  nextConnectorID = Math.max(nextConnectorID, connector.id) + 1;
+        }
+      }
+      length = edges.length;
+      for(var i=0;i<length;i++){
+        model.edges.push(edges[i]);
+      }
+    
 
-    var model = {
-      nodes: [
-      ],
-    edges: [
-    ]
-  };
 
+    }, function errorCallback(response){
+      console.log("error!");  
+    });
 $scope.flowchartselected = [];
 var modelservice = Modelfactory(model, $scope.flowchartselected);
 
@@ -63,36 +100,7 @@ $scope.keyUp = function (evt) {
 
 $scope.addNewNode = function () {
   var nodeName = prompt("Chip type:", "New node");
-  $http({
-    method:'POST',
-    data:{'data' : nodeName},
-    url:'/add'
-  }).then(function successCallback(response){
-    if (!nodeName) {
-      return;
-    }
-    console.log(response.data);
-    var pinsNum = parseInt(response.data);
-    var connectors_array = new Array();
-    for(var i=0;i<pinsNum;i++){
-        if(i<pinsNum / 2){
-            connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.topConnectorType};
-        }
-        else{
-            connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.bottomConnectorType};
-        }
-    }
-    var newNode = {
-      name: nodeName,
-      id: nextNodeID++,
-      x: 200,
-      y: 100,
-      color: '#F15B26',
-      connectors: connectors_array
-    };
-    model.nodes.push(newNode);
-  }, function errorCallback(response){
-  });
+  $scope.$emit('addnode', nodeName);
 };
 
 $scope.$on('addnode', function(event, data){
@@ -115,25 +123,29 @@ $scope.$on('addnode', function(event, data){
             connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.bottomConnectorType};
         }
     }
+    var _x = 50 + (offsetNum % 5) * 20;
+    var _y = 60 + (offsetNum % 5 + offsetNum / 5) * 10;
     var newNode = {
-      name: data,
+      name: data + "(" + nextNodeID + ")",
+      type: data,
       id: nextNodeID++,
-      x: 200,
-      y: 100,
+      x: _x,
+      y: _y,
       color: '#F15B26',
       connectors: connectors_array
     };
     model.nodes.push(newNode);
+    offsetNum++;
   }, function errorCallback(response){
   });
 });
 
-$scope.activateWorkflow = function() {
+$scope.activateWorkflow = function(itemID) {
 
   $http({
     method: 'POST',
-    data: {'data' : model, 'activation':$scope.inputArray},
-    url: '/test'
+     data: {'data' : model, 'activation':$scope.inputArray, 'itemID':itemID},
+    url: '/simulate'
   }).then(function successCallback(response) {
 
     console.log(response.data);
@@ -146,6 +158,20 @@ $scope.activateWorkflow = function() {
 
   });
 };
+
+$scope.save_circuit = function(itemID) {
+  console.log(itemID);
+  $http({
+    method: 'POST',
+     data: {'data' : model, 'activation':$scope.inputArray, 'itemID':itemID},
+    url: '/save'
+  }).then(function successCallback(response) {
+	console.log(itemID);
+   
+  }, function errorCallback(response) {
+
+  });
+}
 
 $scope.downloadResult = function() {
   var redirect_url = "/submitted/" + $scope.filename;
@@ -177,32 +203,6 @@ $scope.inputActivation = function() {
     });
 };
 
-$scope.addNewInputConnector = function () {
-  var connectorName = prompt("Enter a connector name:", "New connector");
-  if (!connectorName) {
-    return;
-  }
-
-  var selectedNodes = modelservice.nodes.getSelectedNodes($scope.model);
-  for (var i = 0; i < selectedNodes.length; ++i) {
-    var node = selectedNodes[i];
-    node.connectors.push({id: nextConnectorID++, type: flowchartConstants.topConnectorType});
-  }
-};
-
-$scope.addNewOutputConnector = function () {
-  var connectorName = prompt("Enter a connector name:", "New connector");
-  if (!connectorName) {
-    return;
-  }
-
-  var selectedNodes = modelservice.nodes.getSelectedNodes($scope.model);
-  for (var i = 0; i < selectedNodes.length; ++i) {
-    var node = selectedNodes[i];
-    node.connectors.push({id: nextConnectorID++, type: flowchartConstants.bottomConnectorType});
-  }
-};
-
 $scope.deleteSelected = function () {
   modelservice.deleteSelected();
 };
@@ -210,6 +210,7 @@ $scope.deleteSelected = function () {
 $scope.callbacks = {
   edgeDoubleClick: function () {
     console.log('Edge double clicked.');
+    $scope.deleteSelected();
   },
   edgeMouseOver: function () {
     console.log('mouserover')
@@ -232,6 +233,7 @@ $scope.callbacks = {
   nodeCallbacks: {
     'doubleClick': function (event) {
       console.log('Node was doubleclicked.')
+      $scope.deleteSelected();
     }
   }
 };
@@ -280,4 +282,10 @@ app.controller('AppCtrl2', function AppCtrl($scope, $http){
   $scope.add_output = function() {
     $scope.$emit('addnode', "output");
   };
+  $scope.add_vcc = function() {
+    $scope.$emit('addnode', "vcc");
+  }
+  $scope.add_gnd = function() {
+    $scope.$emit('addnode', "gnd")
+  }
 });

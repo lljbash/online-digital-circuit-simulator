@@ -1,0 +1,24 @@
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <h1>Submission List</h1>
+  </div>
+  <div class="list-group">
+  {% for submission in submissions %}
+    <a href="/studio/graph/{{ itemID }}/{{ submission.submissionID }}" class="list-group-item active">
+    {% if submission.status=="AC" %}
+      <h4 class="list-group-item-heading">{{ submission.title }}<span class="label label-success">Success</span></h4>
+    {% endif %}
+    {% if submission.status=="CE" %}
+      <h4 class="list-group-item-heading">{{ submission.title }}<span class="label label-danger">Compile Error</span></h4>
+    {% endif %}
+    {% if submission.status=="WA" %}
+      <h4 class="list-group-item-heading">{{ submission.title }}<span class="label label-default">Wrong Answer</span></h4>
+    {% endif %}
+    <p class="list-group-item-text">{{ submission.time }}</p>
+    </a>
+  {% endfor %}
+  </div>
+</div>
+{% endblock %}
