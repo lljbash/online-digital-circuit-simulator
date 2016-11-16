@@ -50,70 +50,81 @@
     <fc-canvas model="model" selected-objects="flowchartselected" callbacks="callbacks"
                automatic-resize="true"></fc-canvas>
   </div>
-<div style="float : left; width : 20%; height: 1000px" ng-controller="AppCtrl2">
-  <ul class="list-group">
-    <li class="list-group-item" ng-click="add_input()">
-      activation
-    </li>
-    <li class="list-group-item" ng-click="add_output()">
-      output
-    </li>
-    <li class="list-group-item" ng-click="add_mod_74ls00()">
-      <span class="badge">3</span>
-      MOD_74LS00
-    </li>
-    <li class="list-group-item" ng-click="add_mod_74ls04()">
-      <span class="badge">3</span>
-      MOD_74LS04
-    </li>
-    <li class="list-group-item" ng-click="add_mod_74ls11()">
-      <span class="badge">3</span>
-      MOD_74LS11
-    </li>
-    <li class="list-group-item" ng-click="add_mod_74ls20()">
-      <span class="badge">3</span>
-      MOD_74LS20
-    </li>
-    <li class="list-group-item" ng-click="add_mod_64ls27()">
-      <span class="badge">3</span>
-      MOD_74LS27
-    </li>
-    <li class="list-group-item" ng-click="add_mod_74ls86()">
-      <span class="badge">3</span>
-      MOD_74LS86
-    </li>
-    <li class="list-group-item" ng-click="add_nand_gate4()">
-      <span class="badge">2</span>
-      NAND_GATE4
-    </li>
-    <li class="list-group-item" ng-click="add_nand_gate2()">
-      <span class="badge">2</span>
-      NAND_GATE2
-    </li>
-    <li class="list-group-item" ng-click="add_and_gate3()">
-      <span class="badge">2</span>
-      AND_GATE3
-    </li>
-    <li class="list-group-item" ng-click="add_nor_gate3()">
-      <span class="badge">3</span>
-      NOR_GATE3
-    </li>
-    <li class="list-group-item" ng-click="add_xnor_gate2()">
-      <span class="badge">3</span>
-      XNOR_GATE2
-    </li>
-</ul>
-<form role="form" action="" method="post" enctype="multipart/form-data">
-  <div class="form-group">
-    <label for="inputfile">activation</label>
-    <input type="file" class="form-control" placeholder="upload" name="file" id="inputfile"> 
-    <button type="submit" class="btn btn-primary" id="submit-btn">add</button>
-</form>
-<a href="/showInput" class="btn btn-primary btn-lg btn-block">showinput</a>
-<div class="btn btn-group">
-  <button type="button" class="btn btn-primary">see vhdl</button>
-  <button type="button" class="btn btn-primary">view history</button>
-</div>
+<div style="float : left; width : 15%; height: 1000px" ng-controller="AppCtrl2">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Chips
+    </div>
+    <div class="panel-body">
+      <ul class="list-group">
+        <li class="list-group-item" ng-click="add_input()">
+          activation
+        </li>
+        <li class="list-group-item" ng-click="add_output()">
+          output
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls00()">
+          <span class="badge">3</span>
+          MOD_74LS00
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls04()">
+          <span class="badge">3</span>
+          MOD_74LS04
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls11()">
+          <span class="badge">3</span>
+          MOD_74LS11
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls20()">
+          <span class="badge">3</span>
+          MOD_74LS20
+        </li>
+        <li class="list-group-item" ng-click="add_mod_64ls27()">
+          <span class="badge">3</span>
+          MOD_74LS27
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls86()">
+          <span class="badge">3</span>
+          MOD_74LS86
+        </li>
+        <li class="list-group-item" ng-click="add_nand_gate4()">
+          <span class="badge">2</span>
+          NAND_GATE4
+        </li>
+        <li class="list-group-item" ng-click="add_nand_gate2()">
+          <span class="badge">2</span>
+          NAND_GATE2
+        </li>
+        <li class="list-group-item" ng-click="add_and_gate3()">
+          <span class="badge">2</span>
+          AND_GATE3
+        </li>
+        <li class="list-group-item" ng-click="add_nor_gate3()">
+          <span class="badge">3</span>
+          NOR_GATE3
+        </li>
+        <li class="list-group-item" ng-click="add_xnor_gate2()">
+          <span class="badge">3</span>
+          XNOR_GATE2
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      input activation
+    </div>
+    <div class=panel-body>
+      <form role="form" action="" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <input type="file" class="form-control" placeholder="upload" name="file"> 
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn">add</button>
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <a href="/showInput" class="btn btn-primary btn-lg btn-block">showinput</a>
+  </div>
 </div>
 </div>
 {% endblock %}
