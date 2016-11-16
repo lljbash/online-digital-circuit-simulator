@@ -1092,35 +1092,9 @@ if (!Function.prototype.bind) {
       return [{x: centralX, y:(pt1.y+25)}, {x: centralX, y:(pt2.y+25)}];
     }
 
-    function top_bottom_normalAttribute(pt1, pt2) {
-      return defaultAttribute(pt1, pt2);
-    }
-
-    function bottom_top_normalAttribute(pt1, pt2) {
-      return defaultAttribute(pt1, pt2);
-    }
-
-    function top_bottom_reverseAttribute(pt1, pt2) {
-      var centralX = (pt1.x + pt2.x) / 2;
-      return 'L ' + (pt1.x) + ', ' + (pt1.y-28)
-          + 'L ' + centralX + ', ' + (pt1.y-28)
-          + 'L ' + centralX + ', ' + (pt2.y+28)
-          + 'L ' + pt2.x + ', ' + (pt2.y+28)
-          + 'L ' + pt2.x + ', ' + (pt2.y);
-    }
-
     function top_bottom_reverseJoints(pt1, pt2) {
       var centralX = (pt1.x + pt2.x) / 2;
       return [{x: centralX, y:(pt1.y-25)}, {x: centralX, y:(pt2.y+25)}];
-    }
-
-    function bottom_top_reverseAttribute(pt1, pt2) {
-      var centralX = (pt1.x + pt2.x) / 2;
-      return 'L ' + (pt1.x) + ', ' + (pt1.y+28)
-          + 'L ' + centralX + ', ' + (pt1.y+28)
-          + 'L ' + centralX + ', ' + (pt2.y-28)
-          + 'L ' + pt2.x + ', ' + (pt2.y-28)
-          + 'L ' + pt2.x + ', ' + (pt2.y);
     }
 
     function bottom_top_reverseJoints(pt1, pt2) {
@@ -1128,32 +1102,11 @@ if (!Function.prototype.bind) {
       return [{x: centralX, y:(pt1.y+25)}, {x: centralX, y:(pt2.y-25)}];
     }
 
-    function top_bottom_inNodeAttribute(pt1, pt2) {
-      var minx = pt1.x > pt2.x ? pt2.x : pt1.x;
-      var offset = (pt1.x - pt2.x) / 10;
-      minx += 150;
-      return 'L ' + (pt1.x) + ', ' + (pt1.y-20+offset)
-          + 'L ' + minx + ', ' + (pt1.y-20+offset)
-          + 'L ' + minx + ', ' + (pt2.y+20+offset)
-          + 'L ' + pt2.x + ', ' + (pt2.y+20+offset)
-          + 'L ' + pt2.x + ', ' + (pt2.y);
-    }
-
     function top_bottom_inNodeJoints(pt1, pt2) {
       var minx = pt1.x > pt2.x ? pt2.x : pt1.x;
       // var offset = (pt1.x - pt2.x) / 10;
       minx += 150;
       return [{x: minx, y: (pt1.y-25)}, {x: minx, y: (pt2.y+25)}];
-    }
-
-    function bottom_top_inNodeAttribute(pt1, pt2) {
-      var minx = pt1.x > pt2.x ? pt2.x : pt1.x;
-      minx += 150;
-      return 'L ' + (pt1.x) + ', ' + (pt1.y+20)
-          + 'L ' + minx + ', ' + (pt1.y+20)
-          + 'L ' + minx + ', ' + (pt2.y-20)
-          + 'L ' + pt2.x + ', ' + (pt2.y-20)
-          + 'L ' + pt2.x + ', ' + (pt2.y);
     }
 
     function bottom_top_inNodeJoints(pt1, pt2) {
@@ -1257,7 +1210,7 @@ if (!Function.prototype.bind) {
           return bottom_bottomJoints(pt1, pt2);
         } else if (type2 === flowchartConstants.topConnectorType) {
           if (sameNode === true) {
-            return bottom_top_inNodeJoint(pt1, pt2);
+            return bottom_top_inNodeJoints(pt1, pt2);
           } else if (50 < pt2.y - pt1.y) {
             return defaultJoints(pt1, pt2);
           } else {
