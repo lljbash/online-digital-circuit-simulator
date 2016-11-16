@@ -52,9 +52,9 @@ begin
     process(en1, a1)
     begin
 
-        if en1 = '0' and a1 = '0' then y1 = '0';
-        elsif en1 = '0' and a1 = '1' then y1 = '1';
-        elsif en1 = '1' then y1 = 'Z';
+        if en1 = '0' and a1 = '0' then y1 <= '0';
+        elsif en1 = '0' and a1 = '1' then y1 <= '1';
+        elsif en1 = '1' then y1 <= 'Z';
         end if;
 
     end process;
@@ -62,9 +62,9 @@ begin
     process(en2, a2)
     begin
 
-        if en2 = '0' and a2 = '0' then y2 = '0';
-        elsif en2 = '0' and a2 = '1' then y2 = '1';
-        elsif en2 = '1' then y2 = 'Z';
+        if en2 = '0' and a2 = '0' then y2 <= '0';
+        elsif en2 = '0' and a2 = '1' then y2 <= '1';
+        elsif en2 = '1' then y2 <= 'Z';
         end if;
 
     end process;
@@ -72,9 +72,9 @@ begin
     process(en3, a3)
     begin
 
-        if en3 = '0' and a3 = '0' then y3 = '0';
-        elsif en3 = '0' and a3 = '1' then y3 = '1';
-        elsif en3 = '1' then y3 = 'Z';
+        if en3 = '0' and a3 = '0' then y3 <= '0';
+        elsif en3 = '0' and a3 = '1' then y3 <= '1';
+        elsif en3 = '1' then y3 <= 'Z';
         end if;
 
     end process;
@@ -82,9 +82,9 @@ begin
     process(en4, a4)
     begin
 
-        if en4 = '0' and a4 = '0' then y4 = '0';
-        elsif en2 = '0' and a2 = '1' then y2 = '1';
-        elsif en2 = '1' then y2 = 'Z';
+        if en4 = '0' and a4 = '0' then y4 <= '0';
+        elsif en4 = '0' and a4 <= '1' then y4 <= '1';
+        elsif en4 = '1' then y4 <= 'Z';
         end if;
 
     end process;

@@ -58,27 +58,27 @@ begin
     process(q1, q2, q3, q4, p1, p2, p3, p4, pqin1, pqin2, pqin3)
     begin
 
-        if(p4 > q4) then pout1 = '1'; pout3 = '0'; pout2 = '0';
-        elsif(p4 < q4) then pout1 = '0'; pout3 = '1'; pout2 = '0';
+        if(p4 > q4) then pout1 <= '1'; pout3 <= '0'; pout2 <= '0';
+        elsif(p4 < q4) then pout1 <= '0'; pout3 <= '1'; pout2 <= '0';
         elsif(p4 = q4) then
-            if(p3 > q3) then pout1 = '1'; pout3 = '0'; pout2 = '0';
-            elsif(p3 < q3) then pout1 = '0'; pout3 = '1'; pout2 = '0';
+            if(p3 > q3) then pout1 <= '1'; pout3 <= '0'; pout2 <= '0';
+            elsif(p3 < q3) then pout1 <= '0'; pout3 <= '1'; pout2 <= '0';
             elsif(p3 = q3) then
-                if(p2 > q2) then pout1 = '1'; pout3 = '0'; pout2 = '0';
-                elsif(p2 < q2) then pout1 = '0'; pout3 = '1'; pout2 = '0';
+                if(p2 > q2) then pout1 <= '1'; pout3 <= '0'; pout2 <= '0';
+                elsif(p2 < q2) then pout1 <= '0'; pout3 <= '1'; pout2 <= '0';
                 elsif(p2 = q2) then
-                    if(p1 > q1) then pout1 = '1'; pout3 = '0'; pout2 = '0';
-                    elsif(p1 < q1) then pout1 = '0'; pout3 = '1'; pout2 = '0';
+                    if(p1 > q1) then pout1 <= '1'; pout3 <= '0'; pout2 <= '0';
+                    elsif(p1 < q1) then pout1 <= '0'; pout3 <= '1'; pout2 <= '0';
                     elsif(p1 = q1) then
-                        if(p0 > q0) then pout1 = '1'; pout3 = '0'; pout2 = '0';
-                        elsif(p0 < q0) then pout1 = '0'; pout3 = '1'; pout2 = '0';
+                        if(p0 > q0) then pout1 <= '1'; pout3 <= '0'; pout2 <= '0';
+                        elsif(p0 < q0) then pout1 <= '0'; pout3 <= '1'; pout2 <= '0';
                         elsif(p0 = q0) then
-                            if pqin3 = '1' and pqin1 ='0' and pqin2 = '0' then pout1 = '1'; pout3 = '0'; pout2 = '0';
-                            elsif pqin3 = '0' and pqin1 ='1' and pqin2 = '0' then pout1 = '0'; pout3 = '1'; pout2 = '0';
-                            elsif pqin3 = '0' and pqin1 ='0' and pqin2 = '1' then pout1 = '0'; pout3 = '0'; pout2 = '0';
-                            elsif pqin3 = '0' and pqin1 ='0' and pqin2 = '0' then pout1 = '1'; pout3 = '1'; pout2 = '0';
+                            if pqin3 = '1' and pqin1 ='0' and pqin2 = '0' then pout1 <= '1'; pout3 <= '0'; pout2 <= '0';
+                            elsif pqin3 = '0' and pqin1 ='1' and pqin2 = '0' then pout1 <= '0'; pout3 <= '1'; pout2 <= '0';
+                            elsif pqin3 = '0' and pqin1 ='0' and pqin2 = '1' then pout1 <= '0'; pout3 <= '0'; pout2 <= '0';
+                            elsif pqin3 = '0' and pqin1 ='0' and pqin2 = '0' then pout1 <= '1'; pout3 <= '1'; pout2 <= '0';
                             else
-                                pout1 = '0'; pout3 = '0'; pout2 = '0';
+                                pout1 <= '0'; pout3 <= '0'; pout2 <= '0';
                             end if;
                         end if;
                     end if;

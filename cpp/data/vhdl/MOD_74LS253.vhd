@@ -57,16 +57,16 @@ begin
 
     process(en1, d13, d12, d11, d10, a1, a0)
     begin 
-        if(en1 = '1') then y1 = 'Z';
+        if(en1 = '1') then y1 <= 'Z';
         elsif en1 = '0' 
-            if a1 = '0' and a0 = '0' and d10 = '0' then y1 = '0';
-            elsif a1 = '0' and a0 = '0' and d10 ='1' then y1 = '1';
-            elsif a1 = '0' and a0 = '1' and d11 ='0' then y1 = '0';
-            elsif a1 = '0' and a0 = '1' and d11 ='1' then y1 = '1';
-            elsif a1 = '1' and a0 = '0' and d12 ='0' then y1 = '0';
-            elsif a1 = '1' and a0 = '0' and d12 ='1' then y1 = '1';
-            elsif a1 = '1' and a0 = '1' and d13 ='0' then y1 = '0';
-            elsif a1 = '1' and a0 = '1' and d13 ='1' then y1 = '1';
+            if a1 = '0' and a0 = '0' and d10 = '0' then y1 <= '0';
+            elsif a1 = '0' and a0 = '0' and d10 ='1' then y1 <= '1';
+            elsif a1 = '0' and a0 = '1' and d11 ='0' then y1 <= '0';
+            elsif a1 = '0' and a0 = '1' and d11 ='1' then y1 <= '1';
+            elsif a1 = '1' and a0 = '0' and d12 ='0' then y1 <= '0';
+            elsif a1 = '1' and a0 = '0' and d12 ='1' then y1 <= '1';
+            elsif a1 = '1' and a0 = '1' and d13 ='0' then y1 <= '0';
+            elsif a1 = '1' and a0 = '1' and d13 ='1' then y1 <= '1';
             end if;
         end if;
 
@@ -74,16 +74,16 @@ begin
 
     process(en2, d23, d22, d21, d20, a1, a0)
     begin 
-        if(en2 = '1') then y2 = 'Z';
+        if(en2 = '1') then y2 <= 'Z';
         elsif en2 = '0' 
-            if a1 = '0' and a0 = '0' and d20 = '0' then y2 = '0';
-            elsif a1 = '0' and a0 = '0' and d20 ='1' then y2 = '1';
-            elsif a1 = '0' and a0 = '1' and d21 ='0' then y2 = '0';
-            elsif a1 = '0' and a0 = '1' and d21 ='1' then y2 = '1';
-            elsif a1 = '1' and a0 = '0' and d22 ='0' then y2 = '0';
-            elsif a1 = '1' and a0 = '0' and d22 ='1' then y2 = '1';
-            elsif a1 = '1' and a0 = '1' and d23 ='0' then y2 = '0';
-            elsif a1 = '1' and a0 = '1' and d23 ='1' then y2 = '1';
+            if a1 = '0' and a0 = '0' and d20 = '0' then y2 <= '0';
+            elsif a1 = '0' and a0 = '0' and d20 ='1' then y2 <= '1';
+            elsif a1 = '0' and a0 = '1' and d21 ='0' then y2 <= '0';
+            elsif a1 = '0' and a0 = '1' and d21 ='1' then y2 <= '1';
+            elsif a1 = '1' and a0 = '0' and d22 ='0' then y2 <= '0';
+            elsif a1 = '1' and a0 = '0' and d22 ='1' then y2 <= '1';
+            elsif a1 = '1' and a0 = '1' and d23 ='0' then y2 <= '0';
+            elsif a1 = '1' and a0 = '1' and d23 ='1' then y2 <= '1';
             end if;
         end if;
 

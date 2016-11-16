@@ -51,15 +51,15 @@ begin
     process(r1, r2, s1, s2, CLK2_14)
     begin
     if CLK2_14'event and CLK2_14 = 1 then 
-        if r1 = '1' and r2 = '1' and s1 = '0' then cur_q1 = '0'; cur_q2 = '0'; cur_q3 = '0'; cur_q4 = '0';
-        elsif r1 = '1' and r2 = '1' and s2 = '0' then cur_q1 = '0'; cur_q2 = '0'; cur_q3 = '0'; cur_q4 = '0';
-        elsif s1 = '1' and s2 = '1' then cur_q1 = '1'; cur_q2 = '0'; cur_q3 = '0'; cur_q4 = '1';
+        if r1 = '1' and r2 = '1' and s1 = '0' then cur_q1 <= '0'; cur_q2 <= '0'; cur_q3 <= '0'; cur_q4 <= '0';
+        elsif r1 = '1' and r2 = '1' and s2 = '0' then cur_q1 <= '0'; cur_q2 <= '0'; cur_q3 <= '0'; cur_q4 <= '0';
+        elsif s1 = '1' and s2 = '1' then cur_q1 <= '1'; cur_q2 <= '0'; cur_q3 <= '0'; cur_q4 <= '1';
         elsif (r2 = '0' and s2 = '0') or (r1 = '0' and s1 = '0') then
             if(num2 = 1) then
-                cur_q1 = '0';
-                num2 = 0;
+                cur_q1 <= '0';
+                num2 <= 0;
             else 
-                cur_q1 = '1';
+                cur_q1 <= '1';
                 num2 <= num2 + 1;
             end if;
         end if;
