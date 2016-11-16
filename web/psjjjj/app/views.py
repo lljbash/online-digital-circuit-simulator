@@ -79,8 +79,7 @@ def account():
 def addProject():
     return render_template('studio.html')
 
-@app.route('/studio/vhdl', methods=['GET', 'POST'])
-@stu_permission.require()
+@app.route('/studio/vhdl', methods=['GET', 'POST']
 def addVHDL():
     form = VHDLForm()
     if form.validate_on_submit():
@@ -102,7 +101,6 @@ def addVHDL():
     return render_template('vhdl.html', form=form)
 
 @app.route('/studio/graph/<itemID>', methods=['GET', 'POST'])
-@stu_permission.require()
 def addGraph(itemID):
     return render_template('graph.html', itemID = itemID)
 
@@ -201,7 +199,6 @@ def add():
 
 
 @app.route('/addTask', methods=['GET', 'POST'])
-@admin_permission.require()
 def addTask():
     form = TaskForm()
     if request.method == 'POST':

@@ -8,6 +8,7 @@ var app = angular.module('app', ['flowchart']);
 
   app.controller('AppCtrl', function AppCtrl($scope, $http, $location, prompt, Modelfactory, flowchartConstants) {
 
+    var offsetNum = 0;
     var deleteKeyCode = 46;
     var ctrlKeyCode = 17;
     var aKeyCode = 65;
@@ -54,7 +55,7 @@ var app = angular.module('app', ['flowchart']);
       for(var i=0;i<length;i++){
         model.edges.push(edges[i]);
       }
-    var offsetNum = 0;
+    
 
 
     }, function errorCallback(response){
