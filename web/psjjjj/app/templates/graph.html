@@ -103,13 +103,15 @@
       XNOR_GATE2
     </li>
 </ul>
-<form action="" method="post" enctype="multipart/form-data">
-  <input type="file" class="form-control" placeholder="upload" name="file"> 
+<form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+  <label for="inputfile">activation</label>
+  <input type="file" class="form-control" placeholder="upload" name="file" id="inputfile"> 
   <button type="submit" class="btn btn-primary" id="submit-btn">add</button>
 </form>
-<div class="btn-group">
+<div class="btn-group btn-group-justified">
   <button type="button" class="btn btn-primary">see vhdl</button>
   <button type="button" class="btn btn-primary">view history</button>
+  <a href="/showInput" class="btn btn-primary">showinput</a>
 </div>
 </div>
 </div>
