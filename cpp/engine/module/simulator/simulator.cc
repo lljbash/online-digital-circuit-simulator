@@ -80,11 +80,13 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
             
             srp.set_success(false);
             srp.set_error_message(error_message);
+            srp.set_file_name(md5sum);
         }
         else {
             PSJJJJ_SHOW("*****\nCRITICAL ERROR!!!!!\n*****");
             srp.set_success(false);
             srp.set_error_message("unknown error\n");
+            srp.set_file_name(md5sum);
         }
         
 #ifndef PSJJJJ_ENABLE_DEBUG

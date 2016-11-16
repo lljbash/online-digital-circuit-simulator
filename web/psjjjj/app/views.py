@@ -5,6 +5,7 @@ from flask import render_template, redirect, flash, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 from .forms import VHDLForm, LoginForm,ResetPasswordForm, CheckPasswordForm, TaskForm
 from client import MyClient
+from activate import parse_activate
 from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
@@ -132,19 +133,23 @@ def test():
     request_proto.type = 0;
     data = json.loads(request.data)
     models = data['data']
-    activation = data['activation'];
+    itemID = data['itemID']
     nodes = models['nodes']
+    edges = models['edges']
     map_dic = []
+    f = open(UPLOAD_FOLDER + "/task/" + str(itemID))
+    text = f.read()
+    activationList = parse_activate(text)
     for i in range(100):
         map_dic.append([])
     for node in nodes:
         chip = request_proto.circuit.chips.add()
         chip.id = str(node['id'])
-        chip.type = node['name']
+        chip.type = node['type']
         if chip.type=="input":
-            for input_unit in activation:
-                if str(input_unit['id'])==chip.id:
-                    chip.activation.initial = input_unit['input']
+            for activation in activationList:
+                if node['ano_name']==activation[0]:
+                    chip.activation = activation[1]
         connectors = node['connectors']
         pin_id = 0
         tot_size = len(connectors)
@@ -157,7 +162,6 @@ def test():
                 real_id = pin_id - up_size
             map_dic[connector['id']] = [chip.id, real_id]
             pin_id = pin_id + 1
-    edges = models['edges']
     for edge in edges:
         source = edge['source']
         destination = edge['destination']
@@ -184,7 +188,69 @@ def test():
         saveSubmission(reply.file_name, request.data)
         if reply.success:
             return reply.file_name
-    return "test.txt"
+    return "error"
+
+@app.route('/test', methods=['POST'])
+def testCircuit():
+    request_proto = RequestProto()
+    request_proto.type = 0;
+    data = json.loads(request.data)
+    models = data['data']
+    itemID = data['itemID']
+    nodes = models['nodes']
+    edges = models['edges']
+    map_dic = []
+    f = open(UPLOAD_FOLDER + "/task/" + str(itemID))
+    text = f.read()
+    activationList = parse_activate(text)
+    for i in range(100):
+        map_dic.append([])
+    for node in nodes:
+        chip = request_proto.circuit.chips.add()
+        chip.id = str(node['id'])
+        chip.type = node['type']
+        if chip.type=="input":
+            for activation in activationList:
+                if node['ano_name']==activation[0]:
+                    chip.activation = activation[1]
+        connectors = node['connectors']
+        pin_id = 0
+        tot_size = len(connectors)
+        up_size = (tot_size + 1) / 2
+        down_size = tot_size / 2
+        for connector in connectors:
+            if pin_id < up_size:
+                real_id = up_size - pin_id - 1 + down_size
+            else:
+                real_id = pin_id - up_size
+            map_dic[connector['id']] = [chip.id, real_id]
+            pin_id = pin_id + 1
+    for edge in edges:
+        source = edge['source']
+        destination = edge['destination']
+        wire = request_proto.circuit.wires.add()
+        wire.start_pin.chip_name = map_dic[source][0]
+        wire.start_pin.pin_name = str(map_dic[source][1])
+        wire.end_pin.chip_name = map_dic[destination][0]
+        wire.end_pin.pin_name = str(map_dic[destination][1])
+    cli = MyClient()
+    cli.connect()
+    cli.sendMessage(request_proto)
+    reply = CircuitParsingResultProto()
+    reply.ParseFromString(cli.recvMessage())
+    cli.close(0)
+    if reply.success:
+        cli = MyClient()
+        cli.connect()
+        request_proto_2 = RequestProto()
+        request_proto_2.type = 1
+        request_proto_2.vhdl_code = reply.vhdl_code
+        cli.sendMessage(request_proto_2)
+        reply = SimulationResultProto()
+        reply.ParseFromString(cli.recvMessage())
+        if reply.success:
+            return reply.file_name
+    return "error"
 
 @app.route('/add', methods=['POST'])
 def add():
