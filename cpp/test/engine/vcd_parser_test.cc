@@ -25,8 +25,10 @@ TEST_F(VcdParserTest, SimpleVcdParse) {
     FILE *file = fopen("data/test/engine/vcd_parser/test.vcd", "r");
     fread(input, 1, 99999, file);
     string code(input);
-    cv::Mat mat = vcd_parser->parse(input);
-    cv::imwrite("test.png", mat);
+    string str = vcd_parser->parse(input);
+    cout << str << endl;
+    //cv::Mat mat = vcd_parser->parse(input);
+    //cv::imwrite("test.png", mat);
 }
 
 } // namespace test
