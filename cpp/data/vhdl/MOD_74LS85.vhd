@@ -6,7 +6,7 @@
 --- P_QIN3_4 in ---
 --- P_QOUT1_5 out ---
 --- P_QOUT2_6 out ---
---- P_QOUT3_7 in ---
+--- P_QOUT3_7 out ---
 --- GND_8 gnd ---
 --- Q0_9 in ---
 --- P0_10 in ---
@@ -75,8 +75,9 @@ begin
                         elsif(p0 = q0) then
                             if pqin3 = '1' and pqin1 ='0' and pqin2 = '0' then pout1 = '1'; pout3 = '0'; pout2 = '0';
                             elsif pqin3 = '0' and pqin1 ='1' and pqin2 = '0' then pout1 = '0'; pout3 = '1'; pout2 = '0';
-                            elsif pqin3 = '0' and pqin1 ='1' and pqin2 = '0' then pout1 = '0'; pout3 = '0'; pout2 = '1';
-                            else 
+                            elsif pqin3 = '0' and pqin1 ='0' and pqin2 = '1' then pout1 = '0'; pout3 = '0'; pout2 = '0';
+                            elsif pqin3 = '0' and pqin1 ='0' and pqin2 = '0' then pout1 = '1'; pout3 = '1'; pout2 = '0';
+                            else
                                 pout1 = '0'; pout3 = '0'; pout2 = '0';
                             end if;
                         end if;
