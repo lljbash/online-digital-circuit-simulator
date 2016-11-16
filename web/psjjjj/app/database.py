@@ -50,20 +50,16 @@ def random_str(randomlength=6):
 
 #save and get task
 def saveTask(form):
-    cursor = conn.cursor()
-    addr = UPLOAD_FOLDER + '/tasks/' + form.title.data
-    sql = "select * from tasks where title = '%s'"%(form.title.data)
+    cursor = conn.cursor() 
+    sql = "select count(*) from tasks "
     cursor.execute(sql)
-    data = cursor.fetchall()
-    #if data != None:
-    #    return 'title exists'
-    sql = "insert tasks values('%s', '%s')"%(form.title.data, addr)
+    data = cursor.fetchone()
+    taskID = data[0]
+    sql = "insert tasks (title, abstract, detail, id) values('%s', '%s', '%s', %d)"%(form['title'], form['abstract'], form['description'], taskID)
     cursor.execute(sql)
     cursor.close()
     conn.commit()
-    os.makedirs(addr)
-    form.content.data.save(addr + '/content')
-    return None
+    return taskID
 
 def getTask(taskID):
     cursor = conn.cursor()
@@ -139,7 +135,7 @@ def saveSubmission(subID, data):
 def getUserInfo(field):
     userid = current_user.id
     cursor = conn.cursor()
-    sql = "select %s from users where id = %s"%(field, userid)
+    sql = "select %s from users where id = '%s'"%(field, userid)
     cursor.execute(sql)
     data = cursor.fetchone()
     return data[0]
