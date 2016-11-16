@@ -126,7 +126,8 @@ $scope.$on('addnode', function(event, data){
     var _x = 50 + (offsetNum % 5) * 20;
     var _y = 60 + (offsetNum % 5 + offsetNum / 5) * 10;
     var newNode = {
-      name: data,
+      name: data + "(" + nextNodeID + ")",
+      type: data,
       id: nextNodeID++,
       x: _x,
       y: _y,
@@ -281,4 +282,10 @@ app.controller('AppCtrl2', function AppCtrl($scope, $http){
   $scope.add_output = function() {
     $scope.$emit('addnode', "output");
   };
+  $scope.add_vcc = function() {
+    $scope.$emit('addnode', "vcc");
+  }
+  $scope.add_gnd = function() {
+    $scope.$emit('addnode', "gnd")
+  }
 });

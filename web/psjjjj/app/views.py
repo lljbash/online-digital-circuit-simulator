@@ -132,6 +132,7 @@ def test():
     data = json.loads(request.data)
     models = data['data']
     activation = data['activation'];
+    itemID = data['itemID']
     nodes = models['nodes']
     map_dic = []
     for i in range(100):
@@ -139,7 +140,7 @@ def test():
     for node in nodes:
         chip = request_proto.circuit.chips.add()
         chip.id = str(node['id'])
-        chip.type = node['name']
+        chip.type = node['type']
         if chip.type=="input":
             for input_unit in activation:
                 if str(input_unit['id'])==chip.id:
