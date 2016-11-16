@@ -44,7 +44,7 @@
        <button ng-click="test_circuit({{ itemID }})" class="btn btn-success">test</button>
       <button ng-click="downloadResult()" ng-disabled="!tested" class="btn btn-info">download</button>
       <button ng-click="showResult()" ng-disabled="!tested" class="btn btn-warning">show</button>
-      <button ng-click="showVHDL()" class="btn btn-info">VHDL</button>
+      <button ng-click="showVHDL()" ng-disabled="!tested" class="btn btn-info">VHDL</button>
       <button ng-click="submit_circuit({{ itemID }})" class="btn btn-danger">submit</button>
     </div>
     <fc-canvas model="model" selected-objects="flowchartselected" callbacks="callbacks"

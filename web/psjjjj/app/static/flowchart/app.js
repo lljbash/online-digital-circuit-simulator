@@ -157,8 +157,8 @@ $scope.submit_circuit = function(itemID) {
   });
 };
 
-$scope.showVHDL = function(submissionID) {
-  window.open('/showvhdl/' + submissionID, 'newwindow');
+$scope.showVHDL = function() {
+  window.open('/showvhdl/' + $scope.filename, 'newwindow');
 }
 
 $scope.test_circuit = function(itemID) {
