@@ -255,6 +255,209 @@ if (!Function.prototype.bind) {
   angular.module('flowchart').directive('fcNode', fcNode);
 }());
 
+// TODO jointdragginf factory
+(function() {
+
+  'use strict';
+
+  function Jointdraggingfactory(flowchartConstants) {
+    return function(modelservice, jointDraggingScope, applyFunction, automaticResize, dragAnimation) {
+
+      var dragOffset = {};
+      var draggedElement = null;
+      jointDraggingScope.draggedJoint = null;
+      jointDraggingScope.shadowDragStarted = false;
+
+      var destinationHtmlElement = null;
+      var oldDisplayStyle = "";
+
+      function getCoordinate(coordinate, max) {
+        coordinate = Math.max(coordinate, 0);
+        coordinate = Math.min(coordinate, max);
+        return coordinate;
+      }
+      function getXCoordinate(x) {
+        return getCoordinate(x, modelservice.getCanvasHtmlElement().offsetWidth);
+      }
+      function getYCoordinate(y) {
+        return getCoordinate(y, modelservice.getCanvasHtmlElement().offsetHeight);
+      }
+      function resizeCanvas(draggedNode, jointElement) {
+        if (automaticResize) {
+          var canvasElement = modelservice.getCanvasHtmlElement();
+          if (canvasElement.offsetWidth < draggedNode.x + jointElement.offsetWidth + flowchartConstants.canvasResizeThreshold) {
+            canvasElement.style.width = canvasElement.offsetWidth + flowchartConstants.canvasResizeStep + 'px';
+          }
+          if (canvasElement.offsetHeight < draggedNode.y + jointElement.offsetHeight + flowchartConstants.canvasResizeThreshold) {
+            canvasElement.style.height = canvasElement.offsetHeight + flowchartConstants.canvasResizeStep + 'px';
+          }
+        }
+      }
+      return {
+        dragstart: function(joint) {
+          return function(event) {
+            modelservice.deselectAll();
+            modelservice.joints.select(joint);
+            jointDraggingScope.draggedJoint = joint;
+            draggedElement = event.target;
+
+            var element = angular.element(event.target);
+            dragOffset.x = parseInt(element.css('left')) - event.clientX;
+            dragOffset.y = parseInt(element.css('top')) - event.clientY;
+
+            // if (dragAnimation == flowchartConstants.dragAnimationShadow) {
+
+            event.dataTransfer.setData('Text', 'Just to support firefox');
+            if (event.dataTransfer.setDragImage) {
+              var invisibleDiv = angular.element('<div></div>')[0]; // This divs stays invisible, because it is not in the dom.
+              event.dataTransfer.setDragImage(invisibleDiv, 0, 0);
+            } else {
+              destinationHtmlElement = event.target;
+              oldDisplayStyle = destinationHtmlElement.style.display;
+              event.target.style.display = 'none'; // Internetexplorer does not support setDragImage, but it takes an screenshot, from the draggedelement and uses it as dragimage.
+              // Since angular redraws the element in the next dragover call, display: none never gets visible to the user.
+              if (dragAnimation == flowchartConstants.dragAnimationShadow) {
+                // IE Drag Fix
+                jointDraggingScope.shadowDragStarted = true;
+              }
+            }
+          };
+        },
+
+        drop: function(event) {
+          if (jointDraggingScope.draggedJoint) {
+            return applyFunction(function() {
+              jointDraggingScope.draggedJoint.x = getXCoordinate(dragOffset.x + event.clientX);
+              jointDraggingScope.draggedJoint.y = getYCoordinate(dragOffset.y + event.clientY);
+              event.preventDefault();
+              return false;
+            })
+          }
+        },
+
+        dragover: function(event) {
+          if (dragAnimation == flowchartConstants.dragAnimationRepaint) {
+            if (jointDraggingScope.draggedJoint) {
+              return applyFunction(function() {
+                jointDraggingScope.draggedJoint.x = getXCoordinate(dragOffset.x + event.clientX);
+                jointDraggingScope.draggedJoint.y = getYCoordinate(dragOffset.y + event.clientY);
+                resizeCanvas(jointDraggingScope.draggedJoint, draggedElement);
+                event.preventDefault();
+                return false;
+              });
+            }
+          }
+          // else if (dragAnimation == flowchartConstants.dragAnimationShadow) {
+        },
+
+        dragend: function(event) {
+          applyFunction(function() {
+            // if (jointDraggingScope.shadowElement) {
+
+            if (jointDraggingScope.draggedJoint) {
+              jointDraggingScope.draggedJoint = null;
+              draggedElement = null;
+              dragOffset.x = 0;
+              dragOffset.y = 0;
+            }
+          });
+        }
+      };
+    };
+  }
+  Jointdraggingfactory.$inject = ["flowchartConstants"];
+
+  angular
+      .module('flowchart')
+      .factory('Jointdraggingfactory', Jointdraggingfactory);
+
+}());
+
+
+(function() {
+
+  'use strict';
+
+  angular
+      .module('flowchart')
+      .provider('JointTemplatePath', JointTemplatePath);
+
+  function JointTemplatePath() {
+    var templatePath = "flowchart/joint.html";
+
+    this.setTemplatePath = setTemplatePath;
+    this.$get = JointTemplatePath;
+
+    function setTemplatePath(path) {
+      templatePath = path;
+    }
+
+    function JointTemplatePath() {
+      return templatePath;
+    }
+  }
+
+}());
+
+// TODO finish fcJoint
+(function() {
+
+  'use strict';
+
+  function fcJoint(flowchartConstants, JointTemplatePath) {
+    return {
+      restrict: 'E',
+      templateUrl: function() {
+        return JointTemplatePath;
+      },
+      replace: true,
+      scope: {
+        fcCallbacks: '=callbacks',
+        callbacks: '=userJointCallbacks',
+        // TODO figure out what it is
+        joint: '=',
+        selected: '=',
+        underMouse: '=',
+        mouseOverConnector: '=',
+        modelservice: '=',
+        draggedJoint: '='
+      },
+      link: function(scope, element) {
+        scope.flowchartConstants = flowchartConstants;
+        element.attr('draggable', 'true');
+
+        element.on('dragstart', scope.fcCallbacks.jointDragstart(scope.joint));
+        element.on('dragend', scope.fcCallbacks.jointDragend);
+        element.on('mouseover', scope.fcCallbacks.jointMouseOver(scope.joint));
+        element.on('mouseout', scope.fcCallbacks.jointMouseOut(scope.joint));
+
+        element.addClass(flowchartConstants.jointClass);
+
+        function myToggleClass(clazz, set) {
+          if (set) {
+            element.addClass(clazz);
+          } else {
+            element.removeClass(clazz);
+          }
+        }
+
+        scope.$watch('selected', function(value) {
+          myToggleClass(flowchartConstants.selectedClass, value);
+        });
+        scope.$watch('underMouse', function(value) {
+          myToggleClass(flowchartConstants.hoverClass, value);
+        });
+        scope.$watch('draggedJoint', function(value) {
+          myToggleClass(flowchartConstants.draggingClass, value===scope.joint);
+        });
+      }
+    };
+  }
+  fcJoint.$inject = ["flowchartConstants", "JointTemplatePath"];
+
+  angular.module('flowchart').directive('fcJoint', fcJoint);
+}());
+
 (function() {
 
   'use strict';
@@ -266,6 +469,7 @@ if (!Function.prototype.bind) {
       mouseoverscope.connector = null;
       mouseoverscope.edge = null;
       mouseoverscope.node = null;
+      mouseoverscope.joint = null;
 
       mouseoverservice.nodeMouseOver = function(node) {
         return function(event) {
@@ -275,10 +479,26 @@ if (!Function.prototype.bind) {
         };
       };
 
+      mouseoverservice.jointMouseOver = function(joint) {
+        return function(event) {
+          return applyFunction(function() {
+            mouseoverscope.joint = joint;
+          });
+        };
+      };
+
       mouseoverservice.nodeMouseOut = function(node) {
         return function(event) {
           return applyFunction(function() {
             mouseoverscope.node = null;
+          });
+        };
+      };
+
+      mouseoverservice.jointMouseOut = function(joint) {
+        return function(event) {
+          return applyFunction(function() {
+            mouseoverscope.joint = null;
           });
         };
       };
@@ -460,7 +680,8 @@ if (!Function.prototype.bind) {
     var canvasHtmlElement = null;
     var svgHtmlElement = null;
 
-    return function innerModelfactory(model, selectedObjects, edgeAddedCallback, nodeRemovedCallback, edgeRemovedCallback) {
+    return function innerModelfactory(model, selectedObjects, edgeAddedCallback, nodeRemovedCallback,
+                                      edgeRemovedCallback, edgedrawingservise) {
       Modelvalidation.validateModel(model);
       var modelservice = {
         selectedObjects: selectedObjects
@@ -557,6 +778,50 @@ if (!Function.prototype.bind) {
           return this._getCoords(connectorId, true);
         }
 
+      };
+
+      modelservice.joints = {
+        select: selectObject,
+        deselect: deselectObject,
+        toggleSelected: toggleSelectedObject,
+        isSelected: isSelectedObject,
+
+        getJoint: function(id) {
+          for(var i=0; i<model.joints.length; i++) {
+            if(model.joints[i].id == id) {
+              return model.joints[i];
+            }
+          }
+          return null;
+        },
+
+        addJoints: function(sourceConnector, destConnector) {
+
+          var sourcept = modelservice.connectors.getCenteredCoord(sourceConnector.id);
+          var destpt = modelservice.connectors.getCenteredCoord(destConnector.id);
+          var _joints = edgedrawingservise.getJoints(sourcept, destpt, sourceConnector.type, destConnector.type,
+              modelservice.connectors.getNode(sourceConnector.id) === modelservice.connectors.getNode(destConnector.id));
+          var _id = sourceConnector.id * 10000 + destConnector.id * 10;
+          var ret = [];
+
+          _joints.forEach(function(element) {
+            var joint = {x: element.x, y: element.y, id: _id};
+            _id++;
+            model.joints.push(joint);
+            ret.push(joint.id);
+          });
+
+          return ret;
+        },
+        
+        delete: function (id) {
+          for(var i=0; i<model.joints.length; i++) {
+            if(model.joints[i].id == id) {
+              model.joints.splice(i, 1);
+              i--;
+            }
+          }
+        }
       };
 
       modelservice.nodes = {
@@ -662,6 +927,10 @@ if (!Function.prototype.bind) {
           if (this.isSelected(edge)) {
             this.deselect(edge)
           }
+          var ids = edge.joints;
+          ids.forEach(function(element) {
+            modelservice.joints.delete(element);
+          });
           model.edges.splice(index, 1);
           modelservice.edgeRemovedCallback(edge);
         },
@@ -684,7 +953,9 @@ if (!Function.prototype.bind) {
         _addEdge: function(sourceConnector, destConnector) {
           Modelvalidation.validateConnector(sourceConnector);
           Modelvalidation.validateConnector(destConnector);
-          var edge = {source: sourceConnector.id, destination: destConnector.id};
+
+          var _joints = modelservice.joints.addJoints(sourceConnector, destConnector);
+          var edge = {source: sourceConnector.id, destination: destConnector.id, joints: _joints};
           Modelvalidation.validateEdges(model.edges.concat([edge]), model.nodes);
           model.edges.push(edge);
           modelservice.edgeAddedCallback(edge);
@@ -793,6 +1064,7 @@ if (!Function.prototype.bind) {
   constants.connectorClass = constants.htmlPrefix + '-connector';
   constants.magnetClass = constants.htmlPrefix + '-magnet';
   constants.nodeClass = constants.htmlPrefix + '-node';
+  constants.jointClass = constants.htmlPrefix + '-joint';
   constants.topConnectorClass = constants.htmlPrefix + '-' + constants.topConnectorType + 's';
   constants.bottomConnectorClass = constants.htmlPrefix + '-' + constants.bottomConnectorType + 's';
   constants.canvasResizeThreshold = 200;
@@ -810,18 +1082,14 @@ if (!Function.prototype.bind) {
 
   function Edgedrawingservice(flowchartConstants) {
 
-    function top_topAttribute(pt1, pt2) {
-      var miny = pt1.y > pt2.y ? pt2.y : pt1.y;
-      return 'L ' + (pt1.x) + ', ' + (miny-25)
-          + 'L ' + (pt2.x) + ', ' + (miny-25)
-          + 'L ' + pt2.x + ', ' + (pt2.y);
+    function top_topJoints(pt1, pt2) {
+      var centralX = (pt1.x + pt2.x) / 2;
+      return [{x: centralX, y:(pt1.y-25)}, {x: centralX, y:(pt2.y-25)}];
     }
 
-    function bottom_bottomAttribute(pt1, pt2) {
-      var maxy = pt1.y > pt2.y ? pt1.y : pt2.y;
-      return 'L ' + (pt1.x) + ', ' + (maxy+25)
-          + 'L ' + (pt2.x) + ', ' + (maxy+25)
-          + 'L ' + pt2.x + ', ' + (pt2.y);
+    function bottom_bottomJoints(pt1, pt2) {
+      var centralX = (pt1.x + pt2.x) / 2;
+      return [{x: centralX, y:(pt1.y+25)}, {x: centralX, y:(pt2.y+25)}];
     }
 
     function top_bottom_normalAttribute(pt1, pt2) {
@@ -841,6 +1109,11 @@ if (!Function.prototype.bind) {
           + 'L ' + pt2.x + ', ' + (pt2.y);
     }
 
+    function top_bottom_reverseJoints(pt1, pt2) {
+      var centralX = (pt1.x + pt2.x) / 2;
+      return [{x: centralX, y:(pt1.y-25)}, {x: centralX, y:(pt2.y+25)}];
+    }
+
     function bottom_top_reverseAttribute(pt1, pt2) {
       var centralX = (pt1.x + pt2.x) / 2;
       return 'L ' + (pt1.x) + ', ' + (pt1.y+28)
@@ -848,6 +1121,11 @@ if (!Function.prototype.bind) {
           + 'L ' + centralX + ', ' + (pt2.y-28)
           + 'L ' + pt2.x + ', ' + (pt2.y-28)
           + 'L ' + pt2.x + ', ' + (pt2.y);
+    }
+
+    function bottom_top_reverseJoints(pt1, pt2) {
+      var centralX = (pt1.x + pt2.x) / 2;
+      return [{x: centralX, y:(pt1.y+25)}, {x: centralX, y:(pt2.y-25)}];
     }
 
     function top_bottom_inNodeAttribute(pt1, pt2) {
@@ -861,6 +1139,13 @@ if (!Function.prototype.bind) {
           + 'L ' + pt2.x + ', ' + (pt2.y);
     }
 
+    function top_bottom_inNodeJoints(pt1, pt2) {
+      var minx = pt1.x > pt2.x ? pt2.x : pt1.x;
+      // var offset = (pt1.x - pt2.x) / 10;
+      minx += 150;
+      return [{x: minx, y: (pt1.y-25)}, {x: minx, y: (pt2.y+25)}];
+    }
+
     function bottom_top_inNodeAttribute(pt1, pt2) {
       var minx = pt1.x > pt2.x ? pt2.x : pt1.x;
       minx += 150;
@@ -871,6 +1156,13 @@ if (!Function.prototype.bind) {
           + 'L ' + pt2.x + ', ' + (pt2.y);
     }
 
+    function bottom_top_inNodeJoints(pt1, pt2) {
+      var minx = pt1.x > pt2.x ? pt2.x : pt1.x;
+      // var offset = (pt1.x - pt2.x) / 10;
+      minx += 150;
+      return [{x: minx, y: (pt1.y+25)}, {x: minx, y: (pt2.y-25)}];
+    }
+
     function defaultAttribute(pt1, pt2) {
       var centralY = (pt1.y + pt2.y) / 2;
       return 'L ' + pt1.x + ', ' + centralY
@@ -878,46 +1170,141 @@ if (!Function.prototype.bind) {
           + 'L ' + pt2.x + ', ' + pt2.y;
     }
 
-    this.getEdgeDAttribute = function(pt1, pt2, type1, type2, sameNode) {
-      var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
+    function defaultJoints(pt1, pt2) {
+      var centralY = (pt1.y + pt2.y) / 2;
+      return [{x: pt1.x, y: centralY}, {x: pt2.x, y: centralY}];
+    }
 
-      if (pt1.y === pt2.y) {
-        dAddribute += 'L ' + (pt1.x) + ', ' + (pt1.y+23)
-            + 'L ' + pt2.x + ', ' + (pt1.y+23)
-            + 'L ' + pt2.x + ', ' + (pt2.y-23)
-            + 'L ' + pt1.x + ', ' + (pt1.y-23)
-            + 'L ' + pt1.x + ', ' + (pt1.y);
-      } else
+    function top_jointAttribute(pt, joint) {
+      if (joint.y < pt.y - 25) {
+        return 'L ' + pt.x + ', ' + joint.y
+            + 'L ' + joint.x + ', ' + joint.y;
+      } else {
+        var centralX = (pt.x + joint.x) / 2;
+        return 'L ' + pt.x + ', ' + (pt.y-25)
+            + 'L ' + centralX + ', ' + (pt.y-25)
+            + 'L ' + centralX + ', ' + joint.y
+            + 'L ' + joint.x + ', ' + joint.y;
+      }
+    }
+
+    function bottom_jointAttribute(pt, joint) {
+      if (joint.y > pt.y + 25) {
+        return 'L ' + pt.x + ', ' + joint.y
+            + 'L ' + joint.x + ', ' + joint.y;
+      } else {
+        var centralX = (pt.x + joint.x) / 2;
+        return 'L ' + pt.x + ', ' + (pt.y+25)
+            + 'L ' + centralX + ', ' + (pt.y+25)
+            + 'L ' + centralX + ', ' + joint.y
+            + 'L ' + joint.x + ', ' + joint.y;
+      }
+    }
+
+    function joint_jointAttribute(joint1, joint2) {
+      var centralY = (joint1.y + joint2.y) / 2;
+      return 'L ' + joint1.x + ', ' + centralY
+          + 'L ' + joint2.x + ', ' + centralY
+          + 'L ' + joint2.x + ', ' + joint2.y;
+    }
+
+    function joint_topAttribute(joint, pt) {
+      if (joint.y < pt.y - 25) {
+        return 'L ' + pt.x + ', ' + joint.y
+            + 'L ' + pt.x + ', ' + pt.y;
+      } else {
+        var centralX = (pt.x + joint.x) / 2;
+        return 'L ' + centralX + ', ' + joint.y
+            + 'L ' + centralX + ', ' + (pt.y-25)
+            + 'L ' + pt.x + ', ' + (pt.y-25)
+            + 'L ' + pt.x + ', ' + pt.y;
+      }
+    }
+
+    function joint_bottomAttribute(joint, pt) {
+      if (joint.y > pt.y + 25) {
+        return 'L ' + pt.x + ', ' + joint.y
+            + 'L ' + pt.x + ', ' + pt.y;
+      } else {
+        var centralX = (pt.x + joint.x) / 2;
+        return 'L ' + centralX + ', ' + joint.y
+            + 'L ' + centralX + ', ' + (pt.y+25)
+            + 'L ' + pt.x + ', ' + (pt.y+25)
+            + 'L ' + pt.x + ', ' + pt.y;
+      }
+    }
+
+    this.getJoints = function(pt1, pt2, type1, type2, sameNode) {
 
       if (type1 === flowchartConstants.topConnectorType) {
 
         if (type2 === flowchartConstants.topConnectorType) {
-          dAddribute += top_topAttribute(pt1, pt2);
+          return top_topJoints(pt1, pt2);
         } else if (type2 === flowchartConstants.bottomConnectorType) {
           if (sameNode === true) {
-            dAddribute += top_bottom_inNodeAttribute(pt1, pt2);
+            return top_bottom_inNodeJoints(pt1, pt2);
           } else if (50 < pt1.y - pt2.y) {
-            dAddribute += top_bottom_normalAttribute(pt1, pt2);
+            return defaultJoints(pt1, pt2);
           } else {
-            dAddribute += top_bottom_reverseAttribute(pt1, pt2);
+            return top_bottom_reverseJoints(pt1, pt2);
           }
+        } else {
+          return defaultJoints(pt1, pt2);
+        }
+
+      } else if(type1 === flowchartConstants.bottomConnectorType){
+        if (type2 === flowchartConstants.bottomConnectorType) {
+          return bottom_bottomJoints(pt1, pt2);
+        } else if (type2 === flowchartConstants.topConnectorType) {
+          if (sameNode === true) {
+            return bottom_top_inNodeJoint(pt1, pt2);
+          } else if (50 < pt2.y - pt1.y) {
+            return defaultJoints(pt1, pt2);
+          } else {
+            return bottom_top_reverseJoints(pt1, pt2);
+          }
+        } else {
+          return defaultJoints(pt1, pt2);
+        }
+      } else {
+        return defaultJoints(pt1, pt2);
+      }
+
+    }
+
+    this.getEdgeDAttribute = function(pt1, pt2, type1, type2, sameNode, joint1, joint2) {
+      var dAddribute = 'M ' + pt1.x + ', ' + pt1.y + ' ';
+
+      if (joint1 === undefined) {
+        dAddribute += defaultAttribute(pt1, pt2);
+        return dAddribute;
+      }
+
+      if (type1 === flowchartConstants.topConnectorType) {
+
+        if (type2 === flowchartConstants.topConnectorType) {
+          dAddribute += top_jointAttribute(pt1, joint1);
+          dAddribute += joint_jointAttribute(joint1, joint2);
+          dAddribute += joint_topAttribute(joint2, pt2);
+        } else if (type2 === flowchartConstants.bottomConnectorType) {
+          dAddribute += top_jointAttribute(pt1, joint1);
+          dAddribute += joint_jointAttribute(joint1, joint2);
+          dAddribute += joint_bottomAttribute(joint2, pt2);
         } else {
           dAddribute += defaultAttribute(pt1, pt2);
         }
 
       } else if(type1 === flowchartConstants.bottomConnectorType){
         if (type2 === flowchartConstants.bottomConnectorType) {
-          dAddribute += bottom_bottomAttribute(pt1, pt2);
+          dAddribute += bottom_jointAttribute(pt1, joint1);
+          dAddribute += joint_jointAttribute(joint1, joint2);
+          dAddribute += joint_bottomAttribute(joint2, pt2);
         } else if (type2 === flowchartConstants.topConnectorType) {
-          if (sameNode === true) {
-            dAddribute += bottom_top_inNodeAttribute(pt1, pt2);
-          } else if (50 < pt2.y - pt1.y) {
-            dAddribute += bottom_top_normalAttribute(pt1, pt2);
-          } else {
-            dAddribute += bottom_top_reverseAttribute(pt1, pt2);
-          }
+          dAddribute += bottom_jointAttribute(pt1, joint1);
+          dAddribute += joint_jointAttribute(joint1, joint2);
+          dAddribute += joint_topAttribute(joint2, pt2);
         } else {
-          dAddribute += top_bottom_reverseAttribute(pt1, pt2);
+          dAddribute += defaultAttribute(pt1, pt2);
         }
       } else {
           dAddribute += defaultAttribute(pt1, pt2);
@@ -1323,7 +1710,7 @@ if (!Function.prototype.bind) {
 
   'use strict';
 
-  function canvasController($scope, Mouseoverfactory, Nodedraggingfactory, Modelfactory, Edgedraggingfactory, Edgedrawingservice, FlowchartCanvasService) {
+  function canvasController($scope, Mouseoverfactory, Nodedraggingfactory, Jointdraggingfactory, Modelfactory, Edgedraggingfactory, Edgedrawingservice, FlowchartCanvasService) {
 
     $scope.dragAnimation = angular.isDefined($scope.dragAnimation) ? $scope.dragAnimation : 'repaint';
 
@@ -1335,13 +1722,18 @@ if (!Function.prototype.bind) {
       }
     });
 
-    $scope.modelservice = Modelfactory($scope.model, $scope.selectedObjects, $scope.userCallbacks.edgeAdded || angular.noop, $scope.userCallbacks.nodeRemoved || angular.noop,  $scope.userCallbacks.edgeRemoved || angular.noop);
+    $scope.modelservice = Modelfactory($scope.model, $scope.selectedObjects, $scope.userCallbacks.edgeAdded || angular.noop,
+        $scope.userCallbacks.nodeRemoved || angular.noop,  $scope.userCallbacks.edgeRemoved || angular.noop, Edgedrawingservice);
 
     $scope.nodeDragging = {};
     var nodedraggingservice = Nodedraggingfactory($scope.modelservice, $scope.nodeDragging, $scope.$apply.bind($scope), $scope.automaticResize, $scope.dragAnimation);
 
     $scope.edgeDragging = {};
     var edgedraggingservice = Edgedraggingfactory($scope.modelservice, $scope.model, $scope.edgeDragging, $scope.userCallbacks.isValidEdge || null, $scope.$apply.bind($scope), $scope.dragAnimation);
+
+    // todo jointdraggingservice's definition
+    $scope.jointDragging = {};
+    var jointdraggingservice = Jointdraggingfactory($scope.modelservice, $scope.jointDragging, $scope.$apply.bind($scope), $scope.automaticResize, $scope.dragAnimation);
 
     $scope.mouseOver = {};
     var mouseoverservice = Mouseoverfactory($scope.mouseOver, $scope.$apply.bind($scope));
@@ -1353,12 +1745,14 @@ if (!Function.prototype.bind) {
 
     $scope.drop = function(event) {
       nodedraggingservice.drop(event);
+      jointdraggingservice.drop(event);
       FlowchartCanvasService._notifyDrop(event);
     };
 
     $scope.dragover = function(event) {
       nodedraggingservice.dragover(event);
       edgedraggingservice.dragover(event);
+      jointdraggingservice.dragover(event);
       FlowchartCanvasService._notifyDragover(event);
     };
 
@@ -1376,6 +1770,8 @@ if (!Function.prototype.bind) {
     $scope.callbacks = {
       nodeDragstart: nodedraggingservice.dragstart,
       nodeDragend: nodedraggingservice.dragend,
+      jointDragstart: jointdraggingservice.dragstart,
+      jointDragend: jointdraggingservice.dragend,
       edgeDragstart: edgedraggingservice.dragstart,
       edgeDragend: edgedraggingservice.dragend,
       edgeDrop: edgedraggingservice.drop,
@@ -1384,6 +1780,8 @@ if (!Function.prototype.bind) {
       edgeDragleaveMagnet: edgedraggingservice.dragleaveMagnet,
       nodeMouseOver: mouseoverservice.nodeMouseOver,
       nodeMouseOut: mouseoverservice.nodeMouseOut,
+      jointMouseOver: mouseoverservice.jointMouseOver,
+      jointMouseOut: mouseoverservice.jointMouseOut,
       connectorMouseEnter: mouseoverservice.connectorMouseEnter,
       connectorMouseLeave: mouseoverservice.connectorMouseLeave,
       nodeClicked: function(node) {
@@ -1399,8 +1797,10 @@ if (!Function.prototype.bind) {
     };
 
     $scope.getEdgeDAttribute = Edgedrawingservice.getEdgeDAttribute;
+    $scope.getJoints = Edgedrawingservice.getJoints;
   }
-  canvasController.$inject = ["$scope", "Mouseoverfactory", "Nodedraggingfactory", "Modelfactory", "Edgedraggingfactory", "Edgedrawingservice", "FlowchartCanvasService"];
+  canvasController.$inject = ["$scope", "Mouseoverfactory", "Nodedraggingfactory", "Jointdraggingfactory",
+      "Modelfactory", "Edgedraggingfactory", "Edgedrawingservice", "FlowchartCanvasService"];
 
   angular
     .module('flowchart')
@@ -1428,7 +1828,10 @@ module.run(['$templateCache', function($templateCache) {
     '        ng-mouseenter="edgeMouseEnter($event, edge)"\n' +
     '        ng-mouseleave="edgeMouseLeave($event, edge)"\n' +
     '        ng-attr-class="{{(modelservice.edges.isSelected(edge) && flowchartConstants.selectedClass + \' \' + flowchartConstants.edgeClass) || edge == mouseOver.edge && flowchartConstants.hoverClass + \' \' + flowchartConstants.edgeClass || edge.active && flowchartConstants.activeClass + \' \' + flowchartConstants.edgeClass || flowchartConstants.edgeClass}}"\n' +
-    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), modelservice.connectors.getConnector(edge.source).type, modelservice.connectors.getConnector(edge.destination).type, modelservice.connectors.getNode(edge.source).id === modelservice.connectors.getNode(edge.destination).id)}}"></path>\n' +
+    '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), ' +
+    '            modelservice.connectors.getConnector(edge.source).type, modelservice.connectors.getConnector(edge.destination).type, ' +
+    '            modelservice.connectors.getNode(edge.source).id === modelservice.connectors.getNode(edge.destination).id, ' +
+    '            modelservice.joints.getJoint(edge.joints[0]), modelservice.joints.getJoint(edge.joints[1]))}}"></path>\n' +
     '    </g>\n' +
     '    <g ng-if="dragAnimation == flowchartConstants.dragAnimationRepaint && edgeDragging.isDragging">\n' +
     '\n' +
@@ -1443,6 +1846,10 @@ module.run(['$templateCache', function($templateCache) {
     '      <circle class="edge-endpoint" r="4"></circle>\n' +
     '    </g>\n' +
     '  </svg>\n' +
+    '  <fc-joint ng-repeat="joint in model.joints" joint="joint"' +
+    '            callbacks="callbacks"' +
+    '            modelservice="modelservice">\n' +
+    '  </fc-joint>' +
     '  <fc-node selected="modelservice.nodes.isSelected(node)" under-mouse="node === mouseOver.node" node="node"\n' +
     '           mouse-over-connector="mouseOver.connector"\n' +
     '           modelservice="modelservice"\n' +
@@ -1534,4 +1941,20 @@ module.run(['$templateCache', function($templateCache) {
     '</div>\n' +
     '');
 }]);
+})();
+
+(function(module) {
+  try {
+    module = angular.module('flowchart-templates');
+  } catch (e) {
+    module = angular.module('flowchart-templates', []);
+  }
+  module.run(['$templateCache', function($templateCache) {
+    $templateCache.put('flowchart/joint.html',
+        '<div\n' +
+        '  id="{{joint.id}}"\n' +
+        '  ng-attr-style="position: absolute; top: {{ joint.y - 4 }}px; left: {{ joint.x - 4 }}px;">\n' +
+        '</div>\n' +
+        '');
+  }]);
 })();

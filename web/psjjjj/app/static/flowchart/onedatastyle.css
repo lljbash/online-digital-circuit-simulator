@@ -107,6 +107,16 @@ body {
   color: white;
 }
 
+.fc-joint {
+  width: 8px;
+  height: 8px;
+  border: 2px solid black;
+  background-clip: padding-box;
+  fill:black;
+  background-color:black;
+  color: black;
+}
+
 .fc-connector.fc-hover {
   background-color: #000;
 }

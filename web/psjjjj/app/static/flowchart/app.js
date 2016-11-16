@@ -21,8 +21,10 @@ var app = angular.module('app', ['flowchart']);
     var model = {
       nodes: [
       ],
-    edges: [
-    ]
+      edges: [
+      ],
+      joints: [
+      ]
   };
 
 $scope.flowchartselected = [];
