@@ -38,6 +38,7 @@ type char(6),
 data text
 );
 
-insert users values('2014011358', '51cd3ce4893e3965a6dd864090d455eb', 'zZTnps', 0, '??');
+insert users values('2014011358', '77eb38a24ec085d1ea090ded0b304f12', 'xebGAo', 0, '??');
+insert users values('admin', '77467ad460390f81e6ad8d30a8563cdf', '456123', 1, 'teacher')
 
-quit;
+quit
