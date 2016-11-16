@@ -79,7 +79,7 @@ def account():
 def addProject():
     return render_template('studio.html')
 
-@app.route('/studio/vhdl', methods=['GET', 'POST']
+@app.route('/studio/vhdl', methods=['GET', 'POST'])
 def addVHDL():
     form = VHDLForm()
     if form.validate_on_submit():
