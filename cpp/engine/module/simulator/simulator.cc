@@ -59,11 +59,13 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
             char code[99999];
             fread(code, 1, 99999, vcd);
             fclose(vcd);
-            cv::Mat mat = VcdParser::parse(string(code));
-            string png_name = md5sum + ".png";
-            cv::imwrite(png_name, mat);
-            cmd = string("mv ") + png_name + " ../web/psjjjj/app/static";
-            system(cmd.c_str());
+            string wave = VcdParser::parse(string(code));
+            srp.set_wave_info(wave);
+            //cv::Mat mat = VcdParser::parse(string(code));
+            //string png_name = md5sum + ".png";
+            //cv::imwrite(png_name, mat);
+            //cmd = string("mv ") + png_name + " ../web/psjjjj/app/static";
+            //system(cmd.c_str());
             
             srp.set_success(true);
             srp.set_file_name(md5sum);
