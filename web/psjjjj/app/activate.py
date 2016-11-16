@@ -83,6 +83,22 @@ def activate_to_svg(acts):
     svg += '</svg>\n'
     return svg
 
+def judge(teacher, student):
+    teacher_acts = parse_activate(teacher)
+    student_acts = parse_activate(student)
+    for [t_name, t_act] in teacher_acts:
+        flag = False
+        for [s_name, s_act] in student_acts:
+            if s_name == t_name:
+                if s_act == t_act:
+                    flag = True
+                    break
+                else:
+                    return False
+        if flag == False:
+            return False
+    return True
+
 if __name__ == '__main__':
     print filter_string('llj_bash hahahaha 123 456', '0123456789 ')
     print filter_string('llj_bash hahahaha 123 456', 'abcdefghijklmnopqrstuvwxyz')
@@ -90,3 +106,10 @@ if __name__ == '__main__':
     acts = parse_activate(s)
     print acts
     print activate_to_svg(acts)
+    t = "i1; 1; 1, 2; 0"
+    s1 = "i1; 1; 1, 2; 0\ni2; 0; 1, 2; 0"
+    s2 = "i1; 1; 1, 3; 0\ni2; 0; 1, 2; 0"
+    s3 = "i2; 0; 1, 2; 0"
+    print judge(t, s1)
+    print judge(t, s2)
+    print judge(t, s3)
