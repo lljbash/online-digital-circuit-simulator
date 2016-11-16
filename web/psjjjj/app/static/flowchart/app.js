@@ -23,6 +23,7 @@ var app = angular.module('app', ['flowchart']);
     var length = items.length;
     var itemID = items[length-1];
     var submissionID = '';
+    var tested = false;
     if (length == 7) { 
         itemID = items[length -2];
         submissionID = items[length - 1];
@@ -68,6 +69,7 @@ $scope.model = model;
 $scope.inputArray = new Array();
 $scope.inputNum = 0;
 $scope.modelservice = modelservice;
+$scope.tested = tested;
 
 $scope.keyDown = function (evt) {
   if (evt.keyCode === ctrlKeyCode) {
@@ -146,7 +148,7 @@ $scope.submit_circuit = function(itemID) {
 
     console.log(response.data);
     $scope.filename = response.data;
-    if(response.data == "error"){
+    if(response.data === "error"){
         console.log("error");
         window.location = '/error';
     }
@@ -154,6 +156,10 @@ $scope.submit_circuit = function(itemID) {
 
   });
 };
+
+$scope.showVHDL = function(submissionID) {
+  window.open('/showvhdl/' + submissionID, 'newwindow');
+}
 
 $scope.test_circuit = function(itemID) {
 
@@ -164,10 +170,13 @@ $scope.test_circuit = function(itemID) {
   }).then(function successCallback(response) {
 
     console.log(response.data);
-    $scope.filename = response.data;
-    if(response.data == "error"){
+    if(response.data === "error"){
         console.log("error");
         window.location = '/error';
+    }
+    else{
+        $scope.filename = response.data;
+        $scope.tested = true;
     }
   }, function errorCallback(response) {
 
@@ -189,8 +198,8 @@ $scope.save_circuit = function(itemID) {
 }
 
 $scope.downloadResult = function() {
-  var redirect_url = "/submitted/" + $scope.filename;
-  window.location = redirect_url;
+  var redirect_url = "/download/" + $scope.filename;
+  window.open(redirect_url, 'newwindow');
 };
 
 $scope.showResult = function() {

@@ -104,6 +104,9 @@ def addVHDL():
 @app.route('/studio/graph/<itemID>', methods=['GET', 'POST'])
 @stu_permission.require()
 def addGraph(itemID):
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save(UPLOAD_FOLDER + '/activation/' + g.user.id)
     return render_template('graph.html', itemID = itemID)
 
 @app.route('/studio/graph/<itemID>/<subID>', methods = ['GET', 'POST'])
@@ -116,7 +119,9 @@ def submitted(filename):
 
 @app.route('/download/<filename>')
 def download(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment = True)
+    print 'download'
+    print filename
+    return send_from_directory(app.config['TMP_FOLDER'], filename, as_attachment = True)
 
 @app.route('/error/<error_message>')
 def error(error_message):
@@ -191,6 +196,7 @@ def test():
     return "error"
 
 @app.route('/test', methods=['POST'])
+@stu_permission.require()
 def testCircuit():
     request_proto = RequestProto()
     request_proto.type = 0;
@@ -200,19 +206,22 @@ def testCircuit():
     nodes = models['nodes']
     edges = models['edges']
     map_dic = []
-    f = open(UPLOAD_FOLDER + "/task/" + str(itemID))
+    f = open(UPLOAD_FOLDER + "/activation/" + str(g.user.id))
     text = f.read()
     activationList = parse_activate(text)
     for i in range(100):
         map_dic.append([])
     for node in nodes:
+        print node
         chip = request_proto.circuit.chips.add()
         chip.id = str(node['id'])
         chip.type = node['type']
         if chip.type=="input":
             for activation in activationList:
                 if node['ano_name']==activation[0]:
-                    chip.activation = activation[1]
+                    chip.activation.initial = activation[1].initial
+                    chip.activation.repeat = activation[1].repeat
+                    chip.activation.jumping_time.extend(activation[1].jumping_time)
         connectors = node['connectors']
         pin_id = 0
         tot_size = len(connectors)
@@ -245,11 +254,14 @@ def testCircuit():
         request_proto_2 = RequestProto()
         request_proto_2.type = 1
         request_proto_2.vhdl_code = reply.vhdl_code
+        vhdl = reply.vhdl_code
         cli.sendMessage(request_proto_2)
-        reply = SimulationResultProto()
-        reply.ParseFromString(cli.recvMessage())
-        if reply.success:
-            return reply.file_name
+        reply2 = SimulationResultProto()
+        reply2.ParseFromString(cli.recvMessage())
+        f = open('../../tmp' + '/vhdl/' + reply2.file_name, 'w')
+        f.write(vhdl)
+        f.close()
+        return reply2.file_name
     return "error"
 
 @app.route('/add', methods=['POST'])
@@ -317,3 +329,16 @@ def load():
         submissionID = data['submissionID']
         print submissionID
         return getModel(itemID, submissionID)
+
+@app.route('/getVHDL/<filename>', methods = ['POST'])
+def getVHDL(filename):
+    if request.method == 'POST':
+        f = open('../../tmp' + '/vhdl/' + filename)
+        vhdl = f.read()
+        f.close()
+        return vhdl
+    return
+
+@app.route('/showVHDL/<filename>')
+def showVHDL(filename):
+    return render_template('showVHDL.html')

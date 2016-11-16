@@ -42,8 +42,9 @@
               ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0" class="btn btn-success">delete</button>
        <button ng-click="save_circuit({{ itemID }})" class="btn btn-primary">save</button>
        <button ng-click="test_circuit({{ itemID }})" class="btn btn-success">test</button>
-      <button ng-click="downloadResult()" class="btn btn-info">download</button>
-      <button ng-click="showResult()" class="btn btn-warning">show</button>
+      <button ng-click="downloadResult()" ng-disabled="!tested" class="btn btn-info">download</button>
+      <button ng-click="showResult()" ng-disabled="!tested" class="btn btn-warning">show</button>
+      <button ng-click="showVHDL()" class="btn btn-info">VHDL</button>
       <button ng-click="submit_circuit({{ itemID }})" class="btn btn-danger">submit</button>
     </div>
     <fc-canvas model="model" selected-objects="flowchartselected" callbacks="callbacks"
@@ -102,6 +103,14 @@
       XNOR_GATE2
     </li>
 </ul>
+<form action="" method="post" enctype="multipart/form-data">
+  <input type="file" class="form-control" placeholder="upload" name="file"> 
+  <button type="submit" class="btn btn-primary" id="submit-btn">add</button>
+</form>
+<div class="btn-group">
+  <button type="button" class="btn btn-primary">see vhdl</button>
+  <button type="button" class="btn btn-primary">view history</button>
+</div>
 </div>
 </div>
 {% endblock %}

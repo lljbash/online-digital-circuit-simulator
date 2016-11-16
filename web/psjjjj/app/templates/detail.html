@@ -31,7 +31,8 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-  {{ item.text|safe }}
+  {{ item.title }} <br>
+  {{ item.detail|safe }}
   <a href="/studio/graph/{{ item.itemID }}" class="btn btn-primary" role="button">begin project</a>
   <a href="/submissionlist/{{ item.itemID }}" class="btn btn-primary" role="button">see history</a>
 </div>
