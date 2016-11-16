@@ -1,5 +1,6 @@
 from app import app, admin_permission, stu_permission
 from app import modulelist
+from config import  UPLOAD_FOLDER
 from flask import render_template, redirect, flash, url_for, send_from_directory, request, g, current_app
 from werkzeug.utils import secure_filename
 from .forms import VHDLForm, LoginForm,ResetPasswordForm, CheckPasswordForm, TaskForm
@@ -25,9 +26,8 @@ def index():
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     error = None
-    print '.....................'
     if request.method == 'POST':
-        print 'error...................'
+        print request.form
         error = tryToLogin(request.form['id'], request.form['password'])
         if error == None:
             user = User(request.form['id'])
@@ -79,7 +79,7 @@ def account():
 def addProject():
     return render_template('studio.html')
 
-@app.route('/studio/vhdl', methods=['GET', 'POST']
+@app.route('/studio/vhdl', methods=['GET', 'POST'])
 def addVHDL():
     form = VHDLForm()
     if form.validate_on_submit():
@@ -200,16 +200,12 @@ def add():
 
 @app.route('/addTask', methods=['GET', 'POST'])
 def addTask():
-    form = TaskForm()
     if request.method == 'POST':
-        message = saveTask(form)
-        if message != None:
-            flash(message)
-            return render_template('addTask.html', form = form)
-        tasktitle = form.title.data
-        flash('Successfully add task <' + tasktitle + '>')
-        return redirect(url_for('tasklist'))
-    return render_template('addTask.html', form = form)
+        taskID = saveTask(request.form)
+        f = request.files['file']
+        taskaddr = UPLOAD_FOLDER + '/tasks/' + str(taskID) 
+        return redirect(url_for(tasklist))
+    return render_template('addTask.html')
 
 @app.route('/tasklist')
 def tasklist():
