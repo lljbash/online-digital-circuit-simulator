@@ -17,7 +17,7 @@ var app = angular.module('app', ['flowchart']);
     var nextConnectorID = 20;
     var ctrlDown = false;
     $scope.filename = "example.txt";
-    var model = {nodes:[], edges:[]};
+    var model = {nodes:[], edges:[], joints:[]};
     var url = $location.absUrl();
     var items = url.split("/");
     var length = items.length;
@@ -56,9 +56,6 @@ var app = angular.module('app', ['flowchart']);
       for(var i=0;i<length;i++){
         model.edges.push(edges[i]);
       }
-    
-
-
     }, function errorCallback(response){
       console.log("error!");  
     });
