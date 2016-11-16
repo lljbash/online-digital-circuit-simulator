@@ -1,11 +1,13 @@
 file(GLOB_RECURSE SRCS "*.cc")
 
+find_package(OpenCV REQUIRED)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/public)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIRECTORY})
 
 add_library(psjjjj_engine STATIC ${SRCS})
-target_link_libraries(psjjjj_engine pthread psjjjj_protobuf)
+target_link_libraries(psjjjj_engine pthread psjjjj_protobuf ${OpenCV_LIBS})
 add_dependencies(psjjjj_engine psjjjj_protobuf)
 
 set(ENGINE_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/public PARENT_SCOPE)

@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <signal.h>
+#include "module/vcd_parser/vcd_parser.h"
 
 using namespace psjjjj;
 using namespace std;
@@ -47,10 +48,21 @@ SimulationResultProto Simulator::simulate(string vhdl_source_code, string output
         int compile_status;
         int wait_status = wait(&compile_status);
         
-        if (compile_status != 1) {
+        if (compile_status == 0) {
             string cmd = string("cp ") + dir + string("/main.vcd ") +
                          output_file_path + string("/") + md5sum;
             PSJJJJ_SHOW("%s\n", cmd.c_str());
+            system(cmd.c_str());
+            
+            string vcd_dir = dir + "/main.vcd";
+            FILE *vcd = fopen(vcd_dir.c_str(), "r");
+            char code[99999];
+            fread(code, 1, 99999, vcd);
+            fclose(vcd);
+            cv::Mat mat = VcdParser::parse(string(code));
+            string png_name = md5sum + ".png";
+            cv::imwrite(png_name, mat);
+            cmd = string("mv ") + png_name + " ../web/psjjjj/app/static";
             system(cmd.c_str());
             
             srp.set_success(true);

@@ -18,19 +18,23 @@ import json
 @app.route('/')
 @app.route('/index')
 def index():
+    print 'now index............................'
     items = getTasklist()
     return render_template('index.html', items = items, userid = g.user.id)
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     error = None
+    print '.....................'
     if request.method == 'POST':
+        print 'error...................'
         error = tryToLogin(request.form['id'], request.form['password'])
         if error == None:
             user = User(request.form['id'])
             login_user(user, remember = False)
             identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
             flash('You are logged in!')
+            print 'goto index ...........................'
             return redirect(url_for('index'))
     if error != None:
         flash(error)
@@ -40,7 +44,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route('/account/resetPassword/check', methods=['GET', 'POST'])
@@ -232,6 +236,7 @@ def befor_request():
 @identity_loaded.connect_via(app)
 def on_identity_load(sender, identity):
     identity.user = current_user
+    print 'identity_load'
     if getUserInfo('flag') == 0:
         identity.provides.add(RoleNeed('stu'))
     if getUserInfo('flag') == 1:

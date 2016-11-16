@@ -54,6 +54,8 @@ var app = angular.module('app', ['flowchart']);
       for(var i=0;i<length;i++){
         model.edges.push(edges[i]);
       }
+    var offsetNum = 0;
+
 
     }, function errorCallback(response){
       console.log("error!");  
@@ -97,36 +99,7 @@ $scope.keyUp = function (evt) {
 
 $scope.addNewNode = function () {
   var nodeName = prompt("Chip type:", "New node");
-  $http({
-    method:'POST',
-    data:{'data' : nodeName},
-    url:'/add'
-  }).then(function successCallback(response){
-    if (!nodeName) {
-      return;
-    }
-    console.log(response.data);
-    var pinsNum = parseInt(response.data);
-    var connectors_array = new Array();
-    for(var i=0;i<pinsNum;i++){
-        if(i<pinsNum / 2){
-            connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.topConnectorType};
-        }
-        else{
-            connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.bottomConnectorType};
-        }
-    }
-    var newNode = {
-      name: nodeName,
-      id: nextNodeID++,
-      x: 200,
-      y: 100,
-      color: '#F15B26',
-      connectors: connectors_array
-    };
-    model.nodes.push(newNode);
-  }, function errorCallback(response){
-  });
+  $scope.$emit('addnode', nodeName);
 };
 
 $scope.$on('addnode', function(event, data){
@@ -149,15 +122,18 @@ $scope.$on('addnode', function(event, data){
             connectors_array[i] = { id:nextConnectorID++,type:flowchartConstants.bottomConnectorType};
         }
     }
+    var _x = 50 + (offsetNum % 5) * 20;
+    var _y = 60 + (offsetNum % 5 + offsetNum / 5) * 10;
     var newNode = {
       name: data,
       id: nextNodeID++,
-      x: 200,
-      y: 100,
+      x: _x,
+      y: _y,
       color: '#F15B26',
       connectors: connectors_array
     };
     model.nodes.push(newNode);
+    offsetNum++;
   }, function errorCallback(response){
   });
 });
@@ -201,7 +177,7 @@ $scope.downloadResult = function() {
 };
 
 $scope.showResult = function() {
-  window.location = "/result/" + $scope.filename + ".jpg";
+  window.location = "/result/" + $scope.filename + ".png";
 };
 
 $scope.inputActivation = function() {
@@ -225,32 +201,6 @@ $scope.inputActivation = function() {
     });
 };
 
-$scope.addNewInputConnector = function () {
-  var connectorName = prompt("Enter a connector name:", "New connector");
-  if (!connectorName) {
-    return;
-  }
-
-  var selectedNodes = modelservice.nodes.getSelectedNodes($scope.model);
-  for (var i = 0; i < selectedNodes.length; ++i) {
-    var node = selectedNodes[i];
-    node.connectors.push({id: nextConnectorID++, type: flowchartConstants.topConnectorType});
-  }
-};
-
-$scope.addNewOutputConnector = function () {
-  var connectorName = prompt("Enter a connector name:", "New connector");
-  if (!connectorName) {
-    return;
-  }
-
-  var selectedNodes = modelservice.nodes.getSelectedNodes($scope.model);
-  for (var i = 0; i < selectedNodes.length; ++i) {
-    var node = selectedNodes[i];
-    node.connectors.push({id: nextConnectorID++, type: flowchartConstants.bottomConnectorType});
-  }
-};
-
 $scope.deleteSelected = function () {
   modelservice.deleteSelected();
 };
@@ -258,6 +208,7 @@ $scope.deleteSelected = function () {
 $scope.callbacks = {
   edgeDoubleClick: function () {
     console.log('Edge double clicked.');
+    $scope.deleteSelected();
   },
   edgeMouseOver: function () {
     console.log('mouserover')
@@ -280,6 +231,7 @@ $scope.callbacks = {
   nodeCallbacks: {
     'doubleClick': function (event) {
       console.log('Node was doubleclicked.')
+      $scope.deleteSelected();
     }
   }
 };

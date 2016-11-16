@@ -118,7 +118,7 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
                 initial = !initial;
                 code += "    wait for ";
                 code += to_string(act.jumping_time(i) - current_time) + "ps;\n";
-                code += "    " + input.first + " <= " + std_logic[initial] + ";\n";
+                code += "    " + input.second + " <= " + std_logic[initial] + ";\n";
                 current_time = act.jumping_time(i);
             }
             if (!act.repeat()) {
