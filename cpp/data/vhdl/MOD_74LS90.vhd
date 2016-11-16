@@ -70,39 +70,39 @@ begin
     process(r1, r2, s1, s2, CLK5_1)
     begin
     if CLK2_14'event and CLK2_14 = 1 then 
-        if r1 = '1' and r2 = '1' and s1 = '0' then cur_q1 = '0'; cur_q2 = '0'; cur_q3 = '0'; cur_q4 = '0';
-        elsif r1 = '1' and r2 = '1' and s2 = '0' then cur_q1 = '0'; cur_q2 = '0'; cur_q3 = '0'; cur_q4 = '0';
-        elsif s1 = '1' and s2 = '1' then cur_q1 = '1'; cur_q2 = '0'; cur_q3 = '0'; cur_q4 = '1';
+        if r1 = '1' and r2 = '1' and s1 = '0' then cur_q1 <= '0'; cur_q2 <= '0'; cur_q3 <= '0'; cur_q4 <= '0';
+        elsif r1 = '1' and r2 = '1' and s2 = '0' then cur_q1 <= '0'; cur_q2 <= '0'; cur_q3 <= '0'; cur_q4 <= '0';
+        elsif s1 = '1' and s2 = '1' then cur_q1 = '1'; cur_q2 <= '0'; cur_q3 <= '0'; cur_q4 <= '1';
         elsif (r2 = '0' and s2 = '0') or (r1 = '0' and s1 = '0') then
             if(num5 = 5) then
-                cur_q2 = '0';
-                cur_q3 = '0';
-                cur_q4 = '0';
-                num5 = 0;
+                cur_q2 <= '0';
+                cur_q3 <= '0';
+                cur_q4 <= '0';
+                num5 <= 0;
             elsif(num5 = 0)
-                cur_q2 = '1';
-                cur_q3 = '0';
-                cur_q4 = '0';
+                cur_q2 <= '1';
+                cur_q3 <= '0';
+                cur_q4 <= '0';
                 num5 <= num5 + 1;
             elsif(num5 = 1)
-                cur_q2 = '0';
-                cur_q3 = '1';
-                cur_q4 = '0';
+                cur_q2 <= '0';
+                cur_q3 <= '1';
+                cur_q4 <= '0';
                 num5 <= num5 + 1;
             elsif(num5 = 2)
-                cur_q2 = '0';
-                cur_q3 = '1';
-                cur_q4 = '0';
+                cur_q2 <= '0';
+                cur_q3 <= '1';
+                cur_q4 <= '0';
                 num5 <= num5 + 1;
             elsif(num5 = 3)
-                cur_q2 = '1';
-                cur_q3 = '1';
-                cur_q4 = '0';
+                cur_q2 <= '1';
+                cur_q3 <= '1';
+                cur_q4 <= '0';
                 num5 <= num5 + 1;
             elsif(num5 = 4)
-                cur_q2 = '0';
-                cur_q3 = '0';
-                cur_q4 = '1';
+                cur_q2 <= '0';
+                cur_q3 <= '0';
+                cur_q4 <= '1';
                 num5 <= num5 + 1;
             end if;
         end if;
