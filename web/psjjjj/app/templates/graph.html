@@ -40,13 +40,11 @@
     <div class="btn-group">
       <button ng-click="deleteSelected()"
               ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0" class="btn btn-success">delete</button>
-      <button ng-click="inputActivation()" ng-disabled="modelservice.nodes.getSelectedNodes().length == 0" class="btn btn-warning">input activation</button>
        <button ng-click="save_circuit({{ itemID }})" class="btn btn-primary">save</button>
-       <button ng-click="activateWorkflow({{ itemID }})" class="btn btn-danger">
-        submit
-      </button>
+       <button ng-click="test_circuit({{ itemID }})" class="btn btn-success">test</button>
       <button ng-click="downloadResult()" class="btn btn-info">download</button>
       <button ng-click="showResult()" class="btn btn-warning">show</button>
+      <button ng-click="submit_circuit({{ itemID }})" class="btn btn-danger">submit</button>
     </div>
     <fc-canvas model="model" selected-objects="flowchartselected" callbacks="callbacks"
                automatic-resize="true"></fc-canvas>

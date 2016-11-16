@@ -98,11 +98,6 @@ $scope.keyUp = function (evt) {
   }
 };
 
-$scope.addNewNode = function () {
-  var nodeName = prompt("Chip type:", "New node");
-  $scope.$emit('addnode', nodeName);
-};
-
 $scope.$on('addnode', function(event, data){
   $http({
     method:'POST',
@@ -112,7 +107,7 @@ $scope.$on('addnode', function(event, data){
     if (!data) {
       return;
     }
-    console.log(response.data);
+    var nodeName = prompt("Chip name:", "New node");
     var pinsNum = parseInt(response.data);
     var connectors_array = new Array();
     for(var i=0;i<pinsNum;i++){
@@ -126,7 +121,8 @@ $scope.$on('addnode', function(event, data){
     var _x = 50 + (offsetNum % 5) * 20;
     var _y = 60 + (offsetNum % 5 + offsetNum / 5) * 10;
     var newNode = {
-      name: data + "(" + nextNodeID + ")",
+      name: nodeName + "(" + data + ")",
+      ano_name : nodeName,
       type: data,
       id: nextNodeID++,
       x: _x,
@@ -140,12 +136,31 @@ $scope.$on('addnode', function(event, data){
   });
 });
 
-$scope.activateWorkflow = function(itemID) {
+$scope.submit_circuit = function(itemID) {
 
   $http({
     method: 'POST',
-     data: {'data' : model, 'activation':$scope.inputArray, 'itemID':itemID},
+     data: {'data' : model, 'itemID':itemID},
     url: '/simulate'
+  }).then(function successCallback(response) {
+
+    console.log(response.data);
+    $scope.filename = response.data;
+    if(response.data == "error"){
+        console.log("error");
+        window.location = '/error';
+    }
+  }, function errorCallback(response) {
+
+  });
+};
+
+$scope.test_circuit = function(itemID) {
+
+  $http({
+    method: 'POST',
+     data: {'data' : model, 'itemID':itemID},
+    url: '/test'
   }).then(function successCallback(response) {
 
     console.log(response.data);
@@ -163,7 +178,7 @@ $scope.save_circuit = function(itemID) {
   console.log(itemID);
   $http({
     method: 'POST',
-     data: {'data' : model, 'activation':$scope.inputArray, 'itemID':itemID},
+     data: {'data' : model, 'itemID':itemID},
     url: '/save'
   }).then(function successCallback(response) {
 	console.log(itemID);
@@ -180,27 +195,6 @@ $scope.downloadResult = function() {
 
 $scope.showResult = function() {
   window.location = "/result/" + $scope.filename + ".png";
-};
-
-$scope.inputActivation = function() {
-    var selectedNodes = modelservice.nodes.getSelectedNodes();
-    angular.forEach(selectedNodes, function(node){
-        var initial = prompt("Please input your initial value(0/1):", '0');
-        var initial_value = parseInt(initial);
-        var jumps = new Array()
-        var jump_num = 0;
-        while(true){
-          var jumpingtime = prompt("Please input your jumping time(input -1 to terminate):",'-1');
-          var jumptime = parseInt(jumpingtime);
-          if(jumptime === -1) break;
-          else jumps[jump_num++] = jumptime;
-        }
-        var repeat_que = prompt("repeat this period?",'0');
-        var repeat_int = parseInt(repeat_que);
-        var repeat_bool = false;
-        if(repeat_int === 1) repeat_bool = true;
-        $scope.inputArray[$scope.inputNum++] = {initial:initial_value, jumping_time:jumps, repeated:repeat_bool, id:node.id};
-    });
 };
 
 $scope.deleteSelected = function () {
