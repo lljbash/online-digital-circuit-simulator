@@ -101,6 +101,7 @@ def addVHDL():
     return render_template('vhdl.html', form=form)
 
 @app.route('/studio/graph/<itemID>', methods=['GET', 'POST'])
+@stu_permission.require()
 def addGraph(itemID):
     return render_template('graph.html', itemID = itemID)
 
@@ -199,12 +200,15 @@ def add():
 
 
 @app.route('/addTask', methods=['GET', 'POST'])
+@admin_permission.require()
 def addTask():
     if request.method == 'POST':
         taskID = saveTask(request.form)
         f = request.files['file']
         taskaddr = UPLOAD_FOLDER + '/tasks/' + str(taskID) 
-        return redirect(url_for(tasklist))
+        f.save(taskaddr)
+        tasks = getTasklist()
+        return redirect(url_for('index'))
     return render_template('addTask.html')
 
 @app.route('/tasklist')
@@ -215,6 +219,8 @@ def tasklist():
 @app.route('/detail/<itemID>')
 def showTask(itemID):
     item = getTask(itemID)
+    print item.detail
+    print item.title
     return render_template('detail.html', item = item)
 
 @app.route('/submissionlist/<itemID>')
@@ -229,7 +235,9 @@ def befor_request():
 @identity_loaded.connect_via(app)
 def on_identity_load(sender, identity):
     identity.user = current_user
-    print 'identity_load'
+    if current_user.get_id == None:
+        print 'anonymous'        
+	return
     if getUserInfo('flag') == 0:
         identity.provides.add(RoleNeed('stu'))
     if getUserInfo('flag') == 1:
