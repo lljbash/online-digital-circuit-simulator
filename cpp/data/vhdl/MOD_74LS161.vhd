@@ -31,7 +31,7 @@ entity MOD_74LS161 is
 port(
     CP_2, T_10, P_7, LD_9, R_1: in std_logic;
     D_6, C_5, B_4, A_3: in std_logic; 
-    Q0_14, Q1_13, Q2_12, Q3_11: out std_logic_VECTOR; 
+    Q0_14, Q1_13, Q2_12, Q3_11: out std_logic; 
     CO_15: out std_logic
 );
 --- END_PORT_DEF ---
@@ -70,10 +70,10 @@ begin
 
     end process;
 
-    D_6 <= CQI(3);
-    C_5 <= CQI(2);
-    B_4 <= CQI(1);
-    A_3 <= CQI(0);
+    Q0_14 <= CQI(3);
+    Q1_13 <= CQI(2);
+    Q2_12 <= CQI(1);
+    Q3_11 <= CQI(0);
 
 
 end MOD_74LS161_behv;

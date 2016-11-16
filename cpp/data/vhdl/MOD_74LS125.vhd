@@ -35,8 +35,8 @@ end MOD_74LS125;
 
 architecture MOD_74LS125_behv of MOD_74LS125 is
 
-signal en1, en2, en3, en4, a1, a2, a3, a4,: std_logic;
-signal y1, y2, y3, y4: std_logic;
+signal en1, en2, en3, en4, a1, a2, a3, a4: std_logic;
+signal y1, y2, y3, y4: std_logic := '0';
 
 begin
 

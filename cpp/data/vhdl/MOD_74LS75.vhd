@@ -38,14 +38,14 @@ end MOD_74LS75;
 architecture MOD_74LS75_behv of MOD_74LS75 is
 
 signal d1, d2, d3, d4: std_logic;
-signal cur_q1, cur_nq1, cur_q2, cur_nq2, cur_q3, cur_nq3, cur_q4, cur_nq4: std_logic;
+signal cur_q1, cur_nq1, cur_q2, cur_nq2, cur_q3, cur_nq3, cur_q4, cur_nq4: std_logic := '0';
 
 begin
 
     d1 <= D1_2;
     d2 <= D2_3;
     d3 <= D3_6;
-    d4 <= D4_7;_
+    d4 <= D4_7;
 
     process(d1, CP12_13)
     begin

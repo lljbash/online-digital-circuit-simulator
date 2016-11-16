@@ -38,7 +38,7 @@ end MOD_74LS253;
 architecture MOD_74LS253_behv of MOD_74LS253 is
 
 signal en1, en2, d13, d12, d11, d10, d23, d22, d21, d20, a1, a0: std_logic;
-signal y1, y2: std_Logic;
+signal y1, y2: std_Logic :='0';
 
 begin
 
@@ -58,7 +58,7 @@ begin
     process(en1, d13, d12, d11, d10, a1, a0)
     begin 
         if(en1 = '1') then y1 <= 'Z';
-        elsif en1 = '0' 
+        elsif en1 = '0' then
             if a1 = '0' and a0 = '0' and d10 = '0' then y1 <= '0';
             elsif a1 = '0' and a0 = '0' and d10 ='1' then y1 <= '1';
             elsif a1 = '0' and a0 = '1' and d11 ='0' then y1 <= '0';
@@ -75,7 +75,7 @@ begin
     process(en2, d23, d22, d21, d20, a1, a0)
     begin 
         if(en2 = '1') then y2 <= 'Z';
-        elsif en2 = '0' 
+        elsif en2 = '0' then 
             if a1 = '0' and a0 = '0' and d20 = '0' then y2 <= '0';
             elsif a1 = '0' and a0 = '0' and d20 ='1' then y2 <= '1';
             elsif a1 = '0' and a0 = '1' and d21 ='0' then y2 <= '0';

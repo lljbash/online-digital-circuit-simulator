@@ -36,7 +36,7 @@ end MOD_74LS74;
 architecture MOD_74LS74_behv of MOD_74LS74 is
 
 signal sr1, sr2: std_logic_vector(1 downto 0);
-signal cur_q1, cur_nq1, cur_q2, cur_nq2: std_logic;
+signal cur_q1, cur_nq1, cur_q2, cur_nq2: std_logic := '0';
 
 begin
 
@@ -45,20 +45,20 @@ begin
 
     process(D1_2, sr1, CP1_3)
     begin
-    if(sr1 = '01') then cur_q1 <= '1'; cur_nq1 <= '0';
-    elsif(sr1 = '10') then cur_q1 <= '0'; cur_nq1 <= '1';
-    elsif(sr1 = '00') then cur_q1 <= '1'; cur_nq1 <= '1';
-    elsif CP1_3'event and CP1_3 = 1 then cur_q1 = D1_2; cur_nq1 <= not D1_2;
+    if(sr1 = "01") then cur_q1 <= '1'; cur_nq1 <= '0';
+    elsif(sr1 = "10") then cur_q1 <= '0'; cur_nq1 <= '1';
+    elsif(sr1 = "00") then cur_q1 <= '1'; cur_nq1 <= '1';
+    elsif CP1_3'event and CP1_3 = '1' then cur_q1 <= D1_2; cur_nq1 <= not D1_2;
 
     end if;
     end process;
 
     process(D2_12, sr2, CP2_11)
     begin
-    if(sr2 = '01') then cur_q2 <= '1'; cur_nq2 <= '0';
-    elsif(sr2 = '10') then cur_q2 <= '0'; cur_nq2 <= '1';
-    elsif(sr2 = '00') then cur_q2 <= '1'; cur_nq2 <= '1';
-    elsif CP2_11'event and CP2_11 = 1 then cur_q2 <= D2_12; cur_nq2 <= not D2_12;
+    if(sr2 = "01") then cur_q2 <= '1'; cur_nq2 <= '0';
+    elsif(sr2 = "10") then cur_q2 <= '0'; cur_nq2 <= '1';
+    elsif(sr2 = "00") then cur_q2 <= '1'; cur_nq2 <= '1';
+    elsif CP2_11'event and CP2_11 = '1' then cur_q2 <= D2_12; cur_nq2 <= not D2_12;
 
     end if;
     end process;
