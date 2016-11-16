@@ -5,7 +5,8 @@
 using namespace psjjjj;
 using namespace std;
 
-cv::Mat VcdParser::parse(string vcd_code) {
+//cv::Mat VcdParser::parse(string vcd_code) {
+string VcdParser::parse(string vcd_code) {
     istringstream iss(vcd_code);
     string code_line;
     map<string, string> mapping;
@@ -43,6 +44,34 @@ cv::Mat VcdParser::parse(string vcd_code) {
         }
     }
     
+    string text = "";
+    for (const auto &awave : wave) {
+        string id = awave.first;
+        string name = mapping[id];
+        const auto &wave_info = awave.second;
+        text += name + "; ";
+        if (wave_info.size() == 0 || wave_info.at(0).first != 0) {
+            text += "1; ";
+        }
+        else {
+            text += wave_info.at(0).second == 0 ? "0; " : "1; ";
+        }
+        for (size_t i = 1; i < wave_info.size(); ++i) {
+            if (wave_info.at(i).second != wave_info.at(i-1).second) {
+                text += to_string(wave_info.at(i).first) + ", ";
+            }
+        }
+        if (text.at(text.size() - 2) == ',') {
+            text.at(text.size() - 2) = ';';
+        }
+        else {
+            text += "; ";
+        }
+        text += "0;\n";
+    }
+    return text;
+    
+    /*
     const int kLeft = 200;
     const int kPs = 5;
     const int kTime = 100;
@@ -86,5 +115,6 @@ cv::Mat VcdParser::parse(string vcd_code) {
     }
     
     return mat;
+    */
 }
 

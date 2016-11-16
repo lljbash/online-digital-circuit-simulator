@@ -7,7 +7,8 @@
 class VcdParser {
 
     public:
-        static cv::Mat parse(std::string vcd_code);
+        //static cv::Mat parse(std::string vcd_code);
+        static std::string parse(std::string vcd_code);
 
 };
 
