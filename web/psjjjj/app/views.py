@@ -5,7 +5,7 @@ from flask import render_template, redirect, flash, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 from .forms import VHDLForm, LoginForm,ResetPasswordForm, CheckPasswordForm, TaskForm
 from client import MyClient
-from activate import parse_activate
+from activate import parse_activate, activate_to_svg
 from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
@@ -16,14 +16,13 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Principal, Identity, identity_changed
 import json
 
-
-@app.route('/')
 @app.route('/index')
 def index():
     print 'now index............................'
     items = getTasklist()
     return render_template('index.html', items = items, userid = g.user.id)
 
+@app.route('/', methods = ['GET', 'POST'])
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     error = None
@@ -106,7 +105,7 @@ def addVHDL():
 def addGraph(itemID):
     if request.method == 'POST':
         f = request.files['file']
-        f.save(UPLOAD_FOLDER + '/activation/' + g.user.id)
+        f.save('../../tmp' + '/activation/' + g.user.id)
     return render_template('graph.html', itemID = itemID)
 
 @app.route('/studio/graph/<itemID>/<subID>', methods = ['GET', 'POST'])
@@ -206,7 +205,7 @@ def testCircuit():
     nodes = models['nodes']
     edges = models['edges']
     map_dic = []
-    f = open(UPLOAD_FOLDER + "/activation/" + str(g.user.id))
+    f = open('../../tmp' + "/activation/" + str(g.user.id))
     text = f.read()
     activationList = parse_activate(text)
     for i in range(100):
@@ -342,3 +341,15 @@ def getVHDL(filename):
 @app.route('/showVHDL/<filename>')
 def showVHDL(filename):
     return render_template('showVHDL.html')
+
+@app.route('/showInput')
+def showInput():
+    f = open('../../tmp/activation/' + g.user.id)
+    data = f.read()
+    f.close()
+    print data
+    acts = parse_activate(data)
+    print acts
+    svg = activate_to_svg(acts)
+    print svg
+    return render_template('showinput.html', svg = svg)
