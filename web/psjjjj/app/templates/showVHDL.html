@@ -10,7 +10,7 @@
     #editor {
         margin: 0;
         position: absolute;
-        top: 0;
+        top: 50px;
         bottom: 0;
         left: 0;
         right: 0;
@@ -61,16 +61,20 @@
     editor.session.setMode("ace/mode/vhdl");
 
   	$(document).ready(function(){
-  		var url = location.absUrl();
+  		var url = window.location.pathname;
+                console.log("url : " + url);
   		var items = url.split("/");
   		var length = items.length;
   		var item = items[length-1];
+                console.log("item : " + item);
       	$.post("/getVHDL/" + item,
       	{
         	name:"Donald Duck",
         	city:"Duckburg"
       	},function(data,status){
+                console.log("data : " + data)
         	editor.setValue(data);
+                editor.setReadOnly(true);
       	});
 	});
 </script>
