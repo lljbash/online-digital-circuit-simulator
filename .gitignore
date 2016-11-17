@@ -6,7 +6,9 @@ build/
 *.pyc
 *_pb2.py
 *~
-tmp/
+tmp/*
 *.swp
 py2proto/
 *.png
+*.jpg
+data/*
