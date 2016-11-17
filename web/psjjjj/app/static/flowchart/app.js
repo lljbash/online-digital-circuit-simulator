@@ -39,10 +39,10 @@ var app = angular.module('app', ['flowchart']);
       console.log(response.data);
       var nodes = response.data.nodes;
       var edges = response.data.edges;
+      var joints = response.data.joints;
       console.log(nodes);
       console.log(edges);
-      var length = nodes.length;
-    
+      var length = nodes.length;   
       for(var i=0;i<length;i++){
         model.nodes.push(nodes[i]);
 	nextNodeID = Math.max(nextNodeID, nodes[i].id) + 1;
@@ -55,6 +55,9 @@ var app = angular.module('app', ['flowchart']);
       length = edges.length;
       for(var i=0;i<length;i++){
         model.edges.push(edges[i]);
+      }
+      for(var i=0;i<joints.length;i++){ 
+        model.joints.push(joints[i]);
       }
     }, function errorCallback(response){
       console.log("error!");  
