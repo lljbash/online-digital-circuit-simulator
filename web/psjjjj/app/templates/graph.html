@@ -38,8 +38,6 @@
  <div ng-app="app" ng-controller="AppCtrl"  ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
   <div style="width: 85%; height: 1000px; float:right; border:3px solid black; border-radius: 5px">
     <div class="btn-group">
-      <button ng-click="deleteSelected()"
-              ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0" class="btn btn-success">delete</button>
        <button ng-click="save_circuit({{ itemID }})" class="btn btn-primary">save</button>
        <button ng-click="test_circuit({{ itemID }})" class="btn btn-success">test</button>
       <button ng-click="downloadResult()" ng-disabled="!tested" class="btn btn-info">download</button>
