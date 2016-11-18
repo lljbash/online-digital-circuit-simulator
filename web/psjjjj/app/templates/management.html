@@ -4,8 +4,6 @@
   <div class="container-fluid">
     <ul class="nav navbar-nav">
       <li><a href="/index">Home</a></li>
-      <li><a href="/studio/vhdl">VHDL</a></li>
-      <li><a href="/studio/graph">Graph</a></li>
     </ul>
     <form class="navbar-form navbar-left" role="search">
       <div class="form-group">
@@ -20,9 +18,10 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li><a href="#">User</a></li>
-          <li><a href="#">logout</a></li>
-          <li><a href="#">history</a></li>
+          <li><a href="/logout">logout</a></li>
+          <li><a href="/account/resetPassword/check">change password</a></li>
+          <li><a href="/studentmanagement">student management</a></li>
+          <li><a href="/addTask">publish task</a></li>
         </ul>
       </li>
     </ul>
@@ -31,15 +30,21 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-  {{ item.title }} <br>
-  {{ item.detail|safe }}
-  {% if item.kind=="VHDL" %}
-    <a href="/studio/vhdl/{{ item.itemID }}" class="btn btn-primary" role="button">begin project</a>
-    <a href="/submissionlist/{{ item.itemID }}" class="btn btn-primary" role="button">see history</a>
-  {% endif %}
-  {% if item.kind=="GRAPH" %}
-    <a href="/studio/graph/{{ item.itemID }}" class="btn btn-primary" role="button">begin project</a>
-    <a href="/submissionlist/{{ item.itemID }}" class="btn btn-primary" role="button">see history</a>
-  {%endif%}
+  <div class="row">
+  {% for item in items %}
+    <div class="col-sm-6 col-md-3">
+      <div class="thumbnail">
+        <img src="{{ url_for('static', filename='images/circuit.jpg') }}">
+        <div class="caption">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.abstract }}</p>
+          <p>
+            <a href="/detail/{{ item.itemID }}" class="btn btn-primary" role="button">detail</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
 </div>
 {% endblock %}

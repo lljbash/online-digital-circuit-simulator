@@ -47,9 +47,30 @@
     <div class="input-group">
       <input type="text" class="form-control" place-holder="description" name="description">
     </div>
-    <h3>Test bench</h3>
-    <div class="input-hroup">
+    <h3>Input File</h3>
+    <div class="input-group">
       <input type="file" class="form-control" placeholder="upload" name="file">
+    </div>
+    <h3>Output File</h3>
+    <div class="input-group">
+      <input type="file" class="form-control" placeholder="upload" name="file">
+    </div>
+    <h3>Project Type</h3>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="input-group">
+          <span class="input-group-addon">
+            <input type="radio" name="kind" checked>GRAPH
+          </span>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="input-group">
+          <span class="input-group-addon">
+            <input type="radio" name="kind">VHDL
+          </span>
+        </div>
+      </div>
     </div>
     <button type="submit" class="btn btn-primary" id="submit-btn">publish</button>
   </form>
