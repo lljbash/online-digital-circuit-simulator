@@ -32,7 +32,8 @@ CircuitParsingResultProto CircuitParser::parse(const CircuitProto &circuit) {
             }
         }
         else if (type == "output") {
-            string output_name = string("output_") + to_string(output_set.size() + 1);
+            //string output_name = string("output_") + to_string(output_set.size() + 1);
+            string output_name = name;
             output_set.insert(make_pair(name, output_name));
         }
         else {
