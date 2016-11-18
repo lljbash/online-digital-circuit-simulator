@@ -47,9 +47,18 @@
     <div class="input-group">
       <input type="text" class="form-control" place-holder="description" name="description">
     </div>
-    <h3>Test bench</h3>
+    <h3>Input Wave</h3>
     <div class="input-hroup">
-      <input type="file" class="form-control" placeholder="upload" name="file">
+      <input type="file" class="form-control" placeholder="upload" name="input">
+    </div>
+    <h3>Ouput Wave</h3>
+    <div class="input-hroup">
+      <input type="file" class="form-control" placeholder="upload" name="output">
+    </div>
+    <h3>Format</h3>
+    <div class="input-hroup">
+      <input type="radio" class="form-control" checked="checked"placeholder="upload" name="kind" value="GRAPH">GRAPH
+      <input type="radio" class="form-control" name="kind"value="VHDL">VHDL
     </div>
     <button type="submit" class="btn btn-primary" id="submit-btn">publish</button>
   </form>

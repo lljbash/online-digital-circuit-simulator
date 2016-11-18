@@ -13,10 +13,11 @@ from py2proto.circuit_pb2 import CircuitProto
 from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo, saveProject, getModel
 from model import User
 from flask_login import login_user, logout_user, login_required, current_user
-from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Principal, Identity, identity_changed
+from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Principal, Identity, identity_changed, AnonymousIdentity
 import json
 
 @app.route('/index')
+@login_required
 def index():
     print 'now index............................'
     items = getTasklist()
@@ -44,6 +45,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    identity_changed.send(current_app._get_current_object(), identity = AnonymousIdentity())
     return redirect(url_for('login'))
 
 
@@ -80,6 +82,7 @@ def addProject():
     return render_template('studio.html')
 
 @app.route('/studio/vhdl', methods=['GET', 'POST'])
+@stu_permission.require()
 def addVHDL():
     form = VHDLForm()
     if form.validate_on_submit():
@@ -109,6 +112,7 @@ def addGraph(itemID):
     return render_template('graph.html', itemID = itemID)
 
 @app.route('/studio/graph/<itemID>/<subID>', methods = ['GET', 'POST'])
+@stu_permission.require()
 def addGraph_sub(itemID, subID):
     return render_template('graph.html', itemID = itemID, submissionID = subID)
 
@@ -117,10 +121,11 @@ def submitted(filename):
     return render_template('submitted.html', url = url_for('download', filename = filename))
 
 @app.route('/download/<filename>')
+@stu_permission.require()
 def download(filename):
     print 'download'
     print filename
-    return send_from_directory(app.config['TMP_FOLDER'], filename, as_attachment = True)
+    return send_from_directory('../../tmp/vhdl', filename, as_attachment = True)
 
 @app.route('/error/<error_message>')
 def error(error_message):
@@ -281,10 +286,13 @@ def add():
 def addTask():
     if request.method == 'POST':
         taskID = saveTask(request.form)
-        f = request.files['file']
-        taskaddr = UPLOAD_FOLDER + '/tasks/' + str(taskID) 
-        f.save(taskaddr)
+        f = request.files['input']
+        taskaddr = UPLOAD_FOLDER + '/tasks/' + str(taskID)
+        f.save(taskaddr + '.in')
+        f = request.files['output']
+        f.save(taskaddr + '.ans')
         tasks = getTasklist()
+        print request.form
         return redirect(url_for('index'))
     return render_template('addTask.html')
 
@@ -296,8 +304,6 @@ def tasklist():
 @app.route('/detail/<itemID>')
 def showTask(itemID):
     item = getTask(itemID)
-    print item.detail
-    print item.title
     return render_template('detail.html', item = item)
 
 @app.route('/submissionlist/<itemID>')
@@ -312,7 +318,7 @@ def befor_request():
 @identity_loaded.connect_via(app)
 def on_identity_load(sender, identity):
     identity.user = current_user
-    if current_user.get_id == None:
+    if current_user.get_id() == None:
         print 'anonymous'        
 	return
     if getUserInfo('flag') == 0:

@@ -55,7 +55,7 @@ def saveTask(form):
     cursor.execute(sql)
     data = cursor.fetchone()
     taskID = data[0]
-    sql = "insert tasks (title, abstract, detail, id) values('%s', '%s', '%s', %d)"%(form['title'], form['abstract'], form['description'], taskID)
+    sql = "insert tasks (title, abstract, detail, id, kind) values('%s', '%s', '%s', %d, '%s')"%(form['title'], form['abstract'], form['description'], taskID, form['kind'])
     cursor.execute(sql)
     cursor.close()
     conn.commit()
@@ -63,19 +63,22 @@ def saveTask(form):
 
 def getTask(taskID):
     cursor = conn.cursor()
-    sql = "select title, detail from tasks where id = %s"%(taskID)
+    sql = "select title, detail, kind from tasks where id = %s"%(taskID)
     cursor.execute(sql)
     data = cursor.fetchone()
     cursor.close()
     item = Item()
     item.title = data[0]
     item.detail = data[1]
+    item.kind = data[2]
+    if (item.kind != 'GRAPH' and item.kind != 'VHDL'):
+        item.kind = 'GRAPH'
     item.itemID = taskID
     return item
 
 def getTasklist():
     cursor = conn.cursor()
-    sql = "select id, title, abstract from tasks"
+    sql = "select id, title, abstract, kind from tasks"
     cursor.execute(sql)
     data = cursor.fetchall()
     tasklist = []
@@ -84,6 +87,9 @@ def getTasklist():
         item.itemID = task[0]
         item.title = task[1]
         item.abstract = task[2]
+        item.kind = task[3]
+        if (item.kind != 'GRAPH' and item.kind != 'VHDL'):
+            item.kind = 'GRAPH'
         tasklist.append(item)      
     cursor.close()
     return tasklist

@@ -3,9 +3,11 @@ class Item:
     abstract = "";
     detail = "";
     itemID = 0;
+    kind = "GRAPH"
 
 class Submission:
     title = "";
     time = "";
-    statu = "";
+    status = "";
     submissionID = "";
+    kind = "GRAPH"
