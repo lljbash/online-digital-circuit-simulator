@@ -264,6 +264,27 @@ app.controller('AppCtrl2', function AppCtrl($scope, $http){
   $scope.add_mod_74ls86 = function() {
     $scope.$emit('addnode', "MOD_74LS86");
   };
+  $scope.add_mod_74ls125 = function() {
+    $scope.$emit('addnode', "MOD_74LS125");
+  };
+  $scope.add_mod_74ls161 = function() {
+    $scope.$emit('addnode', "MOD_74LS161");
+  };
+  $scope.add_mod_74ls253 = function() {
+    $scope.$emit('addnode', "MOD_74LS253");
+  };
+  $scope.add_mod_74ls74 = function() {
+    $scope.$emit('addnode', "MOD_74LS74");
+  };
+  $scope.add_mod_74ls75 = function() {
+    $scope.$emit('addnode', "MOD_74LS75");
+  };
+  $scope.add_mod_74ls85 = function() {
+    $scope.$emit('addnode', "MOD_74LS85");
+  };
+  $scope.add_mod_74ls90 = function() {
+    $scope.$emit('addnode', "MOD_74LS90");
+  };
   $scope.add_nand_gate4 = function() {
     $scope.$emit('addnode', "NAND_GATE4");
   };

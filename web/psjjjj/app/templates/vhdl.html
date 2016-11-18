@@ -16,9 +16,9 @@
         position: absolute;
         top: 50px;
         bottom: 0;
-        left: 240px;
-        right: 0;
-        font-size: 20px
+        left: 0;
+        right: 240px;
+        font-size: 20px;
     }
   </style>
   <link href="{{ url_for('static', filename='jstree/dist/themes/default/style.min.css') }}" rel="stylesheet">
@@ -29,142 +29,114 @@
     <div class="navbar-header">
       <a class="navbar-brand" href="/index">PSJJJJ</a>
     </div>
-    <button type="button" class="btn btn-primary navbar-btn" onclick="add_file_node()">new</button>
-    <button type="button" class="btn btn-info navbar-btn" onclick="rename_file_node()">rename</button>
-    <button type="button" class="btn btn-danger navbar-btn" onclick="delete_file_node()">delete</button>
-    <button type="button" class="btn btn-warning navbar-btn" onclick="save_file_node()">save</button>
-    <button type="button" class="btn btn-success navbar-btn" onclick="simulate()">simulate</button>
-    <button type="button" class="btn btn-info navbar-btn" onclick="download()">download</button>
   </div>
 </nav>
 {% endblock %}
 {% block content %}
-  <pre id="editor"></pre>
-  <div id="filetree"></div>
+  <div class="container">
+    <pre id="editor"></pre>
+    <div class="right" style="float:right;width:240px">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Operation
+        </div>
+        <div class="panel-body">
+          <button type="button" class="btn btn-primary btn-lg btn-block" onclick="save({{ itemID }})">save</button>
+          <button type="button" class="btn btn-primary btn-lg btn-block" onclick="test({{ itemID }})">test</button>
+          <button type="button" class="btn btn-primary btn-lg btn-block" onclick="submit({{ itemID }})">submit</button>
+          <button type="button" class="btn btn-primary btn-lg btn-block" onclick="show({{ itemID }})">result</button>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Upload Activation
+        </div>
+        <div class="panel-body">
+          <form role="form" action="" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+              <input type="file" class="form-control" placeholder="upload" name="file"> 
+              <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn">upload</button>
+            </div>
+          </form>
+          <a href="/showInput" target="_blank" class="btn btn-primary btn-lg btn-block">showinput</a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 {% block scripts %}
   {{ super() }}
   <script src="{{ url_for('static', filename='js/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='jstree/dist/jstree.min.js') }}"></script>
   <script type="text/javascript">
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/vhdl");
-    var vhdlcode = [];
-    var simulated = false;
-    var download_filename = "";
 
-    function add_file_node() {
-      var ref = $('#filetree').jstree(true);
-      var sel = ref.get_selected();
-      if(!sel.length){
-        return false; 
-      }
-      sel = sel[0];
-      sel = ref.create_node(sel, {"type":"file"});
-      if(sel) {
-        ref.edit(sel);
-      }
-    };
-
-    function rename_file_node(){
-      var ref = $('#filetree').jstree(true),
-      sel = ref.get_selected();
-      if(!sel.length) { return false; }
-      sel = sel[0];
-      ref.edit(sel);
-    };
-
-    function delete_file_node(){
-      var ref = $('#filetree').jstree(true),
-      sel = ref.get_selected();
-      if(!sel.length) { return false; }
-      var text = sel.text;
-      var i = 0;
-      for(node in vhdlcode){
-        if(node.name === text){
-          vhdlcode.splice(i, 1);
-        }
-        i++;
-      }
-      ref.delete_node(sel);
-
-    };
-
-    function save_file_node(){
-      var ref = $('#filetree').jstree(true),
-      sel = ref.get_selected([true]);
-      if(!sel.length) { return false; }
-      sel = sel[0];
-      if(sel.type==="file"){
-        sel.vhdlcode = editor.getValue();
-      }
-      vhdlcode.push({name:sel.text, vhdlcode:sel.vhdlcode});
-    };
-
-    function simulate(){
-        console.log(vhdlcode);
-        var name = "";
-        for(var i=0;i<vhdlcode.length;i++)
-        {
-          name += vhdlcode[i].vhdlcode;
-        }
-        console.log(name);
-        $.ajax({
+    function save(ID) {
+      var vhdlcode = editor.getValue();
+      var request = {
+        itemID:itemID,
+        code:vhdlcode
+      };
+      var jsonstr = $.toJSON(request);
+      $.ajax({
           type: "POST",
-          url: '/vhdlcode_simulate',
-          data: '{"name":"' + name +'"}',
+          url: '/save_vhdl',
+          data: jsonstr,
           contentType: "application/json; charset=utf-8",
           dataType: 'json',
           success: function(data){
             console.log('success');
-            if(data[0].state === "success"){
-              var tree = $('#filetree').jstree(true);
-              tree.deselect_all();
-              var sel = tree.create_node("simulation_id", {"type":"file", "text" : "result.vhd"});
-              simulated = true;
-              download_filename = data[1].filename;
-            }
           },
           error: function(data){
             console.log("error");
-            // if(text === "success"){
-            //   var tree = $('#filetree').jstree(true);
-            //   tree.deselect_all();
-            //   var sel = tree.create_node("simulation_id", {"type":"file", "text" : "result.vhd"});
-            //   simulated = true;
-            // }
+          }
+      });
+    };
+
+    function test(ID) {
+      var vhdlcode = editor.getValue();
+      var request = {
+        itemID:itemID,
+        code:vhdlcode
+      };
+      var jsonstr = $.toJSON(request);
+      $.ajax({
+          type: "POST",
+          url: '/test_vhdl',
+          data: jsonstr,
+          contentType: "application/json; charset=utf-8",
+          dataType: 'json',
+          success: function(data){
+            console.log('success');
+          },
+          error: function(data){
+            console.log("error");
+          }
+      });
+    };
+
+    function submit(ID) {
+      var vhdlcode = editor.getValue();
+      var request = {
+        itemID:itemID,
+        code:vhdlcode
+      };
+      var jsonstr = $.toJSON(request);
+      $.ajax({
+          type: "POST",
+          url: '/submit_vhdl',
+          data: jsonstr,
+          contentType: "application/json; charset=utf-8",
+          dataType: 'json',
+          success: function(data){
+            console.log('success');
+          },
+          error: function(data){
+            console.log("error");
           }
         });
     };
-
-    function download()
-    {
-      if(simulated)
-        window.location.href = "/submitted/" + download_filename;
-    };
-
-    $(function () { 
-      $('#filetree').jstree({
-        'core':{
-          'data':[
-            {
-              'text':'Project',
-              'state':{'opened':true, 'selected':false},
-              'children':[{id : "src_id" , text : 'src'}, { id : "simulation_id" , text : 'simulation' }]
-            }
-          ],
-          'check_callback':true
-        },
-        "types":{
-          "#" : { "max_children" : 1, "max_depth" : 4, "valid_children" : ["root"] },
-          "root" : { "valid_children" : ["default"]},
-          "default" : { "valid_children" : ["file"] },
-          "file" : { "icon" : "glyphicon glyphicon-file", "valid_children" : [], "vhdlcode" : "" }
-        },
-        "plugins":["types"]
-      }); 
-    });
   </script>
 {% endblock %}

@@ -38,8 +38,6 @@
  <div ng-app="app" ng-controller="AppCtrl"  ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
   <div style="width: 85%; height: 1000px; float:right; border:3px solid black; border-radius: 5px">
     <div class="btn-group">
-      <button ng-click="deleteSelected()"
-              ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0" class="btn btn-success">delete</button>
        <button ng-click="save_circuit({{ itemID }})" class="btn btn-primary">save</button>
        <button ng-click="test_circuit({{ itemID }})" class="btn btn-success">test</button>
       <button ng-click="downloadResult()" ng-disabled="!tested" class="btn btn-info">download</button>
@@ -58,53 +56,63 @@
     <div class="panel-body">
       <ul class="list-group">
         <li class="list-group-item" ng-click="add_input()">
-          activation
+          input
         </li>
         <li class="list-group-item" ng-click="add_output()">
           output
         </li>
         <li class="list-group-item" ng-click="add_mod_74ls00()">
-          <span class="badge">3</span>
           MOD_74LS00
         </li>
         <li class="list-group-item" ng-click="add_mod_74ls04()">
-          <span class="badge">3</span>
           MOD_74LS04
         </li>
         <li class="list-group-item" ng-click="add_mod_74ls11()">
-          <span class="badge">3</span>
           MOD_74LS11
         </li>
         <li class="list-group-item" ng-click="add_mod_74ls20()">
-          <span class="badge">3</span>
           MOD_74LS20
         </li>
         <li class="list-group-item" ng-click="add_mod_64ls27()">
-          <span class="badge">3</span>
           MOD_74LS27
         </li>
         <li class="list-group-item" ng-click="add_mod_74ls86()">
-          <span class="badge">3</span>
           MOD_74LS86
         </li>
+        <li class="list-group-item" ng-click="add_mod_74ls125()">
+          MOD_74LS125
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls161()">
+          MOD_74LS161
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls253()">
+          MOD_74LS253
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls74()">
+          MOD_74LS74
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls75()">
+          MOD_74LS75
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls85()">
+          MOD_74LS85
+        </li>
+        <li class="list-group-item" ng-click="add_mod_74ls90()">
+          MOD_74LS90
+        </li>
         <li class="list-group-item" ng-click="add_nand_gate4()">
-          <span class="badge">2</span>
           NAND_GATE4
         </li>
         <li class="list-group-item" ng-click="add_nand_gate2()">
-          <span class="badge">2</span>
           NAND_GATE2
         </li>
         <li class="list-group-item" ng-click="add_and_gate3()">
-          <span class="badge">2</span>
           AND_GATE3
         </li>
         <li class="list-group-item" ng-click="add_nor_gate3()">
-          <span class="badge">3</span>
           NOR_GATE3
         </li>
         <li class="list-group-item" ng-click="add_xnor_gate2()">
-          <span class="badge">3</span>
           XNOR_GATE2
         </li>
       </ul>
@@ -114,20 +122,21 @@
     <div class="panel-heading">
       input activation
     </div>
-    <div class=panel-body>
+    <div class="panel-body">
       <form role="form" action="" method="post" enctype="multipart/form-data">
         <div class="form-group">
           <input type="file" class="form-control" placeholder="upload" name="file"> 
           <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn">add</button>
+        </div>
       </form>
     </div>
   </div>
   <div class="panel panel-default" style="margin:5px">
     <div class="panel-heading">
-      Show Result
+      Show Input
     </div>
     <div class="panel-body">
-         <a href="/showInput" class="btn btn-primary btn-lg btn-block">showinput</a>
+         <a href="/showInput" target="_blank" class="btn btn-primary btn-lg btn-block">showinput</a>
     </div>
   </div>
 </div>

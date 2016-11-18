@@ -6,7 +6,12 @@
   </div>
   <div class="list-group">
   {% for submission in submissions %}
-    <a href="/studio/graph/{{ itemID }}/{{ submission.submissionID }}" class="list-group-item active">
+    {% if submission.kind=="GRAPH" %}
+      <a href="/studio/graph/{{ itemID }}/{{ submission.submissionID }}" class="list-group-item active">
+    {% endif %}
+    {% if submission.kind=="VHDL" %}
+      <a href="/studio/VHDL/{{ itemID }}/{{ submission.submissionID }}" class="list-group-item active">
+    {% endif %}
     {% if submission.status=="AC" %}
       <h4 class="list-group-item-heading">{{ submission.title }}<span class="label label-success">Success</span></h4>
     {% endif %}
