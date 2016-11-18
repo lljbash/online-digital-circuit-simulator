@@ -111,6 +111,15 @@ body {
   width: 8px;
   height: 8px;
   border: 2px solid black;
+  border-radius: 50% 50%;
+  fill:black;
+  background-color:black;
+  color: black;
+}
+
+.fc-joint.fc-hover {
+  border: 2px solid black;
+  border-radius: 50% 50%;
   background-clip: padding-box;
   fill:black;
   background-color:black;
@@ -129,7 +138,7 @@ body {
 
 .fc-edge.fc-hover {
   stroke: black;
-  stroke-width: 5;
+  stroke-width: 4;
   fill: transparent;
 }
 

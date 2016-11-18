@@ -1780,7 +1780,10 @@ module.run(['$templateCache', function($templateCache) {
     '        ng-mouseover="edgeMouseOver($event, edge)"\n' +
     '        ng-mouseenter="edgeMouseEnter($event, edge)"\n' +
     '        ng-mouseleave="edgeMouseLeave($event, edge)"\n' +
-    '        ng-attr-class="{{(modelservice.edges.isSelected(edge) && flowchartConstants.selectedClass + \' \' + flowchartConstants.edgeClass) || edge == mouseOver.edge && flowchartConstants.hoverClass + \' \' + flowchartConstants.edgeClass || edge.active && flowchartConstants.activeClass + \' \' + flowchartConstants.edgeClass || flowchartConstants.edgeClass}}"\n' +
+    '        ng-attr-class="{{(modelservice.edges.isSelected(edge) && flowchartConstants.selectedClass + \' \' ' +
+    '            + flowchartConstants.edgeClass) || edge == mouseOver.edge && flowchartConstants.hoverClass + \' \' ' +
+    '            + flowchartConstants.edgeClass || edge.active && flowchartConstants.activeClass + \' \' ' +
+    '            + flowchartConstants.edgeClass || flowchartConstants.edgeClass}}"\n' +
     '        ng-attr-d="{{getEdgeDAttribute(modelservice.edges.sourceCoord(edge), modelservice.edges.destCoord(edge), ' +
     '            modelservice.connectors.getConnector(edge.source).type, modelservice.connectors.getConnector(edge.destination).type, ' +
     '            modelservice.connectors.getNode(edge.source).id === modelservice.connectors.getNode(edge.destination).id, ' +
@@ -1801,8 +1804,8 @@ module.run(['$templateCache', function($templateCache) {
     '  </svg>\n' +
     '  <fc-joint ng-repeat="joint in model.joints" joint="joint"' +
     '            callbacks="callbacks"' +
-    '            modelservice="modelservice">\n' +
-    '  </fc-joint>' +
+    '            modelservice="modelservice"' +
+    '            under-mouse="joint === mouseOver.joint"></fc-joint>\n' +
     '  <fc-node selected="modelservice.nodes.isSelected(node)" under-mouse="node === mouseOver.node" node="node"\n' +
     '           mouse-over-connector="mouseOver.connector"\n' +
     '           modelservice="modelservice"\n' +
