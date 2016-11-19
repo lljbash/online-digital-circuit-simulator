@@ -68,21 +68,42 @@
   {{ super() }}
   <script src="{{ url_for('static', filename='js/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/src-noconflict/snippets/json.js') }}"></script>
   <script type="text/javascript">
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/vhdl");
 
-    function save(ID) {
+	$(document).ready(function(){
+  		var url = window.location.pathname;
+                console.log("url : " + url);
+  		var items = url.split("/");
+  		var length = items.length;
+  		var itemID = items[length-1];
+                var subID = '' 
+                if (length == 7) {subID = items[6]; itemID = items[5]} 
+                var request = {itemID:itemID, submissionID:subID, kind:'VHDL'};
+                var jsonstr = JSON.stringify(request);
+
+      	$.post("/load_vhdl",
+      	{
+                data:jsonstr
+      	},function(data,status){
+                console.log("data : " + data);
+        	editor.session.setValue(data);
+      	});
+	});
+    function save(itemID) {
       var vhdlcode = editor.getValue();
       var request = {
         itemID:itemID,
-        code:vhdlcode
+        code:vhdlcode,
+        kind:'VHDL'
       };
-      var jsonstr = $.toJSON(request);
+      var jsonstr = JSON.stringify(request);
       $.ajax({
           type: "POST",
-          url: '/save_vhdl',
+          url: '/save',
           data: jsonstr,
           contentType: "application/json; charset=utf-8",
           dataType: 'json',
@@ -95,7 +116,7 @@
       });
     };
 
-    function test(ID) {
+    function test(itemID) {
       var vhdlcode = editor.getValue();
       var request = {
         itemID:itemID,
@@ -117,7 +138,7 @@
       });
     };
 
-    function submit(ID) {
+    function submit(itemID) {
       var vhdlcode = editor.getValue();
       var request = {
         itemID:itemID,

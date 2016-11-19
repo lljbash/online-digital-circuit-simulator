@@ -32,7 +32,7 @@ var app = angular.module('app', ['flowchart']);
     console.log(url);
     $http({
       method:'POST',
-      data:{'itemID' : itemID, 'submissionID' : submissionID},
+      data:{'itemID' : itemID, 'submissionID' : submissionID, 'kind':'GRAPH'},
       url:'/load'
     }).then(function successCallback(response){
       console.log("success!");
@@ -187,7 +187,7 @@ $scope.save_circuit = function(itemID) {
   console.log(itemID);
   $http({
     method: 'POST',
-     data: {'data' : model, 'itemID':itemID},
+     data: {'data' : model, 'itemID':itemID,'kind':'GRAPH'},
     url: '/save'
   }).then(function successCallback(response) {
 	console.log(itemID);

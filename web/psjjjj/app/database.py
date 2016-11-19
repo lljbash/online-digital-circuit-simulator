@@ -149,6 +149,7 @@ def getUserInfo(field):
 def saveProject(request_data):
     data = json.loads(request_data)
     itemID = data['itemID']
+    kind = data['kind']
     author = g.user.id
     saveID = getmd5(author + str(itemID), '158647')
     save_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
@@ -156,7 +157,10 @@ def saveProject(request_data):
     cursor = conn.cursor()
     sql = "insert savedfiles (id, author, time, task) values('%s', '%s', '%s', '%s')"\
            %(saveID, author, save_time, itemID)
-    f = open(UPLOAD_FOLDER + "/graph/" + saveID + ".json", 'w')
+    if kind == 'GRAPH':
+        f = open(UPLOAD_FOLDER + "/graph/" + saveID + ".json", 'w')
+    if kind == 'VHDL':
+        f = open(UPLOAD_FOLDER + '/vhdl/' + saveID + '.json', 'w')
     f.write(request_data)
     f.close()
     cursor.execute(sql)
@@ -183,4 +187,22 @@ def getModel(itemID, submissionID):
         model = '{"nodes":[], "edges":[]}'
         #model = json.dumps(model)
         return model
+
+def getVHDL(itemID, submissionID):
+    print 'getvhdl'
+    author = g.user.id
+    saveID = getmd5(author + itemID, '158647')
+    if submissionID != '':
+        saveID = submissionID
+    print submissionID
+    cursor = conn.cursor()
+    try: 
+        f = open(UPLOAD_FOLDER + "/vhdl/" + saveID + ".json", 'r' )
+        data = f.read()
+        data = json.loads(data)
+        code = data['code']
+        f.close()
+        return code
+    except:
+        return ''
 

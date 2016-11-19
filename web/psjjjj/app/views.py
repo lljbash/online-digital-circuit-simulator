@@ -10,7 +10,7 @@ from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
 from py2proto.circuit_pb2 import CircuitProto
-from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo, saveProject, getModel
+from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo, saveProject, getModel, getVHDL
 from model import User
 from flask_login import login_user, logout_user, login_required, current_user
 from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Principal, Identity, identity_changed, AnonymousIdentity
@@ -21,6 +21,8 @@ import json
 def index():
     print 'now index............................'
     items = getTasklist()
+    if getUserInfo('flag') == 1:
+        return render_template('management.html', items = items)
     return render_template('index.html', items = items, userid = g.user.id)
 
 @app.route('/', methods = ['GET', 'POST'])
@@ -81,27 +83,13 @@ def account():
 def addProject():
     return render_template('studio.html')
 
-@app.route('/studio/vhdl', methods=['GET', 'POST'])
+@app.route('/studio/vhdl/<itemID>', methods=['GET', 'POST'])
 @stu_permission.require()
-def addVHDL():
-    form = VHDLForm()
-    if form.validate_on_submit():
-        cli = MyClient()
-        cli.connect()
-        request = RequestProto()
-        request.type = 1
-        request.vhdl_code = form.VHDLCode.data
-        cli.sendMessage(request)
-        reply = SimulationResultProto()
-        reply.ParseFromString(cli.recvMessage())    
-        flash('from server : ')
-        flash('success : ' + str(reply.success))
-        flash('file_name : ' + reply.file_name)
-        if reply.success:
-            return redirect(url_for('submitted', filename = reply.file_name))
-        else:
-            return redirect(url_for('error', error_message = reply.error_message))
-    return render_template('vhdl.html', form=form)
+def addVHDL(itemID):
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save('../../tmp' + '/activation/' + g.user.id)
+    return render_template('vhdl.html', itemID = itemID)
 
 @app.route('/studio/graph/<itemID>', methods=['GET', 'POST'])
 @stu_permission.require()
@@ -133,6 +121,7 @@ def error(error_message):
 
 @app.route('/save', methods=['POST'])
 def save():
+    print request.data
     saveProject(request.data)
     return "test.txt"
 
@@ -335,8 +324,19 @@ def load():
         print submissionID
         return getModel(itemID, submissionID)
 
+@app.route('/load_vhdl', methods = ['POST'])
+def load_vhdl():
+    if request.method == 'POST':
+        print request.form
+        data = json.loads(request.form['data'])
+        itemID = data['itemID']
+        submissionID = data['submissionID']
+        print data
+        print itemID
+        return getVHDL(itemID, submissionID)
+
 @app.route('/getVHDL/<filename>', methods = ['POST'])
-def getVHDL(filename):
+def getVHDL_from_graph(filename):
     if request.method == 'POST':
         f = open('../../tmp' + '/vhdl/' + filename)
         vhdl = f.read()
