@@ -143,7 +143,7 @@ $scope.submit_circuit = function(itemID) {
   $http({
     method: 'POST',
      data: {'data' : model, 'itemID':itemID},
-    url: '/simulate'
+    url: '/submit'
   }).then(function successCallback(response) {
 
     console.log(response.data);
@@ -176,6 +176,7 @@ $scope.test_circuit = function(itemID) {
     }
     else{
         $scope.filename = response.data;
+        console.log($scope.filename)
         $scope.tested = true;
     }
   }, function errorCallback(response) {
@@ -203,7 +204,9 @@ $scope.downloadResult = function() {
 };
 
 $scope.showResult = function() {
-  window.location = "/result/" + $scope.filename + ".png";
+	var redirect_url = "/result/" + $scope.filename;
+	console.log($scope.filename);
+   window.open(redirect_url, 'newwindow');
 };
 
 $scope.deleteSelected = function () {

@@ -113,7 +113,7 @@ def submitted(filename):
 def download(filename):
     print 'download'
     print filename
-    return send_from_directory('../../tmp/vhdl', filename, as_attachment = True)
+    return send_from_directory('../../../tmp/vhdl', filename, as_attachment = True)
 
 @app.route('/error/<error_message>')
 def error(error_message):
@@ -125,8 +125,8 @@ def save():
     saveProject(request.data)
     return "test.txt"
 
-@app.route('/simulate', methods=['POST'])
-def test():
+@app.route('/submit', methods=['POST'])
+def submit():
     request_proto = RequestProto()
     request_proto.type = 0;
     data = json.loads(request.data)
@@ -190,7 +190,7 @@ def test():
 
 @app.route('/test', methods=['POST'])
 @stu_permission.require()
-def testCircuit():
+def test():
     request_proto = RequestProto()
     request_proto.type = 0;
     data = json.loads(request.data)
@@ -202,7 +202,7 @@ def testCircuit():
     f = open('../../tmp' + "/activation/" + str(g.user.id))
     text = f.read()
     activationList = parse_activate(text)
-    for i in range(100):
+    for i in range(10000):
         map_dic.append([])
     for node in nodes:
         print node
@@ -221,6 +221,7 @@ def testCircuit():
         up_size = (tot_size + 1) / 2
         down_size = tot_size / 2
         for connector in connectors:
+            print connector
             if pin_id < up_size:
                 real_id = up_size - pin_id - 1 + down_size
             else:
@@ -235,9 +236,12 @@ def testCircuit():
         wire.start_pin.pin_name = str(map_dic[source][1])
         wire.end_pin.chip_name = map_dic[destination][0]
         wire.end_pin.pin_name = str(map_dic[destination][1])
+        print wire
+
     cli = MyClient()
     cli.connect()
     cli.sendMessage(request_proto)
+    print request_proto
     reply = CircuitParsingResultProto()
     reply.ParseFromString(cli.recvMessage())
     cli.close(0)
@@ -253,6 +257,9 @@ def testCircuit():
         reply2.ParseFromString(cli.recvMessage())
         f = open('../../tmp' + '/vhdl/' + reply2.file_name, 'w')
         f.write(vhdl)
+        f.close()
+        f = open('../../tmp' + '/out/' + reply2.file_name, 'w')
+        f.write(reply2.wave_info)
         f.close()
         return reply2.file_name
     return "error"
@@ -358,4 +365,13 @@ def showInput():
     print acts
     svg = activate_to_svg(acts)
     print svg
-    return render_template('showinput.html', svg = svg)
+    return render_template('showinput.html', svg = svg, title = 'Input')
+
+@app.route('/result/<filename>')
+def showResult(filename):
+    f = open('../../tmp/out/' + filename)
+    data = f.read()
+    f.close()
+    acts = parse_activate(data)
+    svg = activate_to_svg(acts)
+    return render_template('showinput.html', svg = svg, title = 'Result')
