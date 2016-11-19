@@ -113,7 +113,7 @@ def submitted(filename):
 def download(filename):
     print 'download'
     print filename
-    return send_from_directory('../../../tmp/vhdl', filename, as_attachment = True)
+    return send_from_directory('../../../tmp/vcd', filename, as_attachment = True)
 
 @app.route('/error/<error_message>')
 def error(error_message):
