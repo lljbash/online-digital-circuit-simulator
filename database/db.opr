@@ -16,7 +16,8 @@ author char(20),
 time char(20),
 task char(100),
 result char(50),
-data text
+data text,
+kind char(6)
 );
 
 create table tasks
@@ -25,7 +26,8 @@ title char(100),
 taskdir char(100),
 abstract char(100),
 detail text,
-id char(11)
+id char(11),
+kind char(6)
 );
 
 create table savedfiles
