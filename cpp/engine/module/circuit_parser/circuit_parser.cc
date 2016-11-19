@@ -159,6 +159,7 @@ string CircuitParser::generatePinMapping(const util::ChipStatus &status) const {
     int pin_id = 0;
     for (auto &pin : pin_list) {
         if (pin.type() != "in" && pin.type() != "out") {
+            ++pin_id;
             continue;
         }
         if (starting) {
