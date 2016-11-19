@@ -39,7 +39,7 @@ signal num2: integer range 0 to 1 := 0;
 signal num5: integer range 0 to 5 := 0;
 
 signal r1, r2, s1, s2: std_logic;
-signal cur_q1, cur_q2, cur_q3, cur_q4: std_logic := 0;
+signal cur_q1, cur_q2, cur_q3, cur_q4: std_logic := '0';
 
 begin
 
