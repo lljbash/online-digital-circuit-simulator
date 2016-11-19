@@ -27,7 +27,7 @@ class MyClient:
             sys.exit()
         print 'Message send successfully!'
     def recvMessage(self):
-        reply = self.s.recv(1048576)
+        reply = self.s.recv(10485760)
         return reply
     def close(self, number):
         self.s.shutdown(number)
