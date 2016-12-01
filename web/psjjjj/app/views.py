@@ -5,7 +5,7 @@ from flask import render_template, redirect, flash, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 from .forms import VHDLForm, LoginForm,ResetPasswordForm, CheckPasswordForm, TaskForm
 from client import MyClient
-from activate import parse_activate, activate_to_svg
+from activate import parse_activate, activate_to_svg, judge
 from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
@@ -135,9 +135,10 @@ def submit():
     nodes = models['nodes']
     edges = models['edges']
     map_dic = []
-    f = open(UPLOAD_FOLDER + "/task/" + str(itemID))
+    f = open(UPLOAD_FOLDER + "/tasks/" + str(itemID) + '.in')
     text = f.read()
     activationList = parse_activate(text)
+    print activationList
     for i in range(100):
         map_dic.append([])
     for node in nodes:
@@ -146,8 +147,12 @@ def submit():
         chip.type = node['type']
         if chip.type=="input":
             for activation in activationList:
+                print node['ano_name']
+                print activation[0] 
                 if node['ano_name']==activation[0]:
-                    chip.activation = activation[1]
+                    chip.activation.initial = activation[1].initial
+                    chip.activation.repeat = activation[1].repeat
+                    chip.activation.jumping_time.extend(activation[1].jumping_time)
         connectors = node['connectors']
         pin_id = 0
         tot_size = len(connectors)
@@ -171,6 +176,7 @@ def submit():
     cli = MyClient()
     cli.connect()
     cli.sendMessage(request_proto)
+    print request_proto
     reply = CircuitParsingResultProto()
     reply.ParseFromString(cli.recvMessage())
     cli.close(0)
@@ -180,12 +186,30 @@ def submit():
         request_proto_2 = RequestProto()
         request_proto_2.type = 1
         request_proto_2.vhdl_code = reply.vhdl_code
+        vhdl = reply.vhdl_code
         cli.sendMessage(request_proto_2)
-        reply = SimulationResultProto()
-        reply.ParseFromString(cli.recvMessage())
-        saveSubmission(reply.file_name, request.data)
-        if reply.success:
-            return reply.file_name
+        reply2 = SimulationResultProto()
+        reply2.ParseFromString(cli.recvMessage())
+        f = open('../../data' + '/vhdl/' + reply2.file_name, 'w')
+        f.write(vhdl)
+        f.close()
+        f = open('../../data' + '/out/' + reply2.file_name, 'w')
+        f.write(reply2.wave_info)
+        f.close()
+        f = open('../../data' + '/tasks/' + str(itemID) + '.ans')
+        teacher = f.read()
+        f.close()
+        if reply2.success:
+            student = str(reply2.wave_info)
+            res = judge(student, teacher)
+            if res == True:
+                result = 'AC'
+            else:
+                result = 'WA'
+        else:
+            result = 'CE'
+        saveSubmission(reply2.file_name, itemID, result, request.data) 
+        return reply2.file_name
     return "error"
 
 @app.route('/test', methods=['POST'])
