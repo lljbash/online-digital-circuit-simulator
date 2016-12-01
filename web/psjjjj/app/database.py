@@ -51,10 +51,10 @@ def random_str(randomlength=6):
 #save and get task
 def saveTask(form):
     cursor = conn.cursor() 
-    sql = "select count(*) from tasks "
+    sql = "select max(id) from tasks"
     cursor.execute(sql)
     data = cursor.fetchone()
-    taskID = data[0]
+    taskID = int(data[0]) + 1
     sql = "insert tasks (title, abstract, detail, id, kind) values('%s', '%s', '%s', %d, '%s')"%(form['title'], form['abstract'], form['description'], taskID, form['kind'])
     cursor.execute(sql)
     cursor.close()
@@ -123,13 +123,12 @@ def getSubmission(sub_id):
     cursor.close()
     return data
 
-def saveSubmission(subID, data):
+def saveSubmission(subID, taskID, result, data):
     author = g.user.id
     save_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
-    task = '0'
     cursor = conn.cursor()
-    sql = "insert submissions (id, author, time, task, result) values('%s', '%s', '%s', '%s', 'AC')"\
-           %(subID, author, save_time, task)
+    sql = "insert submissions (id, author, time, task, result) values('%s', '%s', '%s', '%s', '%s')"\
+           %(subID, author, save_time, taskID, result)
     f = open(UPLOAD_FOLDER + "/graph/" + subID + ".json", 'w')
     f.write(data)
     f.close()
