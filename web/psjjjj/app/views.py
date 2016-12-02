@@ -184,7 +184,7 @@ def submit():
         f.write(vhdl)
         f.close()
         f = open('../../data' + '/out/' + reply2.file_name, 'w')
-        f.write(reply2.wave_info)
+        f.write(reply2.SerializeToString())
         f.close()
         f = open('../../data' + '/tasks/' + str(itemID) + '.ans')
         teacher = f.read()
@@ -270,7 +270,7 @@ def test():
         f.write(vhdl)
         f.close()
         f = open('../../tmp' + '/out/' + reply2.file_name, 'w')
-        f.write(reply2.wave_info)
+        f.write(reply2.SerializeToString())
         f.close()
         return reply2.file_name
     return "error"
@@ -288,10 +288,11 @@ def testVHDL():
     reply = SimulationResultProto()
     reply.ParseFromString(cli.recvMessage())
     f = open('../../tmp' + '/out/' + reply.file_name, 'w')
-    f.write(reply.wave_info)
+    f.write(reply.SerializeToString())
     f.close()
-    print reply.file_name
+    print reply
     return reply.file_name
+
 
 
 @app.route('/add', methods=['POST'])
@@ -396,11 +397,17 @@ def showInput():
 @app.route('/result/<filename>')
 def showResult(filename):
     f = open('../../tmp/out/' + filename)
-    data = f.read()
+    result = SimulationResultProto()
+    result.ParseFromString(f.read())
     f.close()
-    acts = parse_activate(data)
-    svg = activate_to_svg(acts)
-    return render_template('showinput.html', svg = svg, title = 'Result')
+    print result
+    if result.success:
+        print "succ"
+        acts = parse_activate(result.wave_info)
+        svg = activate_to_svg(acts)
+        return render_template('showinput.html', svg = svg, title = 'Result')
+    else:
+        return result.error_message
 
 @app.route('/studentmanagement')
 def studentmanagement():

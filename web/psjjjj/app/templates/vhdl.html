@@ -44,6 +44,7 @@
   </div>
 </nav>
 {% endblock %}
+
 {% block content %}
   <div class="container">
     <pre id="editor"></pre>
@@ -81,6 +82,7 @@
   <script src="{{ url_for('static', filename='js/src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/src-noconflict/snippets/json.js') }}"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
   <script type="text/javascript">
     var editor = ace.edit("editor");
     var filename;

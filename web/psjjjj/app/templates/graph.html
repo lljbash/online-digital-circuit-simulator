@@ -30,12 +30,12 @@
  <div ng-app="app" ng-controller="AppCtrl"  ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
   <div style="width: 85%; height: 1000px; float:right; border:3px solid black; border-radius: 5px">
     <div class="btn-group">
-       <button ng-click="save_circuit({{ itemID }})" class="btn btn-primary">save</button>
-       <button ng-click="test_circuit({{ itemID }})" class="btn btn-success">test</button>
-      <button ng-click="downloadResult()" ng-disabled="!tested" class="btn btn-info">download</button>
-      <button ng-click="showResult()" ng-disabled="!tested" class="btn btn-warning">show</button>
-      <button ng-click="showVHDL()" ng-disabled="!tested" class="btn btn-info">VHDL</button>
-      <button ng-click="submit_circuit({{ itemID }})" class="btn btn-danger">submit</button>
+       <button ng-click="save_circuit({{ itemID }})" class="btn btn-primary">save current graph</button>
+       <button ng-click="test_circuit({{ itemID }})" class="btn btn-success">simulate with uploaded activation</button>
+      <button ng-click="downloadResult()" ng-disabled="!tested" class="btn btn-info">download vcd file</button>
+      <button ng-click="showResult()" ng-disabled="!tested" class="btn btn-warning">show waveform</button>
+      <button ng-click="showVHDL()" ng-disabled="!tested" class="btn btn-info">show VHDL</button>
+      <button ng-click="submit_circuit({{ itemID }})" class="btn btn-danger">submit and test</button>
     </div>
     <fc-canvas model="model" selected-objects="flowchartselected" callbacks="callbacks"
                automatic-resize="true"></fc-canvas>
