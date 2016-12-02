@@ -1909,7 +1909,7 @@ module.run(['$templateCache', function($templateCache) {
     $templateCache.put('flowchart/joint.html',
         '<div\n' +
         '  id="{{joint.id}}"\n' +
-        '  ng-attr-style="position: absolute; top: {{ joint.y - 4 }}px; left: {{ joint.x - 4 }}px;">\n' +
+        '  ng-attr-style="position: absolute; top: {{ joint.y - 5}}px; left: {{ joint.x - 5}}px;">\n' +
         '</div>\n' +
         '');
   }]);

@@ -108,22 +108,42 @@ body {
 }
 
 .fc-joint {
-  width: 8px;
-  height: 8px;
-  border: 2px solid black;
-  border-radius: 50% 50%;
+  margin: 0;
+  padding: 0;
+  width: 10px;
+  height: 10px;
+  border: 0px solid black;
+  border-radius: 0% 0%;
   fill:black;
+  opacity:0;
   background-color:black;
   color: black;
 }
 
 .fc-joint.fc-hover {
-  border: 2px solid black;
+  
+  width: 10px;
+  height: 10px;
+  border: 2px solid red;
   border-radius: 50% 50%;
   background-clip: padding-box;
-  fill:black;
-  background-color:black;
-  color: black;
+  fill:red;
+  opacity:1;
+  background-color:red;
+  color: red;
+}
+
+.fc-joint.fc-dragging {
+  
+  width: 10px;
+  height: 10px;
+  border: 2px solid red;
+  border-radius: 50% 50%;
+  background-clip: padding-box;
+  fill:red;
+  opacity:1;
+  background-color:red;
+  color: red;
 }
 
 .fc-connector.fc-hover {
