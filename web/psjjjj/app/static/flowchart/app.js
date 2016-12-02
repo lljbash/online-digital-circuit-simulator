@@ -148,6 +148,7 @@ $scope.submit_circuit = function(itemID) {
 
     console.log(response.data);
     $scope.filename = response.data;
+    $scope.tested = true;
     if(response.data === "error"){
         console.log("error");
         window.location = '/error';
