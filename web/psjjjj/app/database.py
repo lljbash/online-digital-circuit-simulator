@@ -208,3 +208,13 @@ def getVHDL(itemID, submissionID):
     except:
         return ''
 
+def getStudents():
+    studentlist = []
+    cursor = conn.cursor()
+    sql = 'select id from users where flag = 0'
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    for stu in data:
+        studentlist.append(stu[0])
+    return studentlist
+
