@@ -54,7 +54,10 @@ def saveTask(form):
     sql = "select max(id) from tasks"
     cursor.execute(sql)
     data = cursor.fetchone()
-    taskID = int(data[0]) + 1
+    if data[0] == None:
+        taskID = 0
+    else:
+        taskID = int(data[0]) + 1
     sql = "insert tasks (title, abstract, detail, id, kind) values('%s', '%s', '%s', %d, '%s')"%(form['title'], form['abstract'], form['description'], taskID, form['kind'])
     cursor.execute(sql)
     cursor.close()
