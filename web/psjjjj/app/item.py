@@ -2,7 +2,7 @@ class Item:
     title = "";
     abstract = "";
     detail = "";
-    itemID = 0;
+    itemID = "";
     kind = "GRAPH"
 
 class Submission:

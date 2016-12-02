@@ -10,7 +10,7 @@ from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
 from py2proto.circuit_pb2 import CircuitProto
-from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo, saveProject, getModel, getVHDL, getStudents
+from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo, saveProject, getModel, getVHDL, getStudents, deleteTask
 from model import User
 from flask_login import login_user, logout_user, login_required, current_user
 from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Principal, Identity, identity_changed, AnonymousIdentity
@@ -406,3 +406,10 @@ def showResult(filename):
 def studentmanagement():
     studentlist = getStudents()
     return render_template('students.html', studentlist = studentlist)
+
+@app.route('/delete/<taskID>')
+def delete(taskID):
+    deleteTask(taskID)
+    items = getTasklist()
+    return render_template('management.html', items = items)
+    

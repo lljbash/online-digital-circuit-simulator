@@ -23,12 +23,12 @@
         </ul>
       </li>
     </ul>
-  </div>
+  </div> 
 </nav>
 {% endblock %}
 {% block content %}
 <div class="container">
-  <a href="" class="btn btn-primary" role="button">delete this project</a>
+  <a href="/delete/{{ item.itemID }}" class="btn btn-primary" role="button">delete this project</a>
   <br>
   {{ item.title }} <br>
   {{ item.detail|safe }}

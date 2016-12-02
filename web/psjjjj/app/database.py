@@ -71,6 +71,7 @@ def getTask(taskID):
     data = cursor.fetchone()
     cursor.close()
     item = Item()
+    item.itemID = taskID
     item.title = data[0]
     item.detail = data[1]
     item.kind = data[2]
@@ -214,7 +215,14 @@ def getStudents():
     sql = 'select id from users where flag = 0'
     cursor.execute(sql)
     data = cursor.fetchall()
+    cursor.close()
     for stu in data:
         studentlist.append(stu[0])
     return studentlist
 
+def deleteTask(taskID):
+    cursor = conn.cursor()
+    sql = "delete from tasks where id = '%s'" %(taskID)
+    cursor.execute(sql)
+    cursor.close()
+    return 
