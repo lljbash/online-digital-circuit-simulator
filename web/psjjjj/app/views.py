@@ -10,7 +10,7 @@ from py2proto.request_pb2 import RequestProto
 from py2proto.circuit_parsing_result_pb2 import CircuitParsingResultProto
 from py2proto.simulation_result_pb2 import SimulationResultProto
 from py2proto.circuit_pb2 import CircuitProto
-from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo, saveProject, getModel, getVHDL
+from database import tryToLogin, verifyPassword, saveTask, getTask, getTasklist, getSubmissionlist, saveSubmission, getUserInfo, saveProject, getModel, getVHDL, getStudents
 from model import User
 from flask_login import login_user, logout_user, login_required, current_user
 from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Principal, Identity, identity_changed, AnonymousIdentity
@@ -19,7 +19,6 @@ import json
 @app.route('/index')
 @login_required
 def index():
-    print 'now index............................'
     items = getTasklist()
     if getUserInfo('flag') == 1:
         return render_template('management.html', items = items)
@@ -30,14 +29,12 @@ def index():
 def login():
     error = None
     if request.method == 'POST':
-        print request.form
         error = tryToLogin(request.form['id'], request.form['password'])
         if error == None:
             user = User(request.form['id'])
             login_user(user, remember = False)
             identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
             flash('You are logged in!')
-            print 'goto index ...........................'
             return redirect(url_for('index'))
     if error != None:
         flash(error)
@@ -111,8 +108,6 @@ def submitted(filename):
 @app.route('/download/<filename>')
 @stu_permission.require()
 def download(filename):
-    print 'download'
-    print filename
     return send_from_directory('../../../tmp/vcd', filename, as_attachment = True)
 
 @app.route('/error/<error_message>')
@@ -121,7 +116,6 @@ def error(error_message):
 
 @app.route('/save', methods=['POST'])
 def save():
-    print request.data
     saveProject(request.data)
     return "test.txt"
 
@@ -138,7 +132,6 @@ def submit():
     f = open(UPLOAD_FOLDER + "/tasks/" + str(itemID) + '.in')
     text = f.read()
     activationList = parse_activate(text)
-    print activationList
     for i in range(100):
         map_dic.append([])
     for node in nodes:
@@ -147,8 +140,6 @@ def submit():
         chip.type = node['type']
         if chip.type=="input":
             for activation in activationList:
-                print node['ano_name']
-                print activation[0] 
                 if node['ano_name']==activation[0]:
                     chip.activation.initial = activation[1].initial
                     chip.activation.repeat = activation[1].repeat
@@ -176,7 +167,6 @@ def submit():
     cli = MyClient()
     cli.connect()
     cli.sendMessage(request_proto)
-    print request_proto
     reply = CircuitParsingResultProto()
     reply.ParseFromString(cli.recvMessage())
     cli.close(0)
@@ -229,7 +219,6 @@ def test():
     for i in range(10000):
         map_dic.append([])
     for node in nodes:
-        print node
         chip = request_proto.circuit.chips.add()
         chip.id = str(node['id'])
         chip.type = node['type']
@@ -245,7 +234,6 @@ def test():
         up_size = (tot_size + 1) / 2
         down_size = tot_size / 2
         for connector in connectors:
-            print connector
             if pin_id < up_size:
                 real_id = up_size - pin_id - 1 + down_size
             else:
@@ -260,7 +248,6 @@ def test():
         wire.start_pin.pin_name = str(map_dic[source][1])
         wire.end_pin.chip_name = map_dic[destination][0]
         wire.end_pin.pin_name = str(map_dic[destination][1])
-        print wire
 
     cli = MyClient()
     cli.connect()
@@ -288,6 +275,25 @@ def test():
         return reply2.file_name
     return "error"
 
+@app.route('/test_vhdl', methods=['POST'])
+@stu_permission.require()
+def testVHDL():
+    request_proto = RequestProto()
+    request_proto.type = 1
+    data = json.loads(request.data)
+    request_proto.vhdl_code = data['code']
+    cli = MyClient()
+    cli.connect()
+    cli.sendMessage(request_proto)
+    reply = SimulationResultProto()
+    reply.ParseFromString(cli.recvMessage())
+    f = open('../../tmp' + '/out/' + reply.file_name, 'w')
+    f.write(reply.wave_info)
+    f.close()
+    print reply.file_name
+    return reply.file_name
+
+
 @app.route('/add', methods=['POST'])
 def add():
     data = json.loads(request.data)
@@ -312,7 +318,6 @@ def addTask():
         f = request.files['output']
         f.save(taskaddr + '.ans')
         tasks = getTasklist()
-        print request.form
         return redirect(url_for('index'))
     return render_template('addTask.html')
 
@@ -338,8 +343,7 @@ def befor_request():
 @identity_loaded.connect_via(app)
 def on_identity_load(sender, identity):
     identity.user = current_user
-    if current_user.get_id() == None:
-        print 'anonymous'        
+    if current_user.get_id() == None:      
 	return
     if getUserInfo('flag') == 0:
         identity.provides.add(RoleNeed('stu'))
@@ -352,18 +356,14 @@ def load():
         data = json.loads(request.data)
         itemID = data['itemID']
         submissionID = data['submissionID']
-        print submissionID
         return getModel(itemID, submissionID)
 
 @app.route('/load_vhdl', methods = ['POST'])
 def load_vhdl():
     if request.method == 'POST':
-        print request.form
         data = json.loads(request.form['data'])
         itemID = data['itemID']
         submissionID = data['submissionID']
-        print data
-        print itemID
         return getVHDL(itemID, submissionID)
 
 @app.route('/getVHDL/<filename>', methods = ['POST'])
@@ -384,11 +384,8 @@ def showInput():
     f = open('../../tmp/activation/' + g.user.id)
     data = f.read()
     f.close()
-    print data
     acts = parse_activate(data)
-    print acts
     svg = activate_to_svg(acts)
-    print svg
     return render_template('showinput.html', svg = svg, title = 'Input')
 
 @app.route('/result/<filename>')
@@ -399,3 +396,8 @@ def showResult(filename):
     acts = parse_activate(data)
     svg = activate_to_svg(acts)
     return render_template('showinput.html', svg = svg, title = 'Result')
+
+@app.route('/studentmanagement')
+def studentmanagement():
+    studentlist = getStudents()
+    return render_template('students.html', studentlist = studentlist)
