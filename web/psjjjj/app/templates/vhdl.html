@@ -44,7 +44,7 @@
           <button type="button" class="btn btn-primary btn-lg btn-block" onclick="save({{ itemID }})">save</button>
           <button type="button" class="btn btn-primary btn-lg btn-block" onclick="test({{ itemID }})">test</button>
           <button type="button" class="btn btn-primary btn-lg btn-block" onclick="submit({{ itemID }})">submit</button>
-          <button type="button" class="btn btn-primary btn-lg btn-block" onclick="show({{ itemID }})">result</button>
+          <button type="button" class="btn btn-primary btn-lg btn-block" onclick="show()">result</button>
         </div>
       </div>
       <div class="panel panel-default">
@@ -71,6 +71,7 @@
   <script src="{{ url_for('static', filename='js/src-noconflict/snippets/json.js') }}"></script>
   <script type="text/javascript">
     var editor = ace.edit("editor");
+    var filename;
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/vhdl");
 
@@ -122,18 +123,21 @@
         itemID:itemID,
         code:vhdlcode
       };
-      var jsonstr = $.toJSON(request);
+      var jsonstr = JSON.stringify(request);
       $.ajax({
           type: "POST",
           url: '/test_vhdl',
           data: jsonstr,
           contentType: "application/json; charset=utf-8",
           dataType: 'json',
-          success: function(data){
+          success: function(name){
             console.log('success');
+            filename = name.responseText;
           },
-          error: function(data){
+          error: function(name){
             console.log("error");
+            filename = name.responseText;
+            console.log(name.responseText)
           }
       });
     };
@@ -158,6 +162,10 @@
             console.log("error");
           }
         });
+    };
+    function show() {
+         var redirect_url = "/result/" + filename;
+          window.open(redirect_url, 'newwindow'); 
     };
   </script>
 {% endblock %}
