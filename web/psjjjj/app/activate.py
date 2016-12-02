@@ -28,7 +28,11 @@ def parse_activate(text):
             time = filter_string(jumping_time, '1234567890')
             if time == '':
                 continue
-            act.jumping_time.append(int(time))
+            time = int(time)
+            if time in act.jumping_time:
+                act.jumping_time.remove(time)
+            else:
+                act.jumping_time.append(time)
         if repeat_str == '0':
             act.repeat = False
         elif repeat_str == '1':
