@@ -327,9 +327,14 @@ def tasklist():
     return render_template('tasklist.html', tasks = tasks)
 
 @app.route('/detail/<itemID>')
+@login_required
 def showTask(itemID):
     item = getTask(itemID)
-    return render_template('detail.html', item = item)
+    if getUserInfo('flag') == 0:
+        return render_template('detail.html', item = item)
+    if getUserInfo('flag') == 1:
+        return render_template('detail_admin.html', item = item)
+    return "error"
 
 @app.route('/submissionlist/<itemID>')
 def submissionlist(itemID):

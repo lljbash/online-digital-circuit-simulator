@@ -28,13 +28,9 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-  <div class="page-header">
-    <h1>Student List</h1>
-  </div>
-  <div class="list-group">
-  {% for student in studentlist %}
-    <a  class="list-group-item active"> {{ student }} </a>
-  {% endfor %}
-  </div>
+  <a href="" class="btn btn-primary" role="button">delete this project</a>
+  <br>
+  {{ item.title }} <br>
+  {{ item.detail|safe }}
 </div>
 {% endblock %}

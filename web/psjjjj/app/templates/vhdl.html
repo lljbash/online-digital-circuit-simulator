@@ -24,11 +24,23 @@
   <link href="{{ url_for('static', filename='jstree/dist/themes/default/style.min.css') }}" rel="stylesheet">
 {% endblock %}
 {% block navbar %}
-<nav class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
+<nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/index">PSJJJJ</a>
-    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/index">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+          <img src="{{ url_for('static', filename='images/default.png') }}" style="height:40px;width:40px;">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="/logout">logout</a></li>
+          <li><a href="/account/resetPassword/check">change password</a></li>
+        </ul>
+      </li>
+    </ul>
   </div>
 </nav>
 {% endblock %}
