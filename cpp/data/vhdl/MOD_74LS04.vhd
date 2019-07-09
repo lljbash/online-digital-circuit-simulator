@@ -36,7 +36,7 @@ end MOD_74LS04;
 
 architecture MOD_74LS04_behv of MOD_74LS04 is
 
-component NOT1 
+component NOT_GATE1 
 port(
     X: in std_logic;
     F1: out std_logic
@@ -45,12 +45,12 @@ end component;
 
 begin
 
-    u1: NOT1 port map(X => X1, F1 => Y2);
-    u2: NOT1 port map(X => X3, F1 => Y4);
-    u3: NOT1 port map(X => X5, F1 => Y6);
-    u4: NOT1 port map(X => X9, F1 => Y8);
-    u5: NOT1 port map(X => X11, F1 => Y10);
-    u6: NOT1 port map(X => X13, F1 => Y12);
+    u1: NOT_GATE1 port map(X => X1, F1 => Y2);
+    u2: NOT_GATE1 port map(X => X3, F1 => Y4);
+    u3: NOT_GATE1 port map(X => X5, F1 => Y6);
+    u4: NOT_GATE1 port map(X => X9, F1 => Y8);
+    u5: NOT_GATE1 port map(X => X11, F1 => Y10);
+    u6: NOT_GATE1 port map(X => X13, F1 => Y12);
 
 end MOD_74LS04_behv;
 
